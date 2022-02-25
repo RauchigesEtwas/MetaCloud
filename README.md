@@ -1,3 +1,5 @@
+
+![Image of MetaCloud](https://i.ibb.co/NFfvbwx/Unbenannt.png)
 This is the **MetaCloud** project, it is a Minecraft dynamic CloudSystem based on Nio-Networking
 
 **IMPORTENT: This Project is still in Development**
@@ -31,18 +33,18 @@ Use of KVM virtualization or dedicated servers is recommended.
 ## Process State
 [✔] FINISHED |[✁] EXPERMENTAL | [✎] IN WORKING | [☓] NOT STARTET
 
-[☓] Multi-Proxy
-[☓] Multi-Root
-[☓] Nio-Networking base
-[☓] Restapi with realtime resuls
-[☓] Multi-Language-System
-[☓] Module-System
-[☓] MongoDB & SQL support
-[☓] Dynamic starting Server containers
-[☓] Static starting Server containers
-[☓] Dashboard
-[☓] Cloud Setup
-[✎] CommandSystem and Console Output
+- [☓] Multi-Proxy
+- [☓] Multi-Root
+- [☓] Nio-Networking base
+- [☓] Restapi with realtime resuls
+- [☓] Multi-Language-System
+- [☓] Module-System
+- [☓] MongoDB & SQL support
+- [☓] Dynamic starting Server containers
+- [☓] Static starting Server containers
+- [☓] Dashboard
+- [☓] Cloud Setup
+- [✎] CommandSystem and Console Output
 
 
 ## Support
