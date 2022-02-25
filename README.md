@@ -1,5 +1,5 @@
 
-![Image of MetaCloud](https://i.ibb.co/NFfvbwx/Unbenannt.png)
+![Image of MetaCloud](https://i.ibb.co/w64LZfL/Unbenannt.png)
 This is the **MetaCloud** project, it is a Minecraft dynamic CloudSystem based on Nio-Networking
 
 **IMPORTENT: This Project is still in Development**
