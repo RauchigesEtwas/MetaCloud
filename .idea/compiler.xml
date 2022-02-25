@@ -8,8 +8,8 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="metacloud - plugin" />
+        <module name="metacloud-launcher" />
         <module name="metacloud - networking" />
-        <module name="metacloud - launcher" />
         <module name="metacloud - module" />
         <module name="metacloud - api" />
         <module name="metacloud - driver" />
@@ -17,6 +17,7 @@
     </annotationProcessing>
     <bytecodeTargetLevel>
       <module name="MetaCloud - Launcher" target="8" />
+      <module name="metacloud - launcher" target="1.8" />
     </bytecodeTargetLevel>
   </component>
 </project>
