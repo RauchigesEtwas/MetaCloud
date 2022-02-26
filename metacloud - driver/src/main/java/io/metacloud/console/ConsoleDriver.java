@@ -4,43 +4,53 @@ import io.metacloud.Driver;
 import io.metacloud.command.CommandDriver;
 import io.metacloud.console.logger.Logger;
 import io.metacloud.console.logger.enums.MSGType;
+import io.metacloud.console.setup.CloudMainSetup;
+import jline.console.completer.Completer;
 import lombok.SneakyThrows;
 
 import java.io.IOException;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
-public class ConsoleDriver extends  Thread{
+public final class ConsoleDriver extends  Thread implements Serializable {
 
 
     private CommandDriver commandDriver;
     private Logger logger;
 
+    @SneakyThrows
     public ConsoleDriver(){
         this.logger = new Logger();
         this.commandDriver = new CommandDriver();
-        this.setDaemon(true);
-        this.start();
+        setDaemon(true);
+        setPriority(Thread.MIN_PRIORITY);
+        start();
 
     }
 
     @SneakyThrows
     @Override
     public void run() {
+        String line;
         while (!isInterrupted() && isAlive()){
             if(this.commandDriver != null){
-                String line;
                 String coloredPromp = getLogger().getColoredString("§bMetaCloud §7» §7");
+
                 while ((line = this.getLogger().getConsoleReader().readLine(coloredPromp)) != null) {
+                    getLogger().getConsoleReader().setPrompt("");
+                    getLogger().getConsoleReader().resetPromptLine("", "", 0);
                     if (Driver.getInstance().getCloudStorage().isCloudSetup()){
-
+                        if (Driver.getInstance().getCloudStorage().getSetupType().equalsIgnoreCase("MAIN_SETUP")){
+                            new CloudMainSetup(getLogger().consoleReader, line);
+                        }
                     }else {
-                        if (!line.trim().isEmpty()) {
+                     if (!line.trim().isEmpty()) {
                         this.getCommandDriver().executeCommand(line);
-                    }else {
-                        getLogger().sendMessage(MSGType.MESSAGETYPE_INFO, false, "the command was not found please type \"help\" to get help");
-                        getLogger().getConsoleReader().setPrompt("");
-                        getLogger().getConsoleReader().resetPromptLine("", "", 0);
+                    }else if (line.isEmpty()){
+                        getLogger().log(MSGType.MESSAGETYPE_INFO, true, "the command was not found please type \"help\" to get help");
 
-                    }
+                     }
                     }
                 }
 
@@ -52,7 +62,7 @@ public class ConsoleDriver extends  Thread{
         try {
             this.getLogger().getConsoleReader().clearScreen();
         } catch (IOException exception) {
-            this.getLogger().sendMessage(MSGType.MESSAGETYPE_ERROR,false, exception.getMessage());
+            this.getLogger().log(MSGType.MESSAGETYPE_ERROR,false, exception.getMessage());
         }
     }
 

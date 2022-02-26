@@ -1,5 +1,6 @@
 package io.metacloud.console.logger;
 
+import io.metacloud.Driver;
 import io.metacloud.console.logger.enums.CloudColor;
 import io.metacloud.console.logger.enums.MSGType;
 import jline.console.ConsoleReader;
@@ -20,7 +21,7 @@ public class Logger {
         this.consoleReader.setExpandEvents(false);
     }
 
-    public void sendMessage(MSGType type,boolean useCommand, String message){
+    public void log(MSGType type,boolean useCommand, String message){
 
         switch (type){
             case MESSAGETYPE_INFO:

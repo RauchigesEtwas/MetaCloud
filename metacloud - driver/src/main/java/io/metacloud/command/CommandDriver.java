@@ -37,12 +37,12 @@ public class CommandDriver {
         String[] args = Driver.getInstance().getCloudStorage().dropFirstString(line.split(" "));
         if(command != null){
             if(Driver.getInstance().getConsoleDriver().isAlive()){
-                command.executeCommand(command, args);
+                command.performCommand(command, Driver.getInstance().getConsoleDriver().getLogger(), args);
                 Driver.getInstance().getConsoleDriver().getLogger().getConsoleReader().resetPromptLine("", "", 0);
                 Driver.getInstance().getConsoleDriver().getLogger().getConsoleReader().setPrompt("");
             }
         }else {
-            Driver.getInstance().getConsoleDriver().getLogger().sendMessage(MSGType.MESSAGETYPE_INFO, true, "the command was not found please type \"help\" to get help");
+            Driver.getInstance().getConsoleDriver().getLogger().log(MSGType.MESSAGETYPE_INFO, true, "the command was not found please type \"help\" to get help");
         }
     }
 

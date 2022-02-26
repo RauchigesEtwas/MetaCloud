@@ -1,5 +1,9 @@
 package io.metacloud.command;
 
+import io.metacloud.console.logger.Logger;
+import lombok.var;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 import java.util.ArrayList;
 
 public abstract class CloudCommand {
@@ -8,15 +12,18 @@ public abstract class CloudCommand {
     private String description;
     private String permission;
 
-    public CloudCommand(String command, String description, String permission, String... aliases) {
-        this.command = command;
-        this.aliases = aliases;
-        this.description = description;
-        this.permission = permission;
+    public CloudCommand() {
+        final var annotation = getClass().getAnnotation(CommandInfo.class);
+
+        this.command = annotation.command();
+        this.aliases = annotation.aliases();
+        this.description = annotation.description();
+        this.permission = annotation.permission();
     }
 
 
-    public abstract boolean executeCommand(CloudCommand command, String[] args);
+    public abstract boolean performCommand(CloudCommand command, Logger logger, String[] args);
+
 
     public String getCommand() {
         return command;
@@ -36,5 +43,15 @@ public abstract class CloudCommand {
             resuls.add(al);
         }
         return resuls;
+    }
+
+    @Retention(RetentionPolicy.RUNTIME)
+    public @interface CommandInfo {
+
+        String command();
+        String permission() default "";
+        String description() default "";
+        String[] aliases() default {};
+
     }
 }

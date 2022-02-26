@@ -1,0 +1,17 @@
+io\metacloud\configuration\configs\ServiceConfiguration.class
+io\metacloud\webservice\bin\RestAPI.class
+io\metacloud\webservice\RestDriver.class
+io\metacloud\command\CloudCommand$CommandInfo.class
+io\metacloud\command\CloudCommand.class
+io\metacloud\configuration\ConfigDriver.class
+io\metacloud\console\ConsoleDriver.class
+io\metacloud\configuration\IConfig.class
+io\metacloud\console\logger\enums\CloudColor.class
+io\metacloud\Driver.class
+io\metacloud\console\setup\CloudMainSetup.class
+io\metacloud\CloudStorageDriver.class
+io\metacloud\console\logger\Logger.class
+io\metacloud\console\logger\Logger$1.class
+io\metacloud\command\CommandDriver.class
+io\metacloud\webservice\bin\RestServer.class
+io\metacloud\console\logger\enums\MSGType.class
