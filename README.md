@@ -31,7 +31,7 @@ Use of KVM virtualization or dedicated servers is recommended.
 - Have fun :)
 
 ## Process State
-[✔] FINISHED |[✁] EXPERMENTAL | [✎] IN WORKING | [☓] NOT STARTET
+[✔] FINISHED | [✁] EXPERMENTAL | [✎] IN WORKING | [☓] NOT STARTET
 
 - [☓] Multi-Proxy
 - [☓] Multi-Root
