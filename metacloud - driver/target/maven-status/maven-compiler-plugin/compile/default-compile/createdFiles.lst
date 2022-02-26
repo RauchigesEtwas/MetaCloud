@@ -1,0 +1,9 @@
+io\metacloud\console\logger\enums\CloudColor.class
+io\metacloud\Driver.class
+io\metacloud\CloudStorageDriver.class
+io\metacloud\console\logger\Logger.class
+io\metacloud\console\logger\Logger$1.class
+io\metacloud\command\CommandDriver.class
+io\metacloud\command\CloudCommand.class
+io\metacloud\console\logger\enums\MSGType.class
+io\metacloud\console\ConsoleDriver.class
