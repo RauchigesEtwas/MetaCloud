@@ -36,15 +36,15 @@ Use of KVM virtualization or dedicated servers is recommended.
 - [☓] Multi-Proxy
 - [☓] Multi-Root
 - [☓] Nio-Networking base
-- [☓] Restapi with realtime resuls
+- [✁] Restapi with realtime resuls
 - [☓] Multi-Language-System
 - [☓] Module-System
 - [☓] MongoDB & SQL support
 - [☓] Dynamic starting Server containers
 - [☓] Static starting Server containers
 - [☓] Dashboard
-- [☓] Cloud Setup
-- [✎] CommandSystem and Console Output
+- [✎] Cloud Setup
+- [✔] CommandSystem and Console Output
 
 
 ## Support
