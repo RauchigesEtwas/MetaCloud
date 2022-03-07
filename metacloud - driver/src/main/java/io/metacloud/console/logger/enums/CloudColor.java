@@ -13,7 +13,7 @@ public enum CloudColor {
     /**
      * Reset color.
      */
-    RESET( 'r', Ansi.ansi().a(Ansi.Attribute.RESET).fg(Ansi.Color.DEFAULT).boldOff().toString()),
+    RESET( 'r',  Ansi.ansi().a(Ansi.Attribute.RESET).fg(Ansi.Color.DEFAULT).boldOff().toString()),
     /**
      * White color.
      */

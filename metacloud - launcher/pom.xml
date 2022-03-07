@@ -82,6 +82,8 @@
                 </executions>
             </plugin>
         </plugins>
+
+        <finalName>Launcher</finalName>
     </build>
 
 

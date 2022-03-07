@@ -1,10 +1,10 @@
 package io.metacloud;
 
 import io.metacloud.configuration.ConfigDriver;
-import io.metacloud.configuration.configs.ServiceConfiguration;
 import io.metacloud.console.ConsoleDriver;
 import io.metacloud.console.logger.enums.MSGType;
-import io.metacloud.webservice.bin.RestServer;
+import io.metacloud.manager.MetaManager;
+import io.metacloud.node.MetaNode;
 import lombok.SneakyThrows;
 
 import java.io.File;
@@ -19,28 +19,52 @@ public class MetaBootstrap {
             Driver.getInstance().setConsoleDriver(new ConsoleDriver());
         }
         Driver.getInstance().getConsoleDriver().clearScreen();
-        Thread.sleep(50);
+
         Driver.getInstance().getConsoleDriver().getLogger().log(MSGType.MESSAGETYPE_EMPTY, false, Driver.getInstance().getCloudStorage().getCloudLogo());
         Driver.getInstance().getConsoleDriver().getLogger().log(MSGType.MESSAGETYPE_INFO, false, "everything is being prepared...");
-        Thread.sleep(150);
-        if(!new File("./service.json").exists()){
 
-           /*
-            Driver.getInstance().getConsoleDriver().clearScreen();
-            Thread.sleep(50);
-            Driver.getInstance().getConsoleDriver().getLogger().log(MSGType.MESSAGETYPE_EMPTY, false, Driver.getInstance().getCloudStorage().getCloudLogo());
-            Driver.getInstance().getConsoleDriver().getLogger().log(MSGType.MESSAGETYPE_INFO, false, "it seems that the cloud is starting for the first time");
-            Driver.getInstance().getConsoleDriver().getLogger().log(MSGType.MESSAGETYPE_INFO, false, "please specify what you would like to setup?");
-            Driver.getInstance().getConsoleDriver().getLogger().log(MSGType.MESSAGETYPE_INFO, false, "types: §bManager §7/ §bNode");
-            Driver.getInstance().getCloudStorage().setCloudSetup(true);
-            Driver.getInstance().getCloudStorage().setSetupStep(0);
-            Driver.getInstance().getCloudStorage().setSetupType("MAIN_SETUP");
-            */
+        if(!new File("./service.json").exists()){
+            if(!new File("./node.json").exists()){
+                Driver.getInstance().getConsoleDriver().clearScreen();
+
+                Driver.getInstance().getConsoleDriver().getLogger().log(MSGType.MESSAGETYPE_EMPTY, false, Driver.getInstance().getCloudStorage().getCloudLogo());
+                Driver.getInstance().getConsoleDriver().getLogger().log(MSGType.MESSAGETYPE_SETUP, false, "it seems that the cloud is starting for the first time");
+                Driver.getInstance().getConsoleDriver().getLogger().log(MSGType.MESSAGETYPE_SETUP, false, "please specify what you would like to setup?");
+                Driver.getInstance().getConsoleDriver().getLogger().log(MSGType.MESSAGETYPE_SETUP, false, "types: §3Manager §7/ §3Node");
+                Driver.getInstance().getCloudStorage().setCloudSetup(true);
+                Driver.getInstance().getCloudStorage().setSetupStep(0);
+                Driver.getInstance().getCloudStorage().setSetupType("MAIN_SETUP");
+                while (true){}
+            }
+
+        }
+        if(!new File("./node.json").exists()){
+            if(!new File("./service.json").exists()){
+                Driver.getInstance().getConsoleDriver().clearScreen();
+
+                Driver.getInstance().getConsoleDriver().getLogger().log(MSGType.MESSAGETYPE_EMPTY, false, Driver.getInstance().getCloudStorage().getCloudLogo());
+                Driver.getInstance().getConsoleDriver().getLogger().log(MSGType.MESSAGETYPE_SETUP, false, "it seems that the cloud is starting for the first time");
+                Driver.getInstance().getConsoleDriver().getLogger().log(MSGType.MESSAGETYPE_SETUP, false, "please specify what you would like to setup?");
+                Driver.getInstance().getConsoleDriver().getLogger().log(MSGType.MESSAGETYPE_SETUP, false, "types: §3Manager §7/ §3Node");
+                Driver.getInstance().getCloudStorage().setCloudSetup(true);
+                Driver.getInstance().getCloudStorage().setSetupStep(0);
+                Driver.getInstance().getCloudStorage().setSetupType("MAIN_SETUP");
+                while (true){}
+            }
+
         }
 
+        new File("./live/").mkdirs();
 
+        if (new File("./service.json").exists()){
+            Driver.getInstance().getConsoleDriver().getLogger().log(MSGType.MESSAGETYPE_INFO, false, "the manager was prepared§7 and will be start");
 
-        while (true){}
+            new MetaManager(args);
+        }else {
+            Driver.getInstance().getConsoleDriver().getLogger().log(MSGType.MESSAGETYPE_INFO, false, "the node was prepared§7 and will be start");
+            new MetaNode(args);
+        }
+
     }
 
 }

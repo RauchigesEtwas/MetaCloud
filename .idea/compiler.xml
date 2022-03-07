@@ -9,8 +9,8 @@
         <outputRelativeToContentRoot value="true" />
         <module name="metacloud - plugin" />
         <module name="metacloud-launcher" />
+        <module name="metacloudmodule - syncproxy" />
         <module name="metacloud - networking" />
-        <module name="metacloud - module" />
         <module name="metacloud - api" />
         <module name="metacloud - driver" />
       </profile>

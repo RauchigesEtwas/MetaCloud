@@ -1,6 +1,7 @@
 E:\MetaCloud\MetaCloudService\metacloud - driver\src\main\java\io\metacloud\console\setup\CloudMainSetup.java
 E:\MetaCloud\MetaCloudService\metacloud - driver\src\main\java\io\metacloud\console\logger\Logger.java
 E:\MetaCloud\MetaCloudService\metacloud - driver\src\main\java\io\metacloud\webservice\bin\RestServer.java
+E:\MetaCloud\MetaCloudService\metacloud - driver\src\main\java\io\metacloud\configuration\configs\GroupConfiguration.java
 E:\MetaCloud\MetaCloudService\metacloud - driver\src\main\java\io\metacloud\command\CommandDriver.java
 E:\MetaCloud\MetaCloudService\metacloud - driver\src\main\java\io\metacloud\configuration\IConfig.java
 E:\MetaCloud\MetaCloudService\metacloud - driver\src\main\java\io\metacloud\console\logger\enums\MSGType.java

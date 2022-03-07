@@ -8,6 +8,7 @@
   <modelVersion>4.0.0</modelVersion>
   <artifactId>metacloud-launcher</artifactId>
   <build>
+    <finalName>Launcher</finalName>
     <plugins>
       <plugin>
         <artifactId>maven-compiler-plugin</artifactId>

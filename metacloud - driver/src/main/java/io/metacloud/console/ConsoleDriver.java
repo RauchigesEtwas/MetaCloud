@@ -33,26 +33,29 @@ public final class ConsoleDriver extends  Thread implements Serializable {
     @Override
     public void run() {
         String line;
-        while (!isInterrupted() && isAlive()){
-            if(this.commandDriver != null){
-                String coloredPromp = getLogger().getColoredString("§bMetaCloud §7» §7");
-
-                while ((line = this.getLogger().getConsoleReader().readLine(coloredPromp)) != null) {
-                    getLogger().getConsoleReader().setPrompt("");
-                    getLogger().getConsoleReader().resetPromptLine("", "", 0);
-                    if (Driver.getInstance().getCloudStorage().isCloudSetup()){
-                        if (Driver.getInstance().getCloudStorage().getSetupType().equalsIgnoreCase("MAIN_SETUP")){
-                            new CloudMainSetup(getLogger().consoleReader, line);
+        label29: while ( isAlive()){
+            try {
+                while (true) {
+                    if ((line = this.getLogger().getConsoleReader().readLine(((Driver.getInstance() == null) ? "" : ((getLogger().getColoredString("§bMetaCloud§f@"+Driver.getInstance().getCloudStorage().getVersion()+" §7=» §7") == null) ? "" : getLogger().getColoredString("§3MetaCloud§f@"+Driver.getInstance().getCloudStorage().getVersion()+" §7=» §7"))))) != null){
+                        getLogger().getConsoleReader().setPrompt("");
+                        getLogger().getConsoleReader().resetPromptLine("", "", 0);
+                        if (Driver.getInstance().getCloudStorage().isCloudSetup()) {
+                            getLogger().getConsoleReader().setPrompt("");
+                            if (Driver.getInstance().getCloudStorage().getSetupType().equalsIgnoreCase("MAIN_SETUP")) {
+                                new CloudMainSetup(getLogger().consoleReader, line);
+                            }
+                            continue;
                         }
-                    }else {
-                     if (!line.trim().isEmpty()) {
-                        this.getCommandDriver().executeCommand(line);
-                    }else if (line.isEmpty()){
-                        getLogger().log(MSGType.MESSAGETYPE_INFO, true, "the command was not found please type \"help\" to get help");
-
-                     }
+                        if (!line.trim().isEmpty()) {
+                            getLogger().getConsoleReader().setPrompt("");
+                            this.getCommandDriver().executeCommand(line);
+                            continue;
+                        }
+                        continue label29;
                     }
+                    continue label29;
                 }
+            }catch (IOException exception){
 
             }
         }

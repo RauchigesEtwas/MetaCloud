@@ -10,6 +10,10 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>metacloud-module</artifactId>
+    <packaging>pom</packaging>
+    <modules>
+        <module>metacloudmodule -</module>
+    </modules>
 
     <properties>
         <maven.compiler.source>8</maven.compiler.source>

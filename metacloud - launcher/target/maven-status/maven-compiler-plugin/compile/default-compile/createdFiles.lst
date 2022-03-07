@@ -1,1 +1,6 @@
 io\metacloud\MetaBootstrap.class
+io\metacloud\node\MetaNode.class
+io\metacloud\manager\MetaManager.class
+io\metacloud\manager\commands\GroupCommand.class
+io\metacloud\manager\commands\HelpCommand.class
+io\metacloud\manager\commands\ClearCommand.class

@@ -6,7 +6,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.util.ArrayList;
 
-public abstract class CloudCommand {
+public abstract class CloudCommand{
     private String command;
     private String[] aliases;
     private String description;
@@ -18,7 +18,6 @@ public abstract class CloudCommand {
         this.command = annotation.command();
         this.aliases = annotation.aliases();
         this.description = annotation.description();
-        this.permission = annotation.permission();
     }
 
 
@@ -45,13 +44,4 @@ public abstract class CloudCommand {
         return resuls;
     }
 
-    @Retention(RetentionPolicy.RUNTIME)
-    public @interface CommandInfo {
-
-        String command();
-        String permission() default "";
-        String description() default "";
-        String[] aliases() default {};
-
-    }
 }

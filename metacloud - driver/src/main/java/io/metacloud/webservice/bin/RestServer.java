@@ -97,10 +97,8 @@ public class RestServer {
             try {
                 this.serverSocket = new ServerSocket(this.runningPort);
             } catch (IOException e) {
-
             }
             try {
-
                 while (!shutdown){
                     Socket client = serverSocket.accept();
                     DataOutputStream stream = new DataOutputStream(client.getOutputStream());
@@ -109,29 +107,26 @@ public class RestServer {
                     if (rawString != null){
                         if (!rawString.equalsIgnoreCase(" GET /favicon.ico HTTP/1.1") && rawString.contains("/") && rawString.contains("GET")){
                             String requestString = rawString.replace("GET /", "").replace(" HTTP/1.1", "");
-                            if (requestString.contains("/")){
+                            if (requestString.contains("/")) {
                                 String[] requests = requestString.split("/");
                                 String authenticatorKey = requests[0];
-                                String webRoute = requests[1];
-                                if (this.authenticatorKey.equals(authenticatorKey)){
-                                    if (this.exitsContent(webRoute)){
-                                        deployPage(stream, this.routeJson.get(webRoute));
+                                String content = requests[1];
+                                if (this.authenticatorKey.contains(authenticatorKey)){
+                                    if (this.exitsContent(content)){
+                                        deployPage(stream, this.routeJson.get(content));
                                     }else {
                                         deployPage(stream, "{\n" +
-                                                "  \"connectionAccept\": false,\n" +
-                                                "  \"reason\": \"can't find the Web Route\"\n" +
+                                                "  \"success\": false\n" +
                                                 "}");
                                     }
                                 }else {
                                     deployPage(stream, "{\n" +
-                                            "  \"connectionAccept\": false,\n" +
-                                            "  \"reason\": \"false AuthenticatorKey\"\n" +
+                                            "  \"success\": false\n" +
                                             "}");
                                 }
-                            }else {
+                            }else{
                                 deployPage(stream, "{\n" +
-                                        "  \"connectionAccept\": false,\n" +
-                                        "  \"reason\": \"false AuthenticatorKey\"\n" +
+                                        "  \"success\": false\n" +
                                         "}");
                             }
                         }
@@ -148,15 +143,17 @@ public class RestServer {
     @SneakyThrows
     private void deployPage(DataOutputStream  stream, String json){
 
-        String buildedJson =  json;
 
         stream.writeBytes("HTTP/1.1 200 OK\r\n");
         stream.writeBytes("Content-Type: application/json; charset=utf-8\r\n");
         stream.writeBytes("Cache-Control: no-cache, must-revalidate\r\n");
-        stream.writeBytes("Content-Length: "+buildedJson.length()+"\r\n");
+        stream.writeBytes("Content-Length: "+json.length()+"\r\n");
         stream.writeBytes("Server: MetaCloud Server\r\n");
         stream.writeBytes("Connection: Close\r\n\r\n");
-        stream.writeBytes(buildedJson);
+        stream.writeBytes(json);
+
+
+
         stream.flush();
         stream.close();
     }
