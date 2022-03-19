@@ -16,45 +16,24 @@ public class GroupCommand extends CloudCommand {
 
         if (args.length == 0){
             sendHelp(logger);
-        }if (args.length == 1){
-            if (args[0].equalsIgnoreCase("list")){
-                logger.log(MSGType.MESSAGETYPE_COMMAND, true, "the following groups were found");
-                Driver.getInstance().getCloudStorage().getGroups().forEach(s -> {
-                    logger.log(MSGType.MESSAGETYPE_COMMAND, true, "> §f" + s);
-                });
-            }else if (args[0].equalsIgnoreCase("create")) {
 
-            }else {
-                sendHelp(logger);
-            }
-        }else if (args.length == 2){
-            if (args[0].equalsIgnoreCase("delete")) {
-
-            }else {
-                sendHelp(logger);
-            }
-        }else if (args.length == 3){
-            if (args[0].equalsIgnoreCase("setmaintenance")) {
-
-            }else  if (args[0].equalsIgnoreCase("setminonline")) {
-
-            }else {
-                sendHelp(logger);
-            }
-        }else{
-            sendHelp(logger);
         }
-
         return false;
     }
 
 
     private void sendHelp(Logger logger){
-        logger.log(MSGType.MESSAGETYPE_COMMAND, true, "> group create §7- §fcreate a new group in the cloud");
-        logger.log(MSGType.MESSAGETYPE_COMMAND, true, "> group delete <§bgroup§7> §7- §fdelete an existing group in the cloud");
-        logger.log(MSGType.MESSAGETYPE_COMMAND, true, "> group list §7- §fsee all groups from the cloud");
-        logger.log(MSGType.MESSAGETYPE_COMMAND, true, "> group setmaintenance <§bgroup§7> <§btrue§7/§bfalse§7> §7- §fchange the maintenance status of the group");
-        logger.log(MSGType.MESSAGETYPE_COMMAND, true, "> group setminonline <§bgroup§7> <§binteger§7> §7- §fset the online services");
+
+        logger.log(MSGType.MESSAGETYPE_COMMAND, true, "> §bgroup create ");
+        logger.log(MSGType.MESSAGETYPE_COMMAND, true, "> §bgroup delete §7<§bname§7>");
+        logger.log(MSGType.MESSAGETYPE_COMMAND, true, "> §bgroup set maintenance §7<§bname§7> <§bvalue§7>");
+        logger.log(MSGType.MESSAGETYPE_COMMAND, true, "> §bgroup set maxPlayerCount §7<§bname§7> <§bvalue§7>");
+        logger.log(MSGType.MESSAGETYPE_COMMAND, true, "> §bgroup set minServiceCount §7<§bname§7> <§bvalue§7>");
+        logger.log(MSGType.MESSAGETYPE_COMMAND, true, "> §bgroup set staticService §7<§bname§7> <§bvalue§7>");
+        logger.log(MSGType.MESSAGETYPE_COMMAND, true, "> §bgroup set runningNode §7<§bname§7> <§bvalue§7>");
+        logger.log(MSGType.MESSAGETYPE_COMMAND, true, "> §bgroup list ");
+        logger.log(MSGType.MESSAGETYPE_COMMAND, true, "> §bgroup updateToRest §7<§bname§7>");
+        logger.log(MSGType.MESSAGETYPE_COMMAND, true, "> §bgroup info §7<§bname§7>");
     }
 
 }

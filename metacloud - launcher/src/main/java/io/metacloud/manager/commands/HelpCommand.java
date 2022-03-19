@@ -7,7 +7,7 @@ import io.metacloud.console.logger.Logger;
 import io.metacloud.console.logger.enums.MSGType;
 
 
-@CommandInfo(command = "help", description = "here you get all commands", aliases = {"hilfe", "?"})
+@CommandInfo(command = "help", description = "here you get all commands", aliases = {"ask", "?", "commands"})
 public class HelpCommand extends CloudCommand {
     @Override
     public boolean performCommand(CloudCommand command, Logger logger, String[] args) {
@@ -28,14 +28,8 @@ public class HelpCommand extends CloudCommand {
                     }
                 }
             }
-            logger.log(MSGType.MESSAGETYPE_COMMAND, true, "> " + command1.getCommand() + " §7- Aliases: [§b" +aliases+"§7] ~ §f" + command1.getDescription());
+            logger.log(MSGType.MESSAGETYPE_COMMAND, true, "> §b" + command1.getCommand() + " §7- Aliases: [§b" +aliases+"§7] ~ §f" + command1.getDescription());
         });
-
-        logger.log(MSGType.MESSAGETYPE_COMMAND, true, "");
-        logger.log(MSGType.MESSAGETYPE_COMMAND, true, "threads: §b" + Runtime.getRuntime().availableProcessors());
-        logger.log(MSGType.MESSAGETYPE_COMMAND, true, "memory: §b" +  (Runtime.getRuntime().totalMemory()-Runtime.getRuntime().freeMemory()) / (1024 * 1024) + "MB §7/ §b" +  Runtime.getRuntime().totalMemory() / (1024 * 1024) + "MB");
-        logger.log(MSGType.MESSAGETYPE_COMMAND, true, "operating system: §b" + System.getProperty("os.name"));
-        logger.log(MSGType.MESSAGETYPE_COMMAND, true, "our support: §bhttps://discord.gg/4kKEcaP9WC");
 
         return false;
     }

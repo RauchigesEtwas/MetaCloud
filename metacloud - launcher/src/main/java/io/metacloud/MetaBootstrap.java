@@ -19,7 +19,7 @@ public class MetaBootstrap {
             Driver.getInstance().setConsoleDriver(new ConsoleDriver());
         }
         Driver.getInstance().getConsoleDriver().clearScreen();
-
+        Thread.sleep(250);
         Driver.getInstance().getConsoleDriver().getLogger().log(MSGType.MESSAGETYPE_EMPTY, false, Driver.getInstance().getCloudStorage().getCloudLogo());
         Driver.getInstance().getConsoleDriver().getLogger().log(MSGType.MESSAGETYPE_INFO, false, "everything is being prepared...");
 

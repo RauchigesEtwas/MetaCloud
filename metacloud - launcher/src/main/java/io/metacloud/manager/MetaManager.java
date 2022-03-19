@@ -5,10 +5,9 @@ import io.metacloud.command.CommandDriver;
 import io.metacloud.configuration.ConfigDriver;
 import io.metacloud.configuration.configs.ServiceConfiguration;
 import io.metacloud.console.logger.enums.MSGType;
-import io.metacloud.manager.commands.ClearCommand;
-import io.metacloud.manager.commands.GroupCommand;
-import io.metacloud.manager.commands.HelpCommand;
+import io.metacloud.manager.commands.*;
 import io.metacloud.webservice.bin.RestServer;
+import jline.internal.ShutdownHooks;
 
 import java.util.Map;
 
@@ -32,6 +31,9 @@ public class MetaManager {
         driver.registerCommand(new HelpCommand());
         driver.registerCommand(new GroupCommand());
         driver.registerCommand(new ClearCommand());
+        driver.registerCommand(new EndCommand());
+        driver.registerCommand(new MetaCloudCommand());
+        driver.registerCommand(new CopyCommand());
     }
 
     private void prepareModules(){

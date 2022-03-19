@@ -93,11 +93,11 @@ public class Logger {
             }
             if(!usedcommand){
                 if(print != null){
-                    String coloredPromp = getColoredString("§bMetaCloud§f@"+ Driver.getInstance().getCloudStorage().getVersion()+" §7=» §7");
+                    String coloredPromp = getColoredString("§bMetaCloud§f@"+ Driver.getInstance().getCloudStorage().getVersion()+" §7» §7");
                     consoleReader.setPrompt(getColoredString(coloredPromp));
                     consoleReader.resetPromptLine(getColoredString(coloredPromp), print, print.length());
                 }else{
-                    String coloredPromp = getColoredString("§bMetaCloud§f@"+ Driver.getInstance().getCloudStorage().getVersion()+" §7=» §7");
+                    String coloredPromp = getColoredString("§bMetaCloud§f@"+ Driver.getInstance().getCloudStorage().getVersion()+" §7» §7");
                     consoleReader.setPrompt(getColoredString(coloredPromp));
                     consoleReader.resetPromptLine(getColoredString(coloredPromp), inline, inline.length());
                 }

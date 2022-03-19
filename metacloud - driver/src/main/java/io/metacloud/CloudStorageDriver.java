@@ -14,6 +14,15 @@ public class CloudStorageDriver {
     private Integer setupStep;
     private String setupType;
     private String version = "HURRIKAN-1.0.1";
+    private boolean Shutdown = false;
+
+    public boolean isShutdown() {
+        return Shutdown;
+    }
+
+    public void setShutdown(boolean shutdown) {
+        Shutdown = shutdown;
+    }
 
     public CloudStorageDriver() {
         this.setupStorage = new HashMap<>();
@@ -53,14 +62,14 @@ public class CloudStorageDriver {
     }
 
     public String getCloudLogo(){
-        return "              §b__  ___   §7  __        §b______§7__                __§7\n" +
-                "            §b§b /  |/  /§7__  / /_____ _§b/ ____§7/ /___  __  ______/ /§7\n" +
-                "            §b/ /|_/ /§7 _ \\/ __/ __ `§b/ /   §7/ / __ \\/ / / / __  / §7\n" +
-                "          §b / /  / /§7  __/ /_/ /_/ §b/ /___/ §7/ /_/ / /_/ / /_/ /  §7\n" +
-                "          §b/_/  /_/§7\\___/\\__/\\__,_/§b\\____/§7_/§7\\____/\\__,_/\\__,_/ §7\n" +
-                "                    The §bCloudSystem§r for §bEveryone§r\n\n" +
-                "     <§b!§7> thank you for §bchoosing §7the §bMetacloud-Service§7 \n" +
-                "     <§b!§7> visit our Support-discord: §bhttps://discord.gg/4kKEcaP9WC\n";
+        return "           _  _ ____ ___ ____ ____ _    ____ _  _ ___\n" +
+                "       §bTHE§7 |\\/| |___  |  |__| |    |    |  | |  | |  \\ \n" +
+                "           |  | |___  |  |  | |___ |___ |__| |__| |__/ [§b"+version+"§7]\n" +
+                "       ________________________________________________________\n" +
+                "           The §bnext generation §7of Minecraft §bcloud systems§7\n" +
+                "     \n" +
+                "     <§b!§7> Thank you for using §bMetaCloudService§7 for your §bNetwork§r\n" +
+                "     <!> Our §bSupport§7 can you find -§b https://discord.gg/4kKEcaP9WC\n";
     }
     public CloudCommand fromFirstArgument(String commandLine) {
         String[] split = commandLine.split(" ");

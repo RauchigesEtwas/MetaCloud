@@ -1,6 +1,9 @@
+E:\MetaCloud\MetaCloudService\metacloud - launcher\src\main\java\io\metacloud\manager\commands\CopyCommand.java
 E:\MetaCloud\MetaCloudService\metacloud - launcher\src\main\java\io\metacloud\manager\MetaManager.java
 E:\MetaCloud\MetaCloudService\metacloud - launcher\src\main\java\io\metacloud\MetaBootstrap.java
 E:\MetaCloud\MetaCloudService\metacloud - launcher\src\main\java\io\metacloud\manager\commands\ClearCommand.java
 E:\MetaCloud\MetaCloudService\metacloud - launcher\src\main\java\io\metacloud\manager\commands\HelpCommand.java
+E:\MetaCloud\MetaCloudService\metacloud - launcher\src\main\java\io\metacloud\manager\commands\MetaCloudCommand.java
 E:\MetaCloud\MetaCloudService\metacloud - launcher\src\main\java\io\metacloud\node\MetaNode.java
+E:\MetaCloud\MetaCloudService\metacloud - launcher\src\main\java\io\metacloud\manager\commands\EndCommand.java
 E:\MetaCloud\MetaCloudService\metacloud - launcher\src\main\java\io\metacloud\manager\commands\GroupCommand.java
