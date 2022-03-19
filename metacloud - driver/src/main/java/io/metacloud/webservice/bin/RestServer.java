@@ -1,8 +1,10 @@
 package io.metacloud.webservice.bin;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.metacloud.Driver;
 import io.metacloud.configuration.ConfigDriver;
 import io.metacloud.configuration.IConfig;
+import io.metacloud.console.logger.enums.MSGType;
 import lombok.SneakyThrows;
 import sun.net.www.http.HttpClient;
 
@@ -24,6 +26,7 @@ public class RestServer {
 
     public RestServer() {
         this.shutdown = false;
+
         this.dataLocation = new HashMap<>();
         this.routeJson = new HashMap<>();
     }
@@ -56,7 +59,7 @@ public class RestServer {
     public RestServer addContent(String webRoute, String dataRoute, IConfig config){
         if (!exitsContent(webRoute)){
             String jsonConfig = new ConfigDriver(dataRoute).convert(config);
-            this.routeJson.put(webRoute, jsonConfig);
+            this.routeJson.put(webRoute, jsonConfig.replace("§", "&"));
             this.dataLocation.put(webRoute, dataRoute);
         }
         return this;
@@ -93,14 +96,18 @@ public class RestServer {
     }
 
     public void runRestServer(){
-        new Thread(() -> {
+        Thread thread = new Thread(() -> {
             try {
-                this.serverSocket = new ServerSocket(this.runningPort);
+                this.serverSocket = new ServerSocket(this.getRunningPort());
+                this.serverSocket.setPerformancePreferences(0, 2, 1);
             } catch (IOException e) {
+                e.printStackTrace();
             }
-            try {
-                while (!shutdown){
-                    Socket client = serverSocket.accept();
+            while (!shutdown){
+                Socket client = null;
+                try {
+                    client = this.serverSocket.accept();
+                    client.setPerformancePreferences(0, 2, 1);
                     DataOutputStream stream = new DataOutputStream(client.getOutputStream());
                     BufferedReader reader = new BufferedReader(new InputStreamReader(client.getInputStream()));
                     String rawString = reader.readLine();
@@ -110,10 +117,17 @@ public class RestServer {
                             if (requestString.contains("/")) {
                                 String[] requests = requestString.split("/");
                                 String authenticatorKey = requests[0];
-                                String content = requests[1];
-                                if (this.authenticatorKey.contains(authenticatorKey)){
-                                    if (this.exitsContent(content)){
-                                        deployPage(stream, this.routeJson.get(content));
+                                if (requests.length == 2){
+
+                                    String content = requests[1];
+                                    if (this.authenticatorKey.contains(authenticatorKey)){
+                                        if (this.exitsContent(content)){
+                                            deployPage(stream, this.routeJson.get(content));
+                                        }else {
+                                            deployPage(stream, "{\n" +
+                                                    "  \"success\": false\n" +
+                                                    "}");
+                                        }
                                     }else {
                                         deployPage(stream, "{\n" +
                                                 "  \"success\": false\n" +
@@ -133,9 +147,17 @@ public class RestServer {
                     }
                     stream.close();
                     reader.close();
+                } catch (IOException e) {
+                    Driver.getInstance().getConsoleDriver().getLogger().log(MSGType.MESSAGETYPE_ERROR, false, e.getMessage());
+
                 }
-            } catch (IOException ignored) {}
-        }).start();
+
+
+            }
+        });
+        thread.setPriority(Thread.MAX_PRIORITY);
+        thread.setDaemon(false);
+        thread.start();
     }
 
 

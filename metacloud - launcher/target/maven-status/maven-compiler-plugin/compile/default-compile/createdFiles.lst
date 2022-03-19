@@ -1,6 +1,5 @@
 io\metacloud\node\MetaNode.class
 io\metacloud\manager\MetaManager.class
-io\metacloud\manager\commands\CopyCommand.class
 io\metacloud\manager\commands\EndCommand$1.class
 io\metacloud\manager\commands\EndCommand.class
 io\metacloud\manager\commands\MetaCloudCommand.class

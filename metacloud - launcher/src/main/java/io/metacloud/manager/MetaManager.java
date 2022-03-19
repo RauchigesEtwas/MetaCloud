@@ -4,12 +4,14 @@ import io.metacloud.Driver;
 import io.metacloud.command.CommandDriver;
 import io.metacloud.configuration.ConfigDriver;
 import io.metacloud.configuration.configs.ServiceConfiguration;
+import io.metacloud.configuration.configs.group.GroupConfiguration;
 import io.metacloud.console.logger.enums.MSGType;
 import io.metacloud.manager.commands.*;
 import io.metacloud.webservice.bin.RestServer;
 import jline.internal.ShutdownHooks;
 
 import java.util.Map;
+import java.util.function.Consumer;
 
 public class MetaManager {
 
@@ -33,7 +35,6 @@ public class MetaManager {
         driver.registerCommand(new ClearCommand());
         driver.registerCommand(new EndCommand());
         driver.registerCommand(new MetaCloudCommand());
-        driver.registerCommand(new CopyCommand());
     }
 
     private void prepareModules(){
@@ -58,6 +59,9 @@ public class MetaManager {
         Driver.getInstance().getConsoleDriver().getLogger().log(MSGType.MESSAGETYPE_INFO, false, "Upload the data to the Restserver...");
 
         runningServer.addContent("service", "./service.json", service);
+
+        Driver.getInstance().getGroupDriver().getGroups().forEach(configuration -> {Driver.getInstance().getGroupDriver().deployOnRest(configuration.getName());});
+
 
         Driver.getInstance().getConsoleDriver().getLogger().log(MSGType.MESSAGETYPE_INFO, false, "the Restserver is now bound on port " + service.getCommunication().getRestApiPort());
 

@@ -20,20 +20,20 @@ public class MetaBootstrap {
         }
         Driver.getInstance().getConsoleDriver().clearScreen();
         Thread.sleep(250);
-        Driver.getInstance().getConsoleDriver().getLogger().log(MSGType.MESSAGETYPE_EMPTY, false, Driver.getInstance().getCloudStorage().getCloudLogo());
+        Driver.getInstance().getConsoleDriver().getLogger().log(MSGType.MESSAGETYPE_EMPTY, false, Driver.getInstance().getStorageDriver().getCloudLogo());
         Driver.getInstance().getConsoleDriver().getLogger().log(MSGType.MESSAGETYPE_INFO, false, "everything is being prepared...");
 
         if(!new File("./service.json").exists()){
             if(!new File("./node.json").exists()){
                 Driver.getInstance().getConsoleDriver().clearScreen();
 
-                Driver.getInstance().getConsoleDriver().getLogger().log(MSGType.MESSAGETYPE_EMPTY, false, Driver.getInstance().getCloudStorage().getCloudLogo());
+                Driver.getInstance().getConsoleDriver().getLogger().log(MSGType.MESSAGETYPE_EMPTY, false, Driver.getInstance().getStorageDriver().getCloudLogo());
                 Driver.getInstance().getConsoleDriver().getLogger().log(MSGType.MESSAGETYPE_SETUP, false, "it seems that the cloud is starting for the first time");
                 Driver.getInstance().getConsoleDriver().getLogger().log(MSGType.MESSAGETYPE_SETUP, false, "please specify what you would like to setup?");
                 Driver.getInstance().getConsoleDriver().getLogger().log(MSGType.MESSAGETYPE_SETUP, false, "types: §3Manager §7/ §3Node");
-                Driver.getInstance().getCloudStorage().setCloudSetup(true);
-                Driver.getInstance().getCloudStorage().setSetupStep(0);
-                Driver.getInstance().getCloudStorage().setSetupType("MAIN_SETUP");
+                Driver.getInstance().getStorageDriver().setCloudSetup(true);
+                Driver.getInstance().getStorageDriver().setSetupStep(0);
+                Driver.getInstance().getStorageDriver().setSetupType("MAIN_SETUP");
                 while (true){}
             }
 
@@ -42,13 +42,13 @@ public class MetaBootstrap {
             if(!new File("./service.json").exists()){
                 Driver.getInstance().getConsoleDriver().clearScreen();
 
-                Driver.getInstance().getConsoleDriver().getLogger().log(MSGType.MESSAGETYPE_EMPTY, false, Driver.getInstance().getCloudStorage().getCloudLogo());
+                Driver.getInstance().getConsoleDriver().getLogger().log(MSGType.MESSAGETYPE_EMPTY, false, Driver.getInstance().getStorageDriver().getCloudLogo());
                 Driver.getInstance().getConsoleDriver().getLogger().log(MSGType.MESSAGETYPE_SETUP, false, "it seems that the cloud is starting for the first time");
                 Driver.getInstance().getConsoleDriver().getLogger().log(MSGType.MESSAGETYPE_SETUP, false, "please specify what you would like to setup?");
                 Driver.getInstance().getConsoleDriver().getLogger().log(MSGType.MESSAGETYPE_SETUP, false, "types: §3Manager §7/ §3Node");
-                Driver.getInstance().getCloudStorage().setCloudSetup(true);
-                Driver.getInstance().getCloudStorage().setSetupStep(0);
-                Driver.getInstance().getCloudStorage().setSetupType("MAIN_SETUP");
+                Driver.getInstance().getStorageDriver().setCloudSetup(true);
+                Driver.getInstance().getStorageDriver().setSetupStep(0);
+                Driver.getInstance().getStorageDriver().setSetupType("MAIN_SETUP");
                 while (true){}
             }
 

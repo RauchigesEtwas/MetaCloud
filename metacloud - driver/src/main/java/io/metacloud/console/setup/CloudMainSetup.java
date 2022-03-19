@@ -13,17 +13,17 @@ import java.util.UUID;
 public class CloudMainSetup {
 
     public CloudMainSetup(ConsoleReader reader, String line) {
-        switch (Driver.getInstance().getCloudStorage().getSetupStep()){
+        switch (Driver.getInstance().getStorageDriver().getSetupStep()){
             case 0:
                 if (line.equalsIgnoreCase("manager")){
-                    Driver.getInstance().getCloudStorage().getSetupStorage().put("MODE", "MANAGER");
-                    Driver.getInstance().getCloudStorage().setSetupStep( Driver.getInstance().getCloudStorage().getSetupStep() + 1);
+                    Driver.getInstance().getStorageDriver().getSetupStorage().put("MODE", "MANAGER");
+                    Driver.getInstance().getStorageDriver().setSetupStep( Driver.getInstance().getStorageDriver().getSetupStep() + 1);
                     Driver.getInstance().getConsoleDriver().getLogger().log(MSGType.MESSAGETYPE_SETUP, true, "should the cloud update itself automatically? | §3y §7/ §3n");
 
 
                 }else if (line.equalsIgnoreCase("node")){
-                    Driver.getInstance().getCloudStorage().getSetupStorage().put("MODE", "NODE");
-                    Driver.getInstance().getCloudStorage().setSetupStep( Driver.getInstance().getCloudStorage().getSetupStep() + 1);
+                    Driver.getInstance().getStorageDriver().getSetupStorage().put("MODE", "NODE");
+                    Driver.getInstance().getStorageDriver().setSetupStep( Driver.getInstance().getStorageDriver().getSetupStep() + 1);
                     Driver.getInstance().getConsoleDriver().getLogger().log(MSGType.MESSAGETYPE_SETUP, true, "Please enter the link from the manager to finish the setup!");
                     Driver.getInstance().getConsoleDriver().getLogger().log(MSGType.MESSAGETYPE_SETUP, true, "example: §3http://your-ip/api-auth-key/node-name/");
                 }else{
@@ -33,15 +33,15 @@ public class CloudMainSetup {
                 }
                 break;
             case 1:
-                if (Driver.getInstance().getCloudStorage().getSetupStorage().get("MODE").toString().equalsIgnoreCase("MANAGER")){
+                if (Driver.getInstance().getStorageDriver().getSetupStorage().get("MODE").toString().equalsIgnoreCase("MANAGER")){
                     if (line.equalsIgnoreCase("y")){
-                        Driver.getInstance().getCloudStorage().getSetupStorage().put("autoUpdate", "true");
-                        Driver.getInstance().getCloudStorage().setSetupStep( Driver.getInstance().getCloudStorage().getSetupStep() + 1);
+                        Driver.getInstance().getStorageDriver().getSetupStorage().put("autoUpdate", "true");
+                        Driver.getInstance().getStorageDriver().setSetupStep( Driver.getInstance().getStorageDriver().getSetupStep() + 1);
                         Driver.getInstance().getConsoleDriver().getLogger().log(MSGType.MESSAGETYPE_SETUP, true, "what is the address of the manager?");
 
                     }else {
-                        Driver.getInstance().getCloudStorage().getSetupStorage().put("autoUpdate", "false");
-                        Driver.getInstance().getCloudStorage().setSetupStep( Driver.getInstance().getCloudStorage().getSetupStep() + 1);
+                        Driver.getInstance().getStorageDriver().getSetupStorage().put("autoUpdate", "false");
+                        Driver.getInstance().getStorageDriver().setSetupStep( Driver.getInstance().getStorageDriver().getSetupStep() + 1);
                         Driver.getInstance().getConsoleDriver().getLogger().log(MSGType.MESSAGETYPE_SETUP, true, "what is the address of the manager?");
                     }
                 }else {
@@ -60,8 +60,8 @@ public class CloudMainSetup {
 
             case 2:
                 if (line.contains(".")){
-                    Driver.getInstance().getCloudStorage().getSetupStorage().put("managerHostAddress", line);
-                    Driver.getInstance().getCloudStorage().setSetupStep( Driver.getInstance().getCloudStorage().getSetupStep() + 1);
+                    Driver.getInstance().getStorageDriver().getSetupStorage().put("managerHostAddress", line);
+                    Driver.getInstance().getStorageDriver().setSetupStep( Driver.getInstance().getStorageDriver().getSetupStep() + 1);
                     Driver.getInstance().getConsoleDriver().getLogger().log(MSGType.MESSAGETYPE_SETUP, true, "what is the internal communication port? | default: §37862");
                 }else {
                     Driver.getInstance().getConsoleDriver().getLogger().log(MSGType.MESSAGETYPE_SETUP, true, "please enter a numeric address!");
@@ -70,8 +70,8 @@ public class CloudMainSetup {
                 break;
             case 3:
                 if(line.matches("[0-9]+")){
-                    Driver.getInstance().getCloudStorage().getSetupStorage().put("networkingPort", Integer.valueOf(line));
-                    Driver.getInstance().getCloudStorage().setSetupStep( Driver.getInstance().getCloudStorage().getSetupStep() + 1);
+                    Driver.getInstance().getStorageDriver().getSetupStorage().put("networkingPort", Integer.valueOf(line));
+                    Driver.getInstance().getStorageDriver().setSetupStep( Driver.getInstance().getStorageDriver().getSetupStep() + 1);
                     Driver.getInstance().getConsoleDriver().getLogger().log(MSGType.MESSAGETYPE_SETUP, true, "What is the RestAPI port to be used? | default: §38012");
                 }else{
                     Driver.getInstance().getConsoleDriver().getLogger().log(MSGType.MESSAGETYPE_SETUP, true, "please enter a number!");
@@ -81,8 +81,8 @@ public class CloudMainSetup {
                 break;
             case 4:
                 if(line.matches("[0-9]+")){
-                    Driver.getInstance().getCloudStorage().getSetupStorage().put("restApiPort", Integer.valueOf(line));
-                    Driver.getInstance().getCloudStorage().setSetupStep( Driver.getInstance().getCloudStorage().getSetupStep() + 1);
+                    Driver.getInstance().getStorageDriver().getSetupStorage().put("restApiPort", Integer.valueOf(line));
+                    Driver.getInstance().getStorageDriver().setSetupStep( Driver.getInstance().getStorageDriver().getSetupStep() + 1);
                     Driver.getInstance().getConsoleDriver().getLogger().log(MSGType.MESSAGETYPE_SETUP, true, "from which port should the proxies start? | default: §325565");
                 }else{
                     Driver.getInstance().getConsoleDriver().getLogger().log(MSGType.MESSAGETYPE_SETUP, true, "please enter a number!");
@@ -91,8 +91,8 @@ public class CloudMainSetup {
                 break;
             case 5:
                 if(line.matches("[0-9]+")){
-                    Driver.getInstance().getCloudStorage().getSetupStorage().put("defaultProxyStartupPort", Integer.valueOf(line));
-                    Driver.getInstance().getCloudStorage().setSetupStep( Driver.getInstance().getCloudStorage().getSetupStep() + 1);
+                    Driver.getInstance().getStorageDriver().getSetupStorage().put("defaultProxyStartupPort", Integer.valueOf(line));
+                    Driver.getInstance().getStorageDriver().setSetupStep( Driver.getInstance().getStorageDriver().getSetupStep() + 1);
                     Driver.getInstance().getConsoleDriver().getLogger().log(MSGType.MESSAGETYPE_SETUP, true, "from which port should the servers start? | default: §34000");
                 }else{
                     Driver.getInstance().getConsoleDriver().getLogger().log(MSGType.MESSAGETYPE_SETUP, true, "please enter a number!");
@@ -101,21 +101,21 @@ public class CloudMainSetup {
                 break;
             case 6:
                 if(line.matches("[0-9]+")){
-                    Driver.getInstance().getCloudStorage().getSetupStorage().put("defaultServerStartupPort", Integer.valueOf(line));
-                    Driver.getInstance().getCloudStorage().setSetupStep( Driver.getInstance().getCloudStorage().getSetupStep() + 1);
+                    Driver.getInstance().getStorageDriver().getSetupStorage().put("defaultServerStartupPort", Integer.valueOf(line));
+                    Driver.getInstance().getStorageDriver().setSetupStep( Driver.getInstance().getStorageDriver().getSetupStep() + 1);
                     Driver.getInstance().getConsoleDriver().getLogger().log(MSGType.MESSAGETYPE_SETUP, true, "You have successfully completed the setup!");
                     Driver.getInstance().getConsoleDriver().getLogger().log(MSGType.MESSAGETYPE_SETUP, true, "the cloud will be relaunched shortly");
 
 
                     ServiceConfiguration configuration = new ServiceConfiguration();
                     ServiceConfiguration.Communication communication = new ServiceConfiguration.Communication();
-                    communication.setManagerHostAddress(Driver.getInstance().getCloudStorage().getSetupStorage().get("managerHostAddress").toString());
-                    communication.setNetworkingPort(Integer.valueOf(Driver.getInstance().getCloudStorage().getSetupStorage().get("networkingPort").toString()));
-                    communication.setRestApiPort(Integer.valueOf(Driver.getInstance().getCloudStorage().getSetupStorage().get("restApiPort").toString()));
+                    communication.setManagerHostAddress(Driver.getInstance().getStorageDriver().getSetupStorage().get("managerHostAddress").toString());
+                    communication.setNetworkingPort(Integer.valueOf(Driver.getInstance().getStorageDriver().getSetupStorage().get("networkingPort").toString()));
+                    communication.setRestApiPort(Integer.valueOf(Driver.getInstance().getStorageDriver().getSetupStorage().get("restApiPort").toString()));
 
                     ArrayList<String> addresses = new ArrayList<>();
 
-                    String address = Driver.getInstance().getCloudStorage().getSetupStorage().get("managerHostAddress").toString();
+                    String address = Driver.getInstance().getStorageDriver().getSetupStorage().get("managerHostAddress").toString();
 
                     if (!address.equalsIgnoreCase("127.0.0.1")){
                         addresses.add(address);
@@ -128,9 +128,9 @@ public class CloudMainSetup {
                     communication.setRestApiAuthKey(UUID.randomUUID() + UUID.randomUUID().toString());
                     configuration.setCommunication(communication);
                     ServiceConfiguration.General general = new ServiceConfiguration.General();
-                    general.setAutoUpdate(Boolean.getBoolean(Driver.getInstance().getCloudStorage().getSetupStorage().get("autoUpdate").toString()));
-                    general.setDefaultProxyStartupPort(Integer.valueOf(Driver.getInstance().getCloudStorage().getSetupStorage().get("defaultProxyStartupPort").toString()));
-                    general.setDefaultServerStartupPort(Integer.valueOf(Driver.getInstance().getCloudStorage().getSetupStorage().get("defaultServerStartupPort").toString()));
+                    general.setAutoUpdate(Boolean.getBoolean(Driver.getInstance().getStorageDriver().getSetupStorage().get("autoUpdate").toString()));
+                    general.setDefaultProxyStartupPort(Integer.valueOf(Driver.getInstance().getStorageDriver().getSetupStorage().get("defaultProxyStartupPort").toString()));
+                    general.setDefaultServerStartupPort(Integer.valueOf(Driver.getInstance().getStorageDriver().getSetupStorage().get("defaultServerStartupPort").toString()));
                     general.setShowPlayerConnections(true);
                     general.setProxyOnlineMode(true);
                     general.setServerSplitter("-");

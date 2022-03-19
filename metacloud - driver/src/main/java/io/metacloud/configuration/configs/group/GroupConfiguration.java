@@ -108,43 +108,5 @@ public class GroupConfiguration implements IConfig {
         this.properties = properties;
     }
 
-    public class GroupProperties{
-        private Integer percentForNewServerAutomatically;
-        private GroupVersion serviceVersion;
-        private String template;
-        private String node;
-
-        public Integer getPercentForNewServerAutomatically() {
-            return percentForNewServerAutomatically;
-        }
-
-        public void setPercentForNewServerAutomatically(Integer percentForNewServerAutomatically) {
-            this.percentForNewServerAutomatically = percentForNewServerAutomatically;
-        }
-
-        public GroupVersion getServiceVersion() {
-            return serviceVersion;
-        }
-
-        public void setServiceVersion(GroupVersion serviceVersion) {
-            this.serviceVersion = serviceVersion;
-        }
-
-        public String getTemplate() {
-            return template;
-        }
-
-        public void setTemplate(String template) {
-            this.template = template;
-        }
-
-        public String getNode() {
-            return node;
-        }
-
-        public void setNode(String node) {
-            this.node = node;
-        }
-    }
 
 }

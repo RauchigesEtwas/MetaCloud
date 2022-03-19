@@ -34,7 +34,7 @@ public class CommandDriver {
         Driver.getInstance().getConsoleDriver().getLogger().getConsoleReader().setPrompt("");
 
         CloudCommand command = getCommand(line.split(" ")[0]);
-        String[] args = Driver.getInstance().getCloudStorage().dropFirstString(line.split(" "));
+        String[] args = Driver.getInstance().getStorageDriver().dropFirstString(line.split(" "));
         if(command != null){
             if(Driver.getInstance().getConsoleDriver().isAlive()){
                 command.performCommand(command, Driver.getInstance().getConsoleDriver().getLogger(), args);

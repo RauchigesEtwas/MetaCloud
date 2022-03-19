@@ -18,8 +18,8 @@ public class EndCommand extends CloudCommand {
     public boolean performCommand(CloudCommand command, Logger logger, String[] args) {
 
 
-        if (!Driver.getInstance().getCloudStorage().isShutdown()){
-            Driver.getInstance().getCloudStorage().setShutdown(true);
+        if (!Driver.getInstance().getStorageDriver().isShutdown()){
+            Driver.getInstance().getStorageDriver().setShutdown(true);
 
             logger.log(MSGType.MESSAGETYPE_COMMAND, true, "please enter the command again for §bconfirmation§7, you have §b15 seconds §7to do so");
 
@@ -28,7 +28,7 @@ public class EndCommand extends CloudCommand {
             timer.schedule(new TimerTask() {
                 @Override
                 public void run() {
-                    Driver.getInstance().getCloudStorage().setShutdown(false);
+                    Driver.getInstance().getStorageDriver().setShutdown(false);
                 }
             }, 1000*15);
 

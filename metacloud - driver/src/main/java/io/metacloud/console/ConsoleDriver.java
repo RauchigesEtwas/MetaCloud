@@ -36,12 +36,12 @@ public final class ConsoleDriver extends  Thread implements Serializable {
         label29: while ( isAlive()){
             try {
                 while (true) {
-                    if ((line = this.getLogger().getConsoleReader().readLine(((Driver.getInstance() == null) ? "" : ((getLogger().getColoredString("§bMetaCloud§f@"+Driver.getInstance().getCloudStorage().getVersion()+" §7» §7") == null) ? "" : getLogger().getColoredString("§bMetaCloud§f@"+Driver.getInstance().getCloudStorage().getVersion()+" §7» §7"))))) != null){
+                    if ((line = this.getLogger().getConsoleReader().readLine(((Driver.getInstance() == null) ? "" : ((getLogger().getColoredString("§bMetaCloud§f@"+Driver.getInstance().getStorageDriver().getVersion()+" §7» §7") == null) ? "" : getLogger().getColoredString("§bMetaCloud§f@"+Driver.getInstance().getStorageDriver().getVersion()+" §7» §7"))))) != null){
                         getLogger().getConsoleReader().setPrompt("");
                         getLogger().getConsoleReader().resetPromptLine("", "", 0);
-                        if (Driver.getInstance().getCloudStorage().isCloudSetup()) {
+                        if (Driver.getInstance().getStorageDriver().isCloudSetup()) {
                             getLogger().getConsoleReader().setPrompt("");
-                            if (Driver.getInstance().getCloudStorage().getSetupType().equalsIgnoreCase("MAIN_SETUP")) {
+                            if (Driver.getInstance().getStorageDriver().getSetupType().equalsIgnoreCase("MAIN_SETUP")) {
                                 new CloudMainSetup(getLogger().consoleReader, line);
                             }
                             continue;
