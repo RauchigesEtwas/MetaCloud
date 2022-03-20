@@ -1,12 +1,11 @@
 package io.metacloud.webservice.bin;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import io.metacloud.configuration.IConfig;
 import lombok.SneakyThrows;
 import org.json.JSONObject;
 
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
+import java.io.*;
 import java.net.URL;
 import java.nio.Buffer;
 import java.nio.charset.Charset;
@@ -21,9 +20,29 @@ public class RestAPI {
         return jsonText;
     }
 
-    public JSONObject convertToJsonObject(String json){
-        JSONObject jsonObject = new JSONObject(json);
+    public JSONObject convertToJsonObject(String url){
+        JSONObject jsonObject = new JSONObject(getInJsonString(url));
         return jsonObject;
+    }
+
+    public IRestConfig convertToRestConfig(String url, Class<? extends IRestConfig> tClass){
+        ObjectMapper objectMapper = new ObjectMapper();
+        try {
+            return objectMapper.readValue(getInJsonString(url), tClass);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public IConfig convertToConfig(String url, Class<? extends IConfig> tClass){
+        ObjectMapper objectMapper = new ObjectMapper();
+        try {
+            return objectMapper.readValue(getInJsonString(url), tClass);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
 

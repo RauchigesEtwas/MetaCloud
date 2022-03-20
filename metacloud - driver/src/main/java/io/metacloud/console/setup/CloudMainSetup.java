@@ -3,9 +3,11 @@ package io.metacloud.console.setup;
 import io.metacloud.Driver;
 import io.metacloud.configuration.ConfigDriver;
 import io.metacloud.configuration.configs.ServiceConfiguration;
+import io.metacloud.configuration.configs.nodes.GeneralNodeConfiguration;
 import io.metacloud.configuration.configs.nodes.NodeConfiguration;
 import io.metacloud.configuration.configs.nodes.NodeProperties;
 import io.metacloud.console.logger.enums.MSGType;
+import io.metacloud.webservice.restconfigs.nodesetup.NodeSetupConfig;
 import jline.console.ConsoleReader;
 
 import java.io.File;
@@ -50,13 +52,39 @@ public class CloudMainSetup {
                     //todo: File Create
 
 
-                    new File("./live/").mkdirs();
-                    new File("./local/").mkdirs();
-                    new File("./local/storage/jars/").mkdirs();
-                    new File("./local/storage/cache/").mkdirs();
-                    new File("./local/groups/").mkdirs();
-                    new File("./local/templates/").mkdirs();
-                    new File("./modules/").mkdirs();
+                    if (line.contains("http://")) {
+                        NodeSetupConfig config = (NodeSetupConfig) Driver.getInstance().getRestDriver().getRestAPI().convertToRestConfig(line, NodeSetupConfig.class);
+
+                        if (config == null){
+                            Driver.getInstance().getConsoleDriver().getLogger().log(MSGType.MESSAGETYPE_SETUP, true, "please enter an right URL-Link!");
+                            break;
+                        }
+
+                        Driver.getInstance().getConsoleDriver().getLogger().log(MSGType.MESSAGETYPE_SETUP, true, "You have successfully completed the setup!");
+                        Driver.getInstance().getConsoleDriver().getLogger().log(MSGType.MESSAGETYPE_SETUP, true, "the cloud will be relaunched shortly");
+                        GeneralNodeConfiguration configuration = new GeneralNodeConfiguration();
+                        configuration.setNodeName(config.getNodeName());
+                        configuration.setRestAPIAuthKey(config.getCommunication().getRestAPIAuthKey());
+                        configuration.setManagerHostAddress(config.getCommunication().getManagerHostAddress());
+                        configuration.setNetworkAuthKey(config.getCommunication().getNetworkAuthKey());
+                        configuration.setNetworkCommunicationPort(config.getCommunication().getNetworkCommunicationPort());
+                        configuration.setRestAPICommunicationPort(config.getCommunication().getRestAPICommunicationPort());
+
+                        new ConfigDriver("./nodeservice.json").save(configuration);
+
+                        new File("./live/").mkdirs();
+                        new File("./local/").mkdirs();
+                        new File("./local/storage/jars/").mkdirs();
+                        new File("./local/storage/cache/").mkdirs();
+                        new File("./local/templates/").mkdirs();
+                        new File("./modules/").mkdirs();
+
+                        System.exit(0);
+
+                    }else{
+                        Driver.getInstance().getConsoleDriver().getLogger().log(MSGType.MESSAGETYPE_SETUP, true, "please enter an right URL-Link!");
+
+                    }
                 }
                 break;
 

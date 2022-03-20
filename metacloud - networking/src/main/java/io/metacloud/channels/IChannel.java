@@ -15,6 +15,7 @@ public interface IChannel extends Closeable, ISender {
     @Override
     void sendPacket(Packet packet);
 
+
     boolean isConnected();
 
     ChannelPipeline getPipeline();

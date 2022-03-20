@@ -123,6 +123,7 @@ public class Channel implements IChannel, Runnable {
         }
     }
 
+
     public void init(IChannelInitializer initializer) {
         this.initializer = initializer;
     }

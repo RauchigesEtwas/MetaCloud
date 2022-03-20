@@ -24,7 +24,7 @@ public class MetaBootstrap {
         Driver.getInstance().getConsoleDriver().getLogger().log(MSGType.MESSAGETYPE_INFO, false, "everything is being prepared...");
 
         if(!new File("./service.json").exists()){
-            if(!new File("./node.json").exists()){
+            if(!new File("./nodeservice.json").exists()){
                 Driver.getInstance().getConsoleDriver().clearScreen();
 
                 Driver.getInstance().getConsoleDriver().getLogger().log(MSGType.MESSAGETYPE_EMPTY, false, Driver.getInstance().getStorageDriver().getCloudLogo());
@@ -38,7 +38,8 @@ public class MetaBootstrap {
             }
 
         }
-        if(!new File("./node.json").exists()){
+        if(!new File("./nodeservice.json").exists()){
+
             if(!new File("./service.json").exists()){
                 Driver.getInstance().getConsoleDriver().clearScreen();
 

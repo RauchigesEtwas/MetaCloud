@@ -20,7 +20,7 @@ public class NetworkClientDriver {
         return this;
     }
 
-    public void create(){
+    public void run(){
         try {
             NetworkingBootStrap.packetListenerHandler = new PacketListenerHandler();
             NetworkingBootStrap.client = new NetworkClient();

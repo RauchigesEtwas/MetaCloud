@@ -1,17 +1,17 @@
 package io.metacloud.webservice.bin;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import io.metacloud.Driver;
 import io.metacloud.configuration.ConfigDriver;
 import io.metacloud.configuration.IConfig;
 import io.metacloud.console.logger.enums.MSGType;
 import lombok.SneakyThrows;
-import sun.net.www.http.HttpClient;
 
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -50,9 +50,30 @@ public class RestServer {
         return this;
     }
 
-
     public String getDataRoute(String webRoute){
         return this.dataLocation.get(webRoute);
+    }
+
+
+    @SneakyThrows
+    public IRestConfig getDataRoute(String  json, Class<? extends IRestConfig> tClass){
+        ObjectMapper objectMapper = new ObjectMapper();
+        try {
+            return objectMapper.readValue(json, tClass);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    @SneakyThrows
+    public RestServer addContent(String webRoute, IRestConfig config){
+        if (!exitsContent(webRoute)){
+         final Gson GSON = (new GsonBuilder()).serializeNulls().setPrettyPrinting().disableHtmlEscaping().create();
+            String jsonConfig = GSON.toJson(config);
+            this.routeJson.put(webRoute, jsonConfig.replace("§", "&"));
+        }
+        return this;
     }
 
     @SneakyThrows
@@ -71,6 +92,17 @@ public class RestServer {
         }
         return false;
     }
+
+    public RestServer updateContent(String webRoute, IRestConfig config){
+        if (exitsContent(webRoute)){
+            final Gson GSON = (new GsonBuilder()).serializeNulls().setPrettyPrinting().disableHtmlEscaping().create();
+            String jsonConfig = GSON.toJson(config);
+            this.routeJson.remove(webRoute);
+            this.routeJson.put(webRoute, jsonConfig);
+        }
+        return this;
+    }
+
 
     public RestServer updateContent(String webRoute, IConfig config){
         if (exitsContent(webRoute)){

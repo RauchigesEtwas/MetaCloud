@@ -1,5 +1,6 @@
 package io.metacloud.manager.commands;
 
+import io.metacloud.Driver;
 import io.metacloud.command.CloudCommand;
 import io.metacloud.command.CommandInfo;
 import io.metacloud.configuration.ConfigDriver;
@@ -8,10 +9,11 @@ import io.metacloud.configuration.configs.nodes.NodeConfiguration;
 import io.metacloud.configuration.configs.nodes.NodeProperties;
 import io.metacloud.console.logger.Logger;
 import io.metacloud.console.logger.enums.MSGType;
+import io.metacloud.webservice.restconfigs.nodesetup.NodeSetupCommunication;
+import io.metacloud.webservice.restconfigs.nodesetup.NodeSetupConfig;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Consumer;
 
 @CommandInfo(command = "node", description = "manage all Nodes", aliases = {"nodes", "wrappers"})
 public class NodeCommand extends CloudCommand {
@@ -43,7 +45,19 @@ public class NodeCommand extends CloudCommand {
                     new ConfigDriver("./local/nodes.json").save(configuration);
                     ServiceConfiguration service = (ServiceConfiguration) new ConfigDriver("./service.json").read(ServiceConfiguration.class);
                     logger.log(MSGType.MESSAGETYPE_SUCCESS, true, "the node has been added to the cloud ");
-                    logger.log(MSGType.MESSAGETYPE_SUCCESS, true, "the Setup Link: §b http://"+ service.getCommunication().getManagerHostAddress()+":" + service.getCommunication().getRestApiPort()+"/"+service.getCommunication().getRestApiAuthKey()+ "/SETUP-NODE-" + name);
+
+                    NodeSetupConfig setupConfig = new NodeSetupConfig();
+                    setupConfig.setNodeName(name);
+                    NodeSetupCommunication communication = new NodeSetupCommunication();
+                    communication.setNetworkCommunicationPort(service.getCommunication().getNetworkingPort());
+                    communication.setRestAPICommunicationPort(service.getCommunication().getRestApiPort());
+                    communication.setManagerHostAddress(service.getCommunication().getManagerHostAddress());
+                    communication.setNetworkAuthKey(service.getCommunication().getNodeAuthKey());
+                    communication.setRestAPIAuthKey(service.getCommunication().getRestApiAuthKey());
+                    setupConfig.setCommunication(communication);
+                    Driver.getInstance().getRestDriver().getRestServer(service.getCommunication().getRestApiPort()).addContent("setup-node-" + name , setupConfig);
+
+                    logger.log(MSGType.MESSAGETYPE_SUCCESS, true, "the Setup Link: §b http://"+ service.getCommunication().getManagerHostAddress()+":" + service.getCommunication().getRestApiPort()+"/"+service.getCommunication().getRestApiAuthKey()+ "/setup-node-" + name);
                 }else{
                     logger.log(MSGType.MESSAGETYPE_COMMAND, true, "A node already §bexists §7under this name");
                 }

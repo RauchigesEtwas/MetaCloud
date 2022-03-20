@@ -10,6 +10,7 @@
         <module name="metacloud - plugin" />
         <module name="metacloudmodule - syncproxy" />
         <module name="metacloud-launcher" />
+        <module name="metacloud - networking" />
         <module name="metacloud - api" />
         <module name="metacloud - driver" />
       </profile>

@@ -3,6 +3,7 @@ package io.metacloud.console.logger;
 import io.metacloud.Driver;
 import io.metacloud.console.logger.enums.CloudColor;
 import io.metacloud.console.logger.enums.MSGType;
+import io.metacloud.console.logger.logs.SimpleLatestLog;
 import jline.console.ConsoleReader;
 import lombok.SneakyThrows;
 import org.fusesource.jansi.Ansi;
@@ -14,21 +15,15 @@ public class Logger {
 
     public ConsoleReader consoleReader;
     private final SimpleDateFormat simpleDateFormat = new SimpleDateFormat( "dd.MM HH:mm:ss" );
-    private File logs;
+    public SimpleLatestLog logs;
 
     @SneakyThrows
     public Logger() {
+        logs = new SimpleLatestLog();
         try {
             this.consoleReader = new ConsoleReader(System.in, System.out);
         } catch (IOException ignored) { }
 
-        new File("./local/logs/").mkdirs();
-
-        logs = new File("./local/logs/latest.log");
-        if (logs.exists()){
-            logs.delete();
-        }
-        logs.createNewFile();
 
         this.consoleReader.setExpandEvents(false);
     }
@@ -60,6 +55,9 @@ public class Logger {
             case MESSAGETYPE_COMMAND:
                 printLine(useCommand, "§3COMMAND", message, null);
                 break;
+            case MESSAGETYPE_NETWORK_FAIL:
+                printLine(useCommand, "§cNETWORK", message, null);
+                break;
         }
 
     }
@@ -77,7 +75,9 @@ public class Logger {
             if(prefix == null){
                 try {
                     consoleReader.println(Ansi.ansi().eraseLine(Ansi.Erase.ALL).toString() + getColoredString(message + CloudColor.RESET.getAnsiCode()));
-                    latestLog(Ansi.ansi().eraseLine(Ansi.Erase.ALL).toString() + getColoredString(message + CloudColor.RESET.getAnsiCode()));
+                    this.logs.log(getColoredString(message + CloudColor.RESET.getAnsiCode()));
+                    this.logs.saveLogs();
+
                     consoleReader.drawLine();
                     consoleReader.flush();
 
@@ -87,7 +87,9 @@ public class Logger {
             }else{
                 try {
                     consoleReader.println(Ansi.ansi().eraseLine(Ansi.Erase.ALL).toString() + getColoredString("§7[§f" + simpleDateFormat.format(System.currentTimeMillis()) +"§7] "+ prefix + "§7: §r" + CloudColor.RESET.getAnsiCode() + message + CloudColor.RESET.getAnsiCode()));
-                    latestLog("[" + simpleDateFormat.format(System.currentTimeMillis()) +"] "+ prefix + ": " + CloudColor.RESET.getAnsiCode() + message + CloudColor.RESET.getAnsiCode());
+                    this.logs.log( getColoredString("§7[§f" + simpleDateFormat.format(System.currentTimeMillis()) +"§7] "+ prefix + "§7: §r" + CloudColor.RESET.getAnsiCode() + message + CloudColor.RESET.getAnsiCode()));
+                    this.logs.saveLogs();
+
                     consoleReader.drawLine();
                     consoleReader.flush();
                 } catch (IOException exception) {
@@ -140,15 +142,6 @@ public class Logger {
     }
 
 
-    @SneakyThrows
-    private void latestLog(String line){
-        Writer printWriter= new BufferedWriter(new FileWriter(this.logs));
-        printWriter.write(line.replace("§", "&"));
-        printWriter.write("\n");
-        printWriter.flush();
-        printWriter.close();
-
-    }
 
     /**
      * Color string string.

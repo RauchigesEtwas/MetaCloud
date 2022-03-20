@@ -11,8 +11,6 @@ package io.metacloud;
 import io.metacloud.channels.IChannel;
 import io.metacloud.channels.IChannelInitializer;
 import io.metacloud.protocol.Packet;
-import jdk.nashorn.internal.runtime.options.Option;
-import lombok.SneakyThrows;
 
 import java.io.IOException;
 import java.net.InetAddress;
@@ -26,7 +24,6 @@ public class NetworkServer implements Structure {
     private final Worker worker;
 
 
-    @SneakyThrows
     public NetworkServer() {
         this.worker = new Worker();
     }

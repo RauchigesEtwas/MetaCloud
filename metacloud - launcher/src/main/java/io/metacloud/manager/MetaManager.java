@@ -29,6 +29,7 @@ public class MetaManager {
         prepareModules();
         prepareCommands();
         prepareNetworkingServer();
+        shutdownHook();
 
 
         while (true){}
@@ -86,6 +87,12 @@ public class MetaManager {
 
         Driver.getInstance().getConsoleDriver().getLogger().log(MSGType.MESSAGETYPE_INFO, false, "the Restserver is now bound on port " + service.getCommunication().getRestApiPort());
 
+    }
+
+    private void shutdownHook(){
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+
+        }));
     }
 
 }
