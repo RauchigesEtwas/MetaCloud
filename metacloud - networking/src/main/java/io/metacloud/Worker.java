@@ -34,7 +34,9 @@ public class Worker implements Runnable, Structure{
     public Worker() {
         try {
             this.socket = new ServerSocket();
-            this.socket.setPerformancePreferences(0, 2, 1);
+            if ( getOption(Options.PERFORMANCE_BOOST)){
+                this.socket.setPerformancePreferences(0, 2, 1);
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }

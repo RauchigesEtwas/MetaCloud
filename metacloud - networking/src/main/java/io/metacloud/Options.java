@@ -5,7 +5,7 @@ public class Options<T> {
 
     public static final Options<Integer> TIMEOUT = new Options<>(-1);
     public static final Options<Integer> BUFFER_SIZE = new Options<>(1024);
-    public static final Options<Integer> TEST = new Options<>(1024);
+    public static final Options<Boolean> PERFORMANCE_BOOST = new Options<>(true);
     protected T value;
 
     protected Options(T value) {

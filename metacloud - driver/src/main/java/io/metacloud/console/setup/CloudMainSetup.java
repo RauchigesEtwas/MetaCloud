@@ -3,6 +3,8 @@ package io.metacloud.console.setup;
 import io.metacloud.Driver;
 import io.metacloud.configuration.ConfigDriver;
 import io.metacloud.configuration.configs.ServiceConfiguration;
+import io.metacloud.configuration.configs.nodes.NodeConfiguration;
+import io.metacloud.configuration.configs.nodes.NodeProperties;
 import io.metacloud.console.logger.enums.MSGType;
 import jline.console.ConsoleReader;
 
@@ -149,6 +151,7 @@ public class CloudMainSetup {
 
 
 
+
                     new File("./live/").mkdirs();
                     new File("./local/").mkdirs();
                     new File("./local/storage/jars/").mkdirs();
@@ -156,6 +159,17 @@ public class CloudMainSetup {
                     new File("./local/groups/").mkdirs();
                     new File("./local/templates/").mkdirs();
                     new File("./modules/").mkdirs();
+
+                    NodeConfiguration nodes = new NodeConfiguration();
+
+                    NodeProperties properties = new NodeProperties();
+                    properties.setNodeName("InternalNode");
+                    properties.setNodeHost("127.0.0.1");
+
+                    nodes.getNodes().add(properties);
+
+
+                    new ConfigDriver("./local/nodes.json").save(nodes);
 
                     System.exit(0);
 

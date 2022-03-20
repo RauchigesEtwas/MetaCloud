@@ -3,7 +3,9 @@ io\metacloud\manager\MetaManager.class
 io\metacloud\manager\commands\EndCommand$1.class
 io\metacloud\manager\commands\EndCommand.class
 io\metacloud\manager\commands\MetaCloudCommand.class
+io\metacloud\manager\commands\NodeCommand.class
 io\metacloud\MetaBootstrap.class
 io\metacloud\manager\commands\GroupCommand.class
 io\metacloud\manager\commands\HelpCommand.class
+io\metacloud\manager\networking\NodeHandlerListener.class
 io\metacloud\manager\commands\ClearCommand.class
