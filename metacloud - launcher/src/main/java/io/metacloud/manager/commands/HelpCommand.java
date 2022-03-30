@@ -11,7 +11,7 @@ import io.metacloud.console.logger.enums.MSGType;
 public class HelpCommand extends CloudCommand {
     @Override
     public boolean performCommand(CloudCommand command, Logger logger, String[] args) {
-
+        Thread execuet = new Thread(() -> {
         Driver.getInstance().getConsoleDriver().getCommandDriver().getCommands().forEach(command1 -> {
             String aliases = "";
 
@@ -31,6 +31,9 @@ public class HelpCommand extends CloudCommand {
             logger.log(MSGType.MESSAGETYPE_COMMAND, true, "> §b" + command1.getCommand() + " §7- Aliases: [§b" +aliases+"§7] ~ §f" + command1.getDescription());
         });
 
+    });
+        execuet.setPriority(Thread.MIN_PRIORITY);
+        execuet.run();
         return false;
     }
 

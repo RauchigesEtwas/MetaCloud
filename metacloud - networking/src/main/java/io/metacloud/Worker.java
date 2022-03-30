@@ -34,6 +34,7 @@ public class Worker implements Runnable, Structure{
     public Worker() {
         try {
             this.socket = new ServerSocket();
+
             if ( getOption(Options.PERFORMANCE_BOOST)){
                 this.socket.setPerformancePreferences(0, 2, 1);
             }
@@ -50,6 +51,8 @@ public class Worker implements Runnable, Structure{
         socket.bind(address);
         if (getOption(Options.TIMEOUT) > 0) socket.setSoTimeout(getOption(Options.TIMEOUT));
         connected = true;
+        this.thread.setPriority(Thread.MIN_PRIORITY);
+        this.thread.setDaemon(false);
         this.thread.start();
     }
 
@@ -88,8 +91,11 @@ public class Worker implements Runnable, Structure{
 
     @Override
     public void sendPacket(Packet packet) {
-        if(packet != null)
-            for (int i = channels.size() - 1; i >= 0; i--) channels.get(i).sendPacket(packet);
+        Thread execuet = new Thread(() -> {
+            if(packet != null)
+                for (int i = channels.size() - 1; i >= 0; i--) channels.get(i).sendPacket(packet);
+        });
+        execuet.run();
     }
 
     @Override

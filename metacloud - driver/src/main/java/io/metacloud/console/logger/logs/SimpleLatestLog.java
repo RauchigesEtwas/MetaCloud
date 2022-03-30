@@ -80,18 +80,23 @@ public class SimpleLatestLog {
     }
 
     public void saveLogs(){
-        try (PrintWriter w = new PrintWriter(new OutputStreamWriter(new FileOutputStream(this.latestLog), StandardCharsets.UTF_8), true)) {
-            for (String s : this.header)
-                w.println(s);
-            for (String loggedLine :this.logs) {
-                if (loggedLine == null)
-                    continue;
-                w.println(loggedLine);
+        Thread execute = new Thread(() -> {
+
+            try (PrintWriter w = new PrintWriter(new OutputStreamWriter(new FileOutputStream(this.latestLog), StandardCharsets.UTF_8), true)) {
+                for (String s : this.header)
+                    w.println(s);
+                for (String loggedLine :this.logs) {
+                    if (loggedLine == null)
+                        continue;
+                    w.println(loggedLine);
+                }
+                w.flush();
+            } catch (Exception e) {
+                e.printStackTrace();
             }
-            w.flush();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        });
+        execute.setPriority(Thread.MIN_PRIORITY);
+        execute.run();
     }
 
 

@@ -12,12 +12,11 @@ import io.metacloud.handlers.bin.PacketListener;
 import io.metacloud.handlers.bin.PacketProvideHandler;
 import io.metacloud.handlers.listener.NetworkExceptionEvent;
 import io.metacloud.handlers.listener.PacketReceivedEvent;
-import io.metacloud.network.packets.nodes.NodeLaunchServicePacket;
-import io.metacloud.network.packets.nodes.NodeRegisterCallBackPacket;
-import io.metacloud.network.packets.nodes.NodeRegisterPacket;
-import io.metacloud.network.packets.nodes.NodeUnregisterPacket;
+import io.metacloud.network.packets.nodes.*;
 import io.metacloud.protocol.Packet;
 import io.metacloud.webservice.restconfigs.livenodes.NodesRestConfig;
+import io.metacloud.webservice.restconfigs.services.LiveService;
+import io.metacloud.webservice.restconfigs.services.ServiceRest;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -26,6 +25,7 @@ import java.util.function.Consumer;
 public class NodeHandlerListener extends PacketListener {
 
     public boolean exists;
+    private         LiveService liveServices;
 
     @PacketProvideHandler
      public void handleNodeConnection(PacketReceivedEvent event){
@@ -105,8 +105,20 @@ public class NodeHandlerListener extends PacketListener {
     public void handleNodeService(PacketReceivedEvent event){
         Packet packet = event.getPacket();
         Channel channel = event.getChannel();
+        if (packet instanceof NodeLaunchServiceCallBackPacket){
+            NodeLaunchServiceCallBackPacket NodeLaunchServiceCallBackPacket = (NodeLaunchServiceCallBackPacket) packet;
+            Driver.getInstance().getConsoleDriver().getLogger().log(MSGType.MESSAGETYPE_NETWORK, false, "the service §b"+NodeLaunchServiceCallBackPacket.getServiceName()+"§7 was successfully §astarted§7 [selectedPort: §b"+NodeLaunchServiceCallBackPacket.getSelecedPort()+"§7]");
+            ServiceConfiguration service = (ServiceConfiguration) new ConfigDriver("./service.json").read(ServiceConfiguration.class);
+            ServiceRest rest = (ServiceRest) Driver.getInstance().getRestDriver().getRestAPI().convertToRestConfig("http://" + service.getCommunication().getManagerHostAddress() + ":" + service.getCommunication().getRestApiPort()+
+                    "/" + service.getCommunication().getRestApiAuthKey()+ "/livegroup-" + NodeLaunchServiceCallBackPacket.getServiceName().split(service.getGeneral().getServerSplitter())[0], ServiceRest.class);
 
-        //ADDSERVICE & REMOVESERVICE
+            for (int i = 0; i != rest.getServices().size() ; i++) {
+                if (  rest.getServices().get(i).getServiceName().equalsIgnoreCase(NodeLaunchServiceCallBackPacket.getServiceName())){
+                    rest.getServices().get(i).setSelectedPort(NodeLaunchServiceCallBackPacket.getSelecedPort());
+                }
+            }
+            Driver.getInstance().getGroupDriver().deployOnRest(NodeLaunchServiceCallBackPacket.getServiceName().split(service.getGeneral().getServerSplitter())[0], rest);
+        }
     }
 
 

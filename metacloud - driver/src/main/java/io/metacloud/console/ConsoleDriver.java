@@ -24,7 +24,7 @@ public final class ConsoleDriver extends  Thread implements Serializable {
         this.logger = new Logger();
         this.commandDriver = new CommandDriver();
         setDaemon(true);
-        setPriority(Thread.MIN_PRIORITY);
+        setPriority(Thread.MAX_PRIORITY);
         start();
 
     }

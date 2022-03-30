@@ -9,12 +9,39 @@ public class LiveService {
     private CloudServiceState serviceState;
     private CloudServiceType serviceType;
     private String serviceName;
+    private Integer selectedPort;
+    private String node;
     private Integer currentCloudPlayers;
+    private Long startTime;
 
     public LiveService() {}
 
+    public Long getStartTime() {
+        return startTime;
+    }
+
+    public void setStartTime(Long startTime) {
+        this.startTime = startTime;
+    }
+
     public String getServiceName() {
         return serviceName;
+    }
+
+    public String getNode() {
+        return node;
+    }
+
+    public void setNode(String node) {
+        this.node = node;
+    }
+
+    public Integer getSelectedPort() {
+        return selectedPort;
+    }
+
+    public void setSelectedPort(Integer selectedPort) {
+        this.selectedPort = selectedPort;
     }
 
     public void setServiceName(String serviceName) {

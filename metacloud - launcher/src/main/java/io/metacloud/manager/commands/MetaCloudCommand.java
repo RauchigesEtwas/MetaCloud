@@ -18,7 +18,7 @@ public class MetaCloudCommand extends CloudCommand {
 
     @Override
     public boolean performCommand(io.metacloud.command.CloudCommand command, Logger logger, String[] args) {
-
+        Thread execuet = new Thread(() -> {
         logger.log(MSGType.MESSAGETYPE_COMMAND, true, "");
         logger.log(MSGType.MESSAGETYPE_COMMAND, true, "current version: §bMetaCloud-" + Driver.getInstance().getStorageDriver().getVersion());
         logger.log(MSGType.MESSAGETYPE_COMMAND, true, "authors: §bRauchigesEtwas  §r| §7Discord: §bhttps://discord.gg/4kKEcaP9WC");
@@ -53,7 +53,9 @@ public class MetaCloudCommand extends CloudCommand {
         logger.log(MSGType.MESSAGETYPE_COMMAND, true, "Unloaded Classes: §b" + unloadedClassCount + " classes");
         logger.log(MSGType.MESSAGETYPE_COMMAND, true, "Total loaded Classes: §b" + totalLoadedClassCount + " classes");
         logger.log(MSGType.MESSAGETYPE_COMMAND, true, "");
-
+        });
+        execuet.setPriority(Thread.MIN_PRIORITY);
+        execuet.run();
         return false;
     }
 }

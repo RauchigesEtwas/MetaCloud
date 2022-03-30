@@ -16,3 +16,4 @@ io\metacloud\manager\MetaManager$1.class
 io\metacloud\manager\networking\NodeHandlerListener.class
 io\metacloud\node\commands\ClearCommand.class
 io\metacloud\manager\commands\ClearCommand.class
+io\metacloud\manager\networking\ServiceHandlerListener.class

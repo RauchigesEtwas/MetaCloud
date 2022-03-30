@@ -58,6 +58,9 @@ public class Logger {
             case MESSAGETYPE_NETWORK_FAIL:
                 printLine(useCommand, "§cNETWORK", message, null);
                 break;
+            case MESSAGETYPE_MODULES:
+                printLine(useCommand, "§3MODULES", message, null);
+                break;
         }
 
     }

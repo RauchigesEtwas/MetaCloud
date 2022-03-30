@@ -68,21 +68,29 @@ public class RestServer {
 
     @SneakyThrows
     public RestServer addContent(String webRoute, IRestConfig config){
+        Thread execuet = new Thread(() -> {
         if (!exitsContent(webRoute)){
          final Gson GSON = (new GsonBuilder()).serializeNulls().setPrettyPrinting().disableHtmlEscaping().create();
             String jsonConfig = GSON.toJson(config);
             this.routeJson.put(webRoute, jsonConfig.replace("§", "&"));
         }
+        });
+        execuet.setPriority(Thread.MIN_PRIORITY);
+        execuet.run();
         return this;
     }
 
     @SneakyThrows
     public RestServer addContent(String webRoute, String dataRoute, IConfig config){
+        Thread execuet = new Thread(() -> {
         if (!exitsContent(webRoute)){
             String jsonConfig = new ConfigDriver(dataRoute).convert(config);
             this.routeJson.put(webRoute, jsonConfig.replace("§", "&"));
             this.dataLocation.put(webRoute, dataRoute);
         }
+        });
+        execuet.setPriority(Thread.MIN_PRIORITY);
+        execuet.run();
         return this;
     }
 
@@ -94,22 +102,30 @@ public class RestServer {
     }
 
     public RestServer updateContent(String webRoute, IRestConfig config){
+        Thread execuet = new Thread(() -> {
         if (exitsContent(webRoute)){
             final Gson GSON = (new GsonBuilder()).serializeNulls().setPrettyPrinting().disableHtmlEscaping().create();
             String jsonConfig = GSON.toJson(config);
             this.routeJson.remove(webRoute);
             this.routeJson.put(webRoute, jsonConfig);
         }
+        });
+        execuet.setPriority(Thread.MIN_PRIORITY);
+        execuet.run();
         return this;
     }
 
 
     public RestServer updateContent(String webRoute, IConfig config){
-        if (exitsContent(webRoute)){
-            String jsonConfig = new ConfigDriver().convert(config);
-            this.routeJson.remove(webRoute);
-            this.routeJson.put(webRoute, jsonConfig);
-        }
+        Thread execuet = new Thread(() -> {
+            if (exitsContent(webRoute)){
+                String jsonConfig = new ConfigDriver().convert(config);
+                this.routeJson.remove(webRoute);
+                this.routeJson.put(webRoute, jsonConfig);
+            }
+        });
+        execuet.setPriority(Thread.MIN_PRIORITY);
+        execuet.run();
         return this;
     }
 

@@ -2,6 +2,7 @@ package io.metacloud;
 
 import io.metacloud.console.ConsoleDriver;
 import io.metacloud.groups.GroupDriver;
+import io.metacloud.modules.ModuleDriver;
 import io.metacloud.network.ConnectionDriver;
 import io.metacloud.services.ServiceDriver;
 import io.metacloud.webservice.RestDriver;
@@ -17,9 +18,11 @@ public class Driver {
     private ConnectionDriver connectionDriver;
     private GroupDriver groupDriver;
     private ServiceDriver serviceDriver;
+    private ModuleDriver moduleDriver;
 
     public Driver(){
         instance = this;
+        moduleDriver = new ModuleDriver();
         serviceDriver = new ServiceDriver();
         groupDriver = new GroupDriver();
         restDriver = new RestDriver();
@@ -27,6 +30,10 @@ public class Driver {
         connectionDriver = new ConnectionDriver();
     }
 
+
+    public ModuleDriver getModuleDriver() {
+        return moduleDriver;
+    }
 
     public ServiceDriver getServiceDriver() {
         return serviceDriver;

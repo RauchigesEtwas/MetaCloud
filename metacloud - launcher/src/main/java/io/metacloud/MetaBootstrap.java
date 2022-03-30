@@ -5,6 +5,7 @@ import io.metacloud.console.ConsoleDriver;
 import io.metacloud.console.logger.enums.MSGType;
 import io.metacloud.manager.MetaManager;
 import io.metacloud.node.MetaNode;
+import io.metacloud.webservice.DownloadDriver;
 import lombok.SneakyThrows;
 
 import java.io.File;
@@ -18,6 +19,8 @@ public class MetaBootstrap {
         if (Driver.getInstance().getConsoleDriver() == null){
             Driver.getInstance().setConsoleDriver(new ConsoleDriver());
         }
+        Driver.getInstance().getStorageDriver().setStartTime(System.currentTimeMillis());
+
         Driver.getInstance().getConsoleDriver().clearScreen();
         Thread.sleep(250);
         Driver.getInstance().getConsoleDriver().getLogger().log(MSGType.MESSAGETYPE_EMPTY, false, Driver.getInstance().getStorageDriver().getCloudLogo());
@@ -55,7 +58,11 @@ public class MetaBootstrap {
 
         }
 
-        new File("./live/").mkdirs();
+
+        if(!new File("./local/server-icon.png").exists()){
+            new DownloadDriver("server-icon.png", "./local/", "https://i.ibb.co/LSfzr1p/icon.png");
+        }
+
 
         if (new File("./service.json").exists()){
             Driver.getInstance().getConsoleDriver().getLogger().log(MSGType.MESSAGETYPE_INFO, false, "the manager was prepared§7 and will be start");

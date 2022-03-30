@@ -1,6 +1,7 @@
 package io.metacloud.manager.commands;
 
 import io.metacloud.Driver;
+import io.metacloud.channels.Channel;
 import io.metacloud.command.CloudCommand;
 import io.metacloud.command.CommandInfo;
 import io.metacloud.configuration.ConfigDriver;
@@ -8,13 +9,11 @@ import io.metacloud.configuration.configs.ServiceConfiguration;
 import io.metacloud.configuration.configs.group.GroupConfiguration;
 import io.metacloud.console.logger.Logger;
 import io.metacloud.console.logger.enums.MSGType;
+import io.metacloud.network.packets.services.ServiceSendCommandPacket;
 import io.metacloud.services.processes.bin.CloudServiceState;
-import io.metacloud.webservice.restconfigs.services.LiveService;
 import io.metacloud.webservice.restconfigs.services.ServiceRest;
 
-import java.util.function.Consumer;
-
-@CommandInfo(command = "service", description = "manage all services, start and stop them", aliases = {"serv", "srv"})
+@CommandInfo(command = "service", description = "manage all services, start and stop them", aliases = {"serv"})
 public class ServiceCommand extends CloudCommand {
 
 
@@ -68,13 +67,17 @@ public class ServiceCommand extends CloudCommand {
                 String group = args[1];
                 if (Driver.getInstance().getGroupDriver().getGroup(group) != null){
                     ServiceConfiguration service = (ServiceConfiguration) new ConfigDriver("./service.json").read(ServiceConfiguration.class);
-                    logger.log(MSGType.MESSAGETYPE_COMMAND, true, "the action is now executed...");
+                    Thread execuet = new Thread(() -> {
+                        logger.log(MSGType.MESSAGETYPE_COMMAND, true, "the action is now executed...");
 
-                    ServiceRest serviceRest = (ServiceRest) Driver.getInstance().getRestDriver().getRestAPI().convertToRestConfig("http://" + service.getCommunication().getManagerHostAddress() + ":" + service.getCommunication().getRestApiPort()+
-                            "/" + service.getCommunication().getRestApiAuthKey()+ "/livegroup-" + group, ServiceRest.class);
-                    serviceRest.getServices().forEach(liveService -> {
-                        Driver.getInstance().getGroupDriver().shutdownService(liveService.getServiceName());
+                        ServiceRest serviceRest = (ServiceRest) Driver.getInstance().getRestDriver().getRestAPI().convertToRestConfig("http://" + service.getCommunication().getManagerHostAddress() + ":" + service.getCommunication().getRestApiPort()+
+                                "/" + service.getCommunication().getRestApiAuthKey()+ "/livegroup-" + group, ServiceRest.class);
+                        serviceRest.getServices().forEach(liveService -> {
+                            Driver.getInstance().getGroupDriver().shutdownService(liveService.getServiceName());
+                        });
                     });
+                    execuet.setPriority(Thread.MIN_PRIORITY);
+                    execuet.run();
                 }else {
                     logger.log(MSGType.MESSAGETYPE_COMMAND, true, "The specified group §bcould not be found§7 in the Cloud ");
                 }
@@ -84,24 +87,67 @@ public class ServiceCommand extends CloudCommand {
 
         }else if (args[0].equalsIgnoreCase("list")){
             ServiceConfiguration service = (ServiceConfiguration) new ConfigDriver("./service.json").read(ServiceConfiguration.class);
-            Driver.getInstance().getGroupDriver().getGroups().forEach(group -> {
-                ServiceRest serviceRest = (ServiceRest) Driver.getInstance().getRestDriver().getRestAPI().convertToRestConfig("http://" + service.getCommunication().getManagerHostAddress() + ":" + service.getCommunication().getRestApiPort()+
-                        "/" + service.getCommunication().getRestApiAuthKey()+ "/livegroup-" + group.getName(), ServiceRest.class);
-
-                logger.log(MSGType.MESSAGETYPE_COMMAND, true, "> Groupname: §b" + group.getName());
-
-                serviceRest.getServices().forEach(liveService -> {
-                    if (liveService.getServiceState() == CloudServiceState.STARTING || liveService.getServiceState() == CloudServiceState.STOPPING){
-                        logger.log(MSGType.MESSAGETYPE_COMMAND, true, "service: §b"+liveService.getServiceName() + "§7 | Players: §b" + liveService.getCurrentCloudPlayers() + " players§7 (§e"+liveService.getServiceState()+"§7)");
-                    }  if (liveService.getServiceState() == CloudServiceState.LOBBY){
-                        logger.log(MSGType.MESSAGETYPE_COMMAND, true, "service: §b"+liveService.getServiceName() + "§7 | Players: §b" + liveService.getCurrentCloudPlayers() + " players§7 (§a"+liveService.getServiceState()+"§7)");
-                    }  if (liveService.getServiceState() == CloudServiceState.INGAME){
-                        logger.log(MSGType.MESSAGETYPE_COMMAND, true, "service: §b"+liveService.getServiceName() + "§7 | Players: §b" + liveService.getCurrentCloudPlayers() + " players§7 (§e"+liveService.getServiceState()+"§7)");
-                    }
+            Thread thread = new Thread(() -> {
+                Driver.getInstance().getGroupDriver().getGroups().forEach(group -> {
+                    ServiceRest serviceRest = (ServiceRest) Driver.getInstance().getRestDriver().getRestAPI().convertToRestConfig("http://" + service.getCommunication().getManagerHostAddress() + ":" + service.getCommunication().getRestApiPort()+
+                            "/" + service.getCommunication().getRestApiAuthKey()+ "/livegroup-" + group.getName(), ServiceRest.class);
+                    logger.log(MSGType.MESSAGETYPE_COMMAND, true, "> Groupname: §b" + group.getName());
+                    serviceRest.getServices().forEach(liveService -> {
+                        if (liveService.getServiceState() == CloudServiceState.STARTING || liveService.getServiceState() == CloudServiceState.STOPPING){
+                            logger.log(MSGType.MESSAGETYPE_COMMAND, true, "service: §b"+liveService.getServiceName() + "§7 | Players: §b" + liveService.getCurrentCloudPlayers() + " players§7 (§e"+liveService.getServiceState()+"§7)");
+                        }  if (liveService.getServiceState() == CloudServiceState.LOBBY){
+                            logger.log(MSGType.MESSAGETYPE_COMMAND, true, "service: §b"+liveService.getServiceName() + "§7 | Players: §b" + liveService.getCurrentCloudPlayers() + " players§7 (§a"+liveService.getServiceState()+"§7)");
+                        }  if (liveService.getServiceState() == CloudServiceState.INGAME){
+                            logger.log(MSGType.MESSAGETYPE_COMMAND, true, "service: §b"+liveService.getServiceName() + "§7 | Players: §b" + liveService.getCurrentCloudPlayers() + " players§7 (§e"+liveService.getServiceState()+"§7)");
+                        }
+                    });
                 });
             });
+            thread.setPriority(Thread.MIN_PRIORITY);
+            thread.run();
 
-        }else{
+        }else if (args[0].equalsIgnoreCase("execute")) {
+            if (args.length >= 3){
+                String msg = "";
+                String servicename = args[1];
+                for (int i = 3; i < args.length; i++) {
+                    msg = msg + args[i] + " ";
+                }
+
+                ServiceConfiguration service = (ServiceConfiguration) new ConfigDriver("./service.json").read(ServiceConfiguration.class);
+
+                ServiceRest serviceRest = (ServiceRest) Driver.getInstance().getRestDriver().getRestAPI().convertToRestConfig("http://" + service.getCommunication().getManagerHostAddress() + ":" + service.getCommunication().getRestApiPort()+
+                        "/" + service.getCommunication().getRestApiAuthKey()+ "/livegroup-" + servicename.split(service.getGeneral().getServerSplitter())[0], ServiceRest.class);
+                exists = false;
+                serviceRest.getServices().forEach(live -> {
+                    if (live.getServiceName().equals(args[1])){
+                        exists = true;
+                    }
+                });
+
+
+                if (exists){
+                    logger.log(MSGType.MESSAGETYPE_COMMAND, true, "the action is now executed...");
+                    GroupConfiguration group = Driver.getInstance().getGroupDriver().getGroup(servicename.split(service.getGeneral().getServerSplitter())[0]);
+                    if (Driver.getInstance().getConnectionDriver().isServiceRegistered(servicename)){
+                        Channel channel = Driver.getInstance().getConnectionDriver().getServiceChannel(servicename);
+
+                        ServiceSendCommandPacket ServiceSendCommandPacket = new ServiceSendCommandPacket();
+                        ServiceSendCommandPacket.setCommand(msg);
+                        channel.sendPacket(ServiceSendCommandPacket);
+
+                    }else{
+                        logger.log(MSGType.MESSAGETYPE_COMMAND, true, "The specified service is not ready to do that ");
+                    }
+
+                }else {
+                    logger.log(MSGType.MESSAGETYPE_COMMAND, true, "The specified service §bcould not be found§7 in the Cloud ");
+                }
+
+            }else {
+                sendHelp(logger);
+            }
+        }else {
             sendHelp(logger);
         }
 
@@ -115,6 +161,7 @@ public class ServiceCommand extends CloudCommand {
         logger.log(MSGType.MESSAGETYPE_COMMAND, true, "> §bservice launch §7<§bgroup§7> §7<§bcount§7>");
         logger.log(MSGType.MESSAGETYPE_COMMAND, true, "> §bservice stop §7<§bservice§7>");
         logger.log(MSGType.MESSAGETYPE_COMMAND, true, "> §bservice gstop §7<§bgroup§7>");
+        logger.log(MSGType.MESSAGETYPE_COMMAND, true, "> §bservice execute §7<§bservice§7> §7<§bcommand§7>");
         logger.log(MSGType.MESSAGETYPE_COMMAND, true, "> §bservice list");
     }
 }

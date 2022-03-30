@@ -22,9 +22,11 @@ public class NetworkServerDriver {
     public void run(){
         NetworkingBootStrap.packetListenerHandler = new PacketListenerHandler();
         NetworkingBootStrap.server = new NetworkServer();
-        NetworkingBootStrap.server.init(channel -> {
-            ChannelPipeline pipeline = channel.getPipeline();
-        }).option(Options.BUFFER_SIZE, 2024).option(Options.PERFORMANCE_BOOST, true).bind(this.port);
+        NetworkingBootStrap.server.init(channel -> {})
+                .option(Options.BUFFER_SIZE, 2024)
+                .option(Options.TIMEOUT, -1)
+                .option(Options.PERFORMANCE_BOOST, true)
+                .bind(this.port);
     }
 
     public void end(){

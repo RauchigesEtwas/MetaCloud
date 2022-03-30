@@ -22,6 +22,8 @@ public class ServiceDriver {
     }
 
 
+
+
     public void launchService(ServiceStorage storage){
         CloudService service = new CloudService().bindStorage(storage);
         service.run();
@@ -49,6 +51,7 @@ public class ServiceDriver {
                 for (int i = startPort; i != startPort + 900000; i++ ){
                     if (!this.usedPorts.contains(i)){
                         port = i;
+                        this.usedPorts.add(port);
                         i = startPort + 900000;
                         return port;
                     }
@@ -60,6 +63,7 @@ public class ServiceDriver {
                     if (!this.usedPorts.contains(i)){
                         port = i;
                         i = startPort + 900000;
+                        this.usedPorts.add(port);
                         return port;
                     }
                 }
@@ -75,6 +79,7 @@ public class ServiceDriver {
                 for (int i = startPort; i != startPort + 900000; i++ ){
                     if (!this.usedPorts.contains(i)){
                         port = i;
+                        this.usedPorts.add(port);
                         i = startPort + 900000;
                         return port;
                     }
@@ -85,6 +90,7 @@ public class ServiceDriver {
                 for (int i = startPort; i != startPort + 900000; i++ ){
                     if (!this.usedPorts.contains(i)){
                         port = i;
+                        this.usedPorts.add(port);
                         i = startPort + 900000;
                         return port;
                     }
@@ -94,6 +100,10 @@ public class ServiceDriver {
 
 
         return 0;
+    }
+
+    public ArrayList<CloudService> getRunningProcesses() {
+        return runningProcesses;
     }
 
     public void haltService(String serviceName){
