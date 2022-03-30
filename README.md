@@ -45,6 +45,7 @@ This is the **MetaCloud** project, it is a dynamic Minecraft cloud management sy
 - [☓] Permission Module
 - [☓] Dashboard Module
 - [☓] NPC Module
+- [☓] Handle some Spigot-Versions and Bungeecord-Versions
 - [☓] CloudAPI
 - [☓] SQL & NoSQL support
 - [✎] Dynamic starting Server Services
