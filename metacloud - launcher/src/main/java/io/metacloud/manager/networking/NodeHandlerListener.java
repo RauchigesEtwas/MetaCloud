@@ -4,6 +4,7 @@ import io.metacloud.Driver;
 import io.metacloud.channels.Channel;
 import io.metacloud.configuration.ConfigDriver;
 import io.metacloud.configuration.configs.ServiceConfiguration;
+import io.metacloud.configuration.configs.group.GroupConfiguration;
 import io.metacloud.configuration.configs.nodes.NodeConfiguration;
 import io.metacloud.console.logger.enums.MSGType;
 import io.metacloud.handlers.bin.IEvent;
@@ -11,6 +12,7 @@ import io.metacloud.handlers.bin.PacketListener;
 import io.metacloud.handlers.bin.PacketProvideHandler;
 import io.metacloud.handlers.listener.NetworkExceptionEvent;
 import io.metacloud.handlers.listener.PacketReceivedEvent;
+import io.metacloud.network.packets.nodes.NodeLaunchServicePacket;
 import io.metacloud.network.packets.nodes.NodeRegisterCallBackPacket;
 import io.metacloud.network.packets.nodes.NodeRegisterPacket;
 import io.metacloud.network.packets.nodes.NodeUnregisterPacket;
@@ -19,6 +21,7 @@ import io.metacloud.webservice.restconfigs.livenodes.NodesRestConfig;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.function.Consumer;
 
 public class NodeHandlerListener extends PacketListener {
 
@@ -56,6 +59,11 @@ public class NodeHandlerListener extends PacketListener {
                      callBackPacket.setConnectionAccept(true);
 
                      Driver.getInstance().getConnectionDriver().getNodeChannel(packet.getNodeName()).sendPacket(callBackPacket);
+
+
+                     Driver.getInstance().getGroupDriver().getGroupsFromNode(packet.getNodeName()).forEach(group -> {
+                         Driver.getInstance().getGroupDriver().launchService(group.getName(), group.getMinOnlineServers());
+                     });
 
 
                      }else {
@@ -101,13 +109,5 @@ public class NodeHandlerListener extends PacketListener {
         //ADDSERVICE & REMOVESERVICE
     }
 
-    @PacketProvideHandler
-    public void exeptions(NetworkExceptionEvent event){
-
-        Driver.getInstance().getConsoleDriver().getLogger().log(MSGType.MESSAGETYPE_ERROR, false,
-                event.getException().toString());
-
-        //ADDSERVICE & REMOVESERVICE
-    }
 
 }

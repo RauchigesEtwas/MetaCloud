@@ -8,9 +8,18 @@ public class LiveService {
 
     private CloudServiceState serviceState;
     private CloudServiceType serviceType;
+    private String serviceName;
     private Integer currentCloudPlayers;
 
     public LiveService() {}
+
+    public String getServiceName() {
+        return serviceName;
+    }
+
+    public void setServiceName(String serviceName) {
+        this.serviceName = serviceName;
+    }
 
     public CloudServiceState getServiceState() {
         return serviceState;

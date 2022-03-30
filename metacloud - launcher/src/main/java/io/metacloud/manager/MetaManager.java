@@ -2,6 +2,7 @@ package io.metacloud.manager;
 
 import io.metacloud.Driver;
 import io.metacloud.NetworkingBootStrap;
+import io.metacloud.channels.Channel;
 import io.metacloud.command.CommandDriver;
 import io.metacloud.configuration.ConfigDriver;
 import io.metacloud.configuration.configs.ServiceConfiguration;
@@ -10,6 +11,7 @@ import io.metacloud.configuration.configs.nodes.NodeConfiguration;
 import io.metacloud.console.logger.enums.MSGType;
 import io.metacloud.manager.commands.*;
 import io.metacloud.manager.networking.NodeHandlerListener;
+import io.metacloud.network.packets.nodes.ManagerShuttingDownPacket;
 import io.metacloud.network.server.NetworkServerDriver;
 import io.metacloud.webservice.bin.RestServer;
 import jline.internal.ShutdownHooks;
@@ -32,6 +34,9 @@ public class MetaManager {
         shutdownHook();
 
 
+        Driver.getInstance().getGroupDriver().getGroupsFromNode("InternalNode").forEach(group -> {
+            Driver.getInstance().getGroupDriver().launchService(group.getName(), group.getMinOnlineServers());
+        });
         while (true){}
 
     }
@@ -45,6 +50,10 @@ public class MetaManager {
         driver.registerCommand(new EndCommand());
         driver.registerCommand(new MetaCloudCommand());
         driver.registerCommand(new NodeCommand());
+        driver.registerCommand(new ServiceCommand());
+
+
+
     }
 
     private void prepareModules(){
@@ -82,7 +91,7 @@ public class MetaManager {
 
         runningServer.addContent("nodes", "./local/nodes.json", nodes);
 
-        Driver.getInstance().getGroupDriver().getGroups().forEach(configuration -> {Driver.getInstance().getGroupDriver().deployOnRest(configuration.getName());});
+        Driver.getInstance().getGroupDriver().getGroups().forEach(configuration -> {Driver.getInstance().getGroupDriver().deployOnRest(configuration.getName(), null);});
 
 
         Driver.getInstance().getConsoleDriver().getLogger().log(MSGType.MESSAGETYPE_INFO, false, "the Restserver is now bound on port " + service.getCommunication().getRestApiPort());
@@ -91,6 +100,13 @@ public class MetaManager {
 
     private void shutdownHook(){
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+            Driver.getInstance().getConnectionDriver().getAllNodesChannel().forEach(new Consumer<Channel>() {
+                @Override
+                public void accept(Channel channel) {
+                    channel.sendPacket(new ManagerShuttingDownPacket());
+
+                }
+            });
 
         }));
     }

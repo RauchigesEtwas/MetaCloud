@@ -15,7 +15,8 @@ public class StorageDriver {
     private GroupConfiguration groupSetupStorage;
     private Integer setupStep;
     private String setupType;
-    private String version = "HURRIKAN-1.0.0";
+    private Boolean shutdownFromManager;
+    private String version = "HURRICAN-1.0.0";
     private boolean Shutdown = false;
 
     public GroupConfiguration getGroupSetupStorage() {
@@ -24,6 +25,15 @@ public class StorageDriver {
 
     public void setGroupSetupStorage(GroupConfiguration groupSetupStorage) {
         this.groupSetupStorage = groupSetupStorage;
+    }
+
+
+    public Boolean getShutdownFromManager() {
+        return shutdownFromManager;
+    }
+
+    public void setShutdownFromManager(Boolean shutdownFromManager) {
+        this.shutdownFromManager = shutdownFromManager;
     }
 
     public boolean isShutdown() {
@@ -94,15 +104,19 @@ public class StorageDriver {
 
     public boolean versionCheck(String version, String checkType){
         if (checkType.equalsIgnoreCase("PROXY")){
-            if ( version.equalsIgnoreCase("bungeecord_latest") || version.equalsIgnoreCase("waterfall_latest")) {
+            if ( version.equalsIgnoreCase("bungeecord_latest") || version.equalsIgnoreCase("waterfall_latest") ) {
                 return true;
             }else {
                 return false;
             }
         }else   if (checkType.equalsIgnoreCase("SERVER")){
             if(
+                    //PAPERSPIGOT
                     version.equalsIgnoreCase("PAPERSPIGOT_1_8_8") || version.equalsIgnoreCase("PAPERSPIGOT_1_9_4") || version.equalsIgnoreCase("PAPERSPIGOT_1_10_2") || version.equalsIgnoreCase("PAPERSPIGOT_1_11_2") || version.equalsIgnoreCase("PAPERSPIGOT_1_12_2")
-                            || version.equalsIgnoreCase("PAPERSPIGOT_1_13_2") || version.equalsIgnoreCase("PAPERSPIGOT_1_14_4") || version.equalsIgnoreCase("PAPERSPIGOT_1_15_2") || version.equalsIgnoreCase("PAPERSPIGOT_1_16_5") || version.equalsIgnoreCase("PAPERSPIGOT_1_17_1") || version.equalsIgnoreCase("PAPERSPIGOT_1_18_1")){
+                            || version.equalsIgnoreCase("PAPERSPIGOT_1_13_2") || version.equalsIgnoreCase("PAPERSPIGOT_1_14_4") || version.equalsIgnoreCase("PAPERSPIGOT_1_15_2") || version.equalsIgnoreCase("PAPERSPIGOT_1_16_5") || version.equalsIgnoreCase("PAPERSPIGOT_1_17_1") || version.equalsIgnoreCase("PAPERSPIGOT_1_18_1")
+
+
+            ){
                 return true;
             }else{
                 return false;

@@ -2,6 +2,7 @@ package io.metacloud.network;
 
 import io.metacloud.channels.Channel;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 public class ConnectionDriver {
@@ -13,6 +14,14 @@ public class ConnectionDriver {
     public ConnectionDriver() {
         this.nodesChannel = new HashMap<>();
         this.serviceChannel = new HashMap<>();
+    }
+
+    public ArrayList<Channel> getAllNodesChannel() {
+        ArrayList<Channel> channels = new ArrayList<>();
+        for(String key : nodesChannel.keySet()){
+            channels.add(this.nodesChannel.get(key));
+        }
+        return channels;
     }
 
     public boolean isNodeRegistered(String node){

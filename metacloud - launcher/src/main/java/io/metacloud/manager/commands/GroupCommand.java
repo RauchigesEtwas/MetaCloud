@@ -201,7 +201,7 @@ public class GroupCommand extends CloudCommand {
             if (args.length == 2){
                 String group = args[1];
                 if (Driver.getInstance().getGroupDriver().getGroup(group) != null){
-                    Driver.getInstance().getGroupDriver().deployOnRest(group);
+                    Driver.getInstance().getGroupDriver().deployOnRest(group, null);
                     logger.log(MSGType.MESSAGETYPE_SUCCESS, true, "the server was §bsuccessfully§7 updated to the§b RestAPI");
                 }else {
                     logger.log(MSGType.MESSAGETYPE_COMMAND, true, "The specified group §bcould not be found§7 in the Cloud ");

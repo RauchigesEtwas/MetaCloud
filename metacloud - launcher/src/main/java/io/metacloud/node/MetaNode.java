@@ -23,7 +23,7 @@ public class MetaNode {
 
 
     public MetaNode(String[] args){
-
+        Driver.getInstance().getStorageDriver().setShutdownFromManager(false);
         prepareNetworkingClient();
         shutdownHook();
         prepareCommands();
@@ -54,10 +54,13 @@ public class MetaNode {
 
     private void shutdownHook(){
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-            NodeUnregisterPacket packet = new NodeUnregisterPacket();
-            GeneralNodeConfiguration configuration = (GeneralNodeConfiguration) new ConfigDriver("./nodeservice.json").read(GeneralNodeConfiguration.class);
-            packet.setNodeName(configuration.getNodeName());
-            NetworkingBootStrap.client.sendPacket(packet);
+            if (!Driver.getInstance().getStorageDriver().getShutdownFromManager()){
+                NodeUnregisterPacket packet = new NodeUnregisterPacket();
+                GeneralNodeConfiguration configuration = (GeneralNodeConfiguration) new ConfigDriver("./nodeservice.json").read(GeneralNodeConfiguration.class);
+                packet.setNodeName(configuration.getNodeName());
+                NetworkingBootStrap.client.sendPacket(packet);
+            }
+
         }));
     }
 

@@ -35,6 +35,7 @@ public class RestAPI {
         return null;
     }
 
+
     public IConfig convertToConfig(String url, Class<? extends IConfig> tClass){
         ObjectMapper objectMapper = new ObjectMapper();
         try {
