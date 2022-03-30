@@ -25,6 +25,7 @@ This is the **MetaCloud** project, it is a dynamic Minecraft cloud management sy
 
 ## Setup the CloudSystem (Not ready yet)
 - Update your Server: `apt-get update && apt-get upgrade`
+- Install all requirements `apt-get install screen wget nano unzip`
 - Download the Zip folder: `wget https://dl.metacloudservice.de/releases/latest/download/MetaCloud-latest.zip`
 - Unzip the folder: `unzip MetaCloud-latest.zip`
 - Make the start file executable: `chmod +x start.sh`
