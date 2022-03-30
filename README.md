@@ -7,8 +7,8 @@ This is the **MetaCloud** project, it is a dynamic Minecraft cloud management sy
 ## Requirements
  * **Java 8** or **higer**
  * an **Linux** or **Windows** server
- * minimal **2GB Memory
- * minimal **2 virtual cores
+ * minimal **2GB Memory**
+ * minimal **2 virtual cores**
 
 ## Features
 - **Multi-Proxy** & **Multi-Root** able
