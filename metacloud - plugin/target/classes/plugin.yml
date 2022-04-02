@@ -1,0 +1,4 @@
+main: io.metacloud.spigot.SpigotBridge
+name: MetaCloud-Plugin
+version: 1.0
+author: RauchigesEtwas
