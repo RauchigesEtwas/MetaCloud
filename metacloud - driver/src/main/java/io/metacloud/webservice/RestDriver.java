@@ -1,9 +1,7 @@
 package io.metacloud.webservice;
 
-import io.metacloud.configuration.IConfig;
 import io.metacloud.webservice.bin.RestAPI;
 import io.metacloud.webservice.bin.RestServer;
-import jline.console.history.History;
 
 import java.util.HashMap;
 import java.util.Map;

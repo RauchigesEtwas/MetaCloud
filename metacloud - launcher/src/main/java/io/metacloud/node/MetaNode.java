@@ -27,7 +27,7 @@ public class MetaNode {
         prepareCommands();
         long time =  Driver.getInstance().getStorageDriver().getStartTime();
         long finalTime =  (System.currentTimeMillis() - time);
-        Driver.getInstance().getConsoleDriver().getLogger().log(MSGType.MESSAGETYPE_INFO, false, "the cloud is §bnow ready§7 to use [It takes §b"+finalTime+" ms§r]");
+        Driver.getInstance().getConsoleDriver().getLogger().log(MSGType.MESSAGETYPE_INFO,  "the cloud is §bnow ready§7 to use [It takes §b"+finalTime+" ms§r]");
         while (true){}
     }
 

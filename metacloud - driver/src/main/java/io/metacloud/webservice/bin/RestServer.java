@@ -196,7 +196,7 @@ public class RestServer {
                     stream.close();
                     reader.close();
                 } catch (IOException e) {
-                    Driver.getInstance().getConsoleDriver().getLogger().log(MSGType.MESSAGETYPE_ERROR, false, e.getMessage());
+                    Driver.getInstance().getConsoleDriver().getLogger().log(MSGType.MESSAGETYPE_ERROR,  e.getMessage());
 
                 }
 

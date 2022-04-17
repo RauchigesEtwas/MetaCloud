@@ -3,9 +3,11 @@ package io.metacloud.manager.commands;
 import io.metacloud.Driver;
 import io.metacloud.command.CloudCommand;
 import io.metacloud.command.CommandInfo;
+import io.metacloud.console.data.ConsoleStorageLine;
 import io.metacloud.console.logger.Logger;
 import io.metacloud.console.logger.enums.MSGType;
 
+import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -21,7 +23,7 @@ public class EndCommand extends CloudCommand {
         if (!Driver.getInstance().getStorageDriver().isShutdown()){
             Driver.getInstance().getStorageDriver().setShutdown(true);
 
-            logger.log(MSGType.MESSAGETYPE_COMMAND, true, "please enter the command again for §bconfirmation§7, you have §b15 seconds §7to do so");
+            logger.log(MSGType.MESSAGETYPE_COMMAND,  "please enter the command again for §bconfirmation§7, you have §b15 seconds §7to do so");
 
 
             Timer timer = new Timer();
@@ -37,5 +39,10 @@ public class EndCommand extends CloudCommand {
         }
 
         return false;
+    }
+
+    @Override
+    public ArrayList<String> tabComplete(ConsoleStorageLine consoleInput, String[] args) {
+        return null;
     }
 }

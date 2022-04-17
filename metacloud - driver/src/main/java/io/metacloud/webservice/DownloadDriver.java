@@ -78,53 +78,16 @@ public class DownloadDriver {
         try (BufferedInputStream in = new BufferedInputStream(new URL(url).openStream());
              FileOutputStream fileOutputStream = new FileOutputStream(filePath + "/" + fileName)) {
             byte dataBuffer[] = new byte[1024];
-            Driver.getInstance().getConsoleDriver().getLogger().log(MSGType.MESSAGETYPE_INFO, false, "Downloading file §b"+fileName+" §7....");
+            Driver.getInstance().getConsoleDriver().getLogger().log(MSGType.MESSAGETYPE_INFO, "Downloading file §b"+fileName+" §7....");
 
             int bytesRead;
-            for(int j = 0 ; j<= 10 ; j++)
-            {
-                if(j == 0){
-                    System.out.print("\r" + j*10 + "% [>                                                  ]");
-                } if(j == 1){
-                    System.out.print("\r" + j*10 + "% [==============>                                    ]");
-                }
-                if(j == 2){
-                    System.out.print("\r" + j*10 + "% [==================>                                ]");
-                }
-                if(j == 3){
-                    System.out.print("\r" + j*10 + "% [======================>                            ]");
-                }
-                if(j == 4){
-                    System.out.print("\r" + j*10 + "% [==========================>                        ]");
-                }
-                if(j == 5){
-                    System.out.print("\r" + j*10 + "% [==============================>                    ]");
-                }
-                if(j == 6){
-                    System.out.print("\r" + j*10 + "% [==================================>                ]");
-                }
-                if(j == 7){
-                    System.out.print("\r" + j*10 + "% [======================================>            ]");
-                }
-                if(j == 8){
-                    System.out.print("\r" + j*10 + "% [==========================================>        ]");
-                }
-                if(j == 9){
-                    System.out.print("\r" + j*10 + "% [==============================================>    ]");
-                }
-
-                if(j == 10){
-                    System.out.print("\r" + j*10 + "% [==================================================>]");
-                }
-                Thread.sleep(100);
-            }
-
+        
             while ((bytesRead = in.read(dataBuffer, 0, 1024)) != -1) {
                 fileOutputStream.write(dataBuffer, 0, bytesRead);
             }
-            Driver.getInstance().getConsoleDriver().getLogger().log(MSGType.MESSAGETYPE_INFO, false, "The file §b"+fileName+" §7is downloaded with §bsuccess");
+            Driver.getInstance().getConsoleDriver().getLogger().log(MSGType.MESSAGETYPE_INFO, "The file §b"+fileName+" §7is downloaded with §bsuccess");
 
-        } catch (InterruptedException | IOException ex) {
+        } catch (IOException ex) {
             ex.printStackTrace();
         }
     }

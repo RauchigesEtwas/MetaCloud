@@ -16,7 +16,7 @@ import io.metacloud.network.packets.nodes.ManagerShuttingDownPacket;
 import io.metacloud.network.server.NetworkServerDriver;
 import io.metacloud.webservice.bin.RestServer;
 import io.metacloud.webservice.restconfigs.livenodes.NodesRestConfig;
-import jline.internal.ShutdownHooks;
+
 
 import java.util.ArrayList;
 import java.util.Map;
@@ -38,12 +38,12 @@ public class MetaManager {
 
         long time =  Driver.getInstance().getStorageDriver().getStartTime();
         long finalTime =  (System.currentTimeMillis() - time);
-        Driver.getInstance().getConsoleDriver().getLogger().log(MSGType.MESSAGETYPE_INFO, false, "the cloud is §bnow ready§7 to use [It takes §b"+finalTime+" ms§r]");
+        Driver.getInstance().getConsoleDriver().getLogger().log(MSGType.MESSAGETYPE_INFO, "the cloud is §bnow ready§7 to use [It takes §b"+finalTime+" ms§r]");
         ServiceConfiguration service = (ServiceConfiguration) new ConfigDriver("./service.json").read(ServiceConfiguration.class);
 
-        Driver.getInstance().getConsoleDriver().getLogger().log(MSGType.MESSAGETYPE_NETWORK, false, "a new node called §bInternalNode§7 wants to connect");
+        Driver.getInstance().getConsoleDriver().getLogger().log(MSGType.MESSAGETYPE_NETWORK, "a new node called §bInternalNode§7 wants to connect");
         NodesRestConfig config = new NodesRestConfig();
-        Driver.getInstance().getConsoleDriver().getLogger().log(MSGType.MESSAGETYPE_NETWORK, false, "The node would be §aconnected§7, all data would be §aloaded§7 to the §bRestAPI.");
+        Driver.getInstance().getConsoleDriver().getLogger().log(MSGType.MESSAGETYPE_NETWORK, "The node would be §aconnected§7, all data would be §aloaded§7 to the §bRestAPI.");
         config.setName("InternalNode");
         config.setServices(new ArrayList<>());
         Driver.getInstance().getRestDriver().getRestServer(service.getCommunication().getRestApiPort()).addContent("running-node-InternalNode", config);
@@ -74,11 +74,11 @@ public class MetaManager {
 
     private void prepareModules(){
 
-        Driver.getInstance().getConsoleDriver().getLogger().log(MSGType.MESSAGETYPE_MODULES, false, "the modules are being prepared");
+        Driver.getInstance().getConsoleDriver().getLogger().log(MSGType.MESSAGETYPE_MODULES, "the modules are being prepared");
 
         Driver.getInstance().getModuleDriver().enableAllModules();
 
-        Driver.getInstance().getConsoleDriver().getLogger().log(MSGType.MESSAGETYPE_MODULES, false, "all modules were loaded there were §b"+ Driver.getInstance().getModuleDriver().getLoadedModules().size()+" modules§7 in total");
+        Driver.getInstance().getConsoleDriver().getLogger().log(MSGType.MESSAGETYPE_MODULES, "all modules were loaded there were §b"+ Driver.getInstance().getModuleDriver().getLoadedModules().size()+" modules§7 in total");
     }
 
 
@@ -93,7 +93,7 @@ public class MetaManager {
 
     private void prepareRestServer(){
         Thread execuet = new Thread(() -> {
-        Driver.getInstance().getConsoleDriver().getLogger().log(MSGType.MESSAGETYPE_INFO, false, "the Restserver is being prepared..");
+        Driver.getInstance().getConsoleDriver().getLogger().log(MSGType.MESSAGETYPE_INFO, "the Restserver is being prepared..");
 
         ServiceConfiguration service = (ServiceConfiguration) new ConfigDriver("./service.json").read(ServiceConfiguration.class);
         RestServer restServer = new RestServer();
@@ -101,7 +101,7 @@ public class MetaManager {
                         .setAuthenticator(service.getCommunication().getRestApiAuthKey());
         Driver.getInstance().getRestDriver().registerRestServer(restServer);
         RestServer runningServer = Driver.getInstance().getRestDriver().getRestServer(service.getCommunication().getRestApiPort());
-        Driver.getInstance().getConsoleDriver().getLogger().log(MSGType.MESSAGETYPE_INFO, false, "Upload the data to the Restserver...");
+        Driver.getInstance().getConsoleDriver().getLogger().log(MSGType.MESSAGETYPE_INFO, "Upload the data to the Restserver...");
 
         runningServer.addContent("service", "./service.json", service);
 
@@ -113,7 +113,7 @@ public class MetaManager {
         Driver.getInstance().getGroupDriver().getGroups().forEach(configuration -> {Driver.getInstance().getGroupDriver().deployOnRest(configuration.getName(), null);});
 
 
-        Driver.getInstance().getConsoleDriver().getLogger().log(MSGType.MESSAGETYPE_INFO, false, "the Restserver is now bound on port " + service.getCommunication().getRestApiPort());
+        Driver.getInstance().getConsoleDriver().getLogger().log(MSGType.MESSAGETYPE_INFO, "the Restserver is now bound on port " + service.getCommunication().getRestApiPort());
     });
         execuet.setPriority(Thread.MIN_PRIORITY);
         execuet.run();

@@ -4,111 +4,79 @@ import io.metacloud.Driver;
 import io.metacloud.console.logger.enums.CloudColor;
 import io.metacloud.console.logger.enums.MSGType;
 import io.metacloud.console.logger.logs.SimpleLatestLog;
-import jline.console.ConsoleReader;
 import lombok.SneakyThrows;
-import org.fusesource.jansi.Ansi;
+import org.jline.utils.InfoCmp;
 
-import java.io.*;
+import java.io.PrintStream;
 import java.text.SimpleDateFormat;
 
 public class Logger {
-
-    public ConsoleReader consoleReader;
     private final SimpleDateFormat simpleDateFormat = new SimpleDateFormat( "dd.MM HH:mm:ss" );
     public SimpleLatestLog logs;
 
     @SneakyThrows
     public Logger() {
         logs = new SimpleLatestLog();
-        try {
-            this.consoleReader = new ConsoleReader(System.in, System.out);
-        } catch (IOException ignored) { }
-
-
-        this.consoleReader.setExpandEvents(false);
+        System.setOut(new PrintStream(new LoggerOutputStream(this, MSGType.MESSAGETYPE_INFO), true));
+        System.setErr(new PrintStream(new LoggerOutputStream(this, MSGType.MESSAGETYPE_ERROR), true));
     }
 
-    public void log(MSGType type,boolean useCommand, String message){
+    public void log(MSGType type, String message){
 
         switch (type){
             case MESSAGETYPE_INFO:
-                printLine(useCommand, "§3INFO", message, null);
+                printLine("§3INFO", message);
                 break;
             case MESSAGETYPE_WARN:
-                printLine(useCommand, "§eWARN", message, null);
+                printLine("§eWARN", message);
                 break;
             case MESSAGETYPE_ERROR:
-                printLine(useCommand, "§cERROR", message, null);
+                printLine("§cERROR", message);
                 break;
             case MESSAGETYPE_NETWORK:
-                printLine(useCommand, "§3NETWORK", message, null);
+                printLine("§3NETWORK", message);
                 break;
             case MESSAGETYPE_SETUP:
-                printLine(useCommand, "§3SETUP", message, null);
+                printLine("§3SETUP", message);
                 break;
             case MESSAGETYPE_SUCCESS:
-                printLine(useCommand, "§aSUCCESS", message, null);
+                printLine("§aSUCCESS", message);
                 break;
             case MESSAGETYPE_EMPTY:
-                printLine(useCommand, null, message, null);
+                printLine(null, message);
                 break;
             case MESSAGETYPE_COMMAND:
-                printLine(useCommand, "§3COMMAND", message, null);
+                printLine("§3COMMAND", message);
                 break;
             case MESSAGETYPE_NETWORK_FAIL:
-                printLine(useCommand, "§cNETWORK", message, null);
+                printLine("§cNETWORK", message);
                 break;
             case MESSAGETYPE_MODULES:
-                printLine(useCommand, "§3MODULES", message, null);
+                printLine("§3MODULES", message);
                 break;
         }
 
     }
 
 
-    private void printLine(Boolean usedcommand, String prefix, String message, String print) {
+    private void printLine(String prefix, String message) {
         try {
-            String inline = "";
 
-            if(!usedcommand){
-                inline = consoleReader.getCursorBuffer().toString();
-                consoleReader.setPrompt("");
-                consoleReader.resetPromptLine("", "", 0);
-            }
             if(prefix == null){
-                try {
-                    consoleReader.println(Ansi.ansi().eraseLine(Ansi.Erase.ALL).toString() + getColoredString(message + CloudColor.RESET.getAnsiCode()));
-                    this.logs.log(getColoredString(message + CloudColor.RESET.getAnsiCode()));
-                    this.logs.saveLogs();
-
-                    consoleReader.drawLine();
-                    consoleReader.flush();
-
-                } catch (IOException exception) {
-
-                }
+                Driver.getInstance().getConsoleDriver().getTerminal().puts(InfoCmp.Capability.carriage_return);
+               Driver.getInstance().getConsoleDriver().getTerminal().writer().println(getColoredString(message + CloudColor.RESET.getAnsiCode()));
+               Driver.getInstance().getConsoleDriver().getTerminal().flush();
+                Driver.getInstance().getConsoleDriver().redraw();
+                this.logs.log(getColoredString(message + CloudColor.RESET.getAnsiCode()));
+                this.logs.saveLogs();
             }else{
-                try {
-                    consoleReader.println(Ansi.ansi().eraseLine(Ansi.Erase.ALL).toString() + getColoredString("§7[§f" + simpleDateFormat.format(System.currentTimeMillis()) +"§7] "+ prefix + "§7: §r" + CloudColor.RESET.getAnsiCode() + message + CloudColor.RESET.getAnsiCode()));
-                    this.logs.log( getColoredString("§7[§f" + simpleDateFormat.format(System.currentTimeMillis()) +"§7] "+ prefix + "§7: §r" + CloudColor.RESET.getAnsiCode() + message + CloudColor.RESET.getAnsiCode()));
-                    this.logs.saveLogs();
+                Driver.getInstance().getConsoleDriver().getTerminal().puts(InfoCmp.Capability.carriage_return);
+                Driver.getInstance().getConsoleDriver().getTerminal().writer().println( getColoredString("§7[§f" + simpleDateFormat.format(System.currentTimeMillis()) +"§7] "+ prefix + "§7: §r" + CloudColor.RESET.getAnsiCode() + message + CloudColor.RESET.getAnsiCode()));
+                Driver.getInstance().getConsoleDriver().getTerminal().flush();
+                Driver.getInstance().getConsoleDriver().redraw();
 
-                    consoleReader.drawLine();
-                    consoleReader.flush();
-                } catch (IOException exception) {
-
-                }
-            }
-            if(!usedcommand){
-                if(print != null){
-                    String coloredPromp = getColoredString("§bMetaCloud§f@"+ Driver.getInstance().getStorageDriver().getVersion()+" §7» §7");
-                    consoleReader.setPrompt(getColoredString(coloredPromp));
-                    consoleReader.resetPromptLine(getColoredString(coloredPromp), print, print.length());
-                }else{
-                    String coloredPromp = getColoredString("§bMetaCloud§f@"+ Driver.getInstance().getStorageDriver().getVersion()+" §7» §7");
-                    consoleReader.setPrompt(getColoredString(coloredPromp));
-                    consoleReader.resetPromptLine(getColoredString(coloredPromp), inline, inline.length());
-                }
+                this.logs.log( getColoredString("§7[§f" + simpleDateFormat.format(System.currentTimeMillis()) +"§7] "+ prefix + "§7: §r" + CloudColor.RESET.getAnsiCode() + message + CloudColor.RESET.getAnsiCode()));
+                this.logs.saveLogs();
 
             }
         }catch (Exception e){
@@ -120,29 +88,8 @@ public class Logger {
 
 
 
-    /**
-     * Read line string.
-     *
-     * @return the string
-     */
-    public String readLine() {
-        try {
-            return this.consoleReader.readLine();
-        } catch (IOException ex) {
-            return "null";
-        }
-    }
 
 
-
-    /**
-     * Gets console reader.
-     *
-     * @return the console reader
-     */
-    public ConsoleReader getConsoleReader() {
-        return this.consoleReader;
-    }
 
 
 

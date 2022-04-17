@@ -42,6 +42,61 @@ public class ServiceConfiguration implements IConfig {
         private String fullNetworkKickMessage;
         private String fullServiceKickMessage;
         private String onlyProxyJoinKickMessage;
+        private String hubCommandNoFallbackFound;
+        private String hubCommandSendToAnFallback;
+        private String hubCommandAlreadyOnFallBack;
+        private String serviceConnectedToProxyNotification;
+        private String serviceStartingNotification;
+        private String serviceStoppingNotification;
+
+
+        public String getServiceConnectedToProxyNotification() {
+            return serviceConnectedToProxyNotification;
+        }
+
+        public void setServiceConnectedToProxyNotification(String serviceConnectedToProxyNotification) {
+            this.serviceConnectedToProxyNotification = serviceConnectedToProxyNotification;
+        }
+
+        public String getServiceStartingNotification() {
+            return serviceStartingNotification;
+        }
+
+        public void setServiceStartingNotification(String serviceStartingNotification) {
+            this.serviceStartingNotification = serviceStartingNotification;
+        }
+
+        public String getServiceStoppingNotification() {
+            return serviceStoppingNotification;
+        }
+
+        public void setServiceStoppingNotification(String serviceStoppingNotification) {
+            this.serviceStoppingNotification = serviceStoppingNotification;
+        }
+
+        public String getHubCommandNoFallbackFound() {
+            return hubCommandNoFallbackFound;
+        }
+
+        public void setHubCommandNoFallbackFound(String hubCommandNoFallbackFound) {
+            this.hubCommandNoFallbackFound = hubCommandNoFallbackFound;
+        }
+
+        public String getHubCommandSendToAnFallback() {
+            return hubCommandSendToAnFallback;
+        }
+
+        public void setHubCommandSendToAnFallback(String hubCommandSendToAnFallback) {
+            this.hubCommandSendToAnFallback = hubCommandSendToAnFallback;
+        }
+
+        public String getHubCommandAlreadyOnFallBack() {
+            return hubCommandAlreadyOnFallBack;
+        }
+
+        public void setHubCommandAlreadyOnFallBack(String hubCommandAlreadyOnFallBack) {
+            this.hubCommandAlreadyOnFallBack = hubCommandAlreadyOnFallBack;
+        }
 
         public String getPrefix() {
             return prefix;
@@ -164,7 +219,15 @@ public class ServiceConfiguration implements IConfig {
         private int defaultProxyStartupPort;
         private int defaultServerStartupPort;
         private String serverSplitter;
+        private ArrayList<String> whitelist;
 
+        public ArrayList<String> getWhitelist() {
+            return whitelist;
+        }
+
+        public void setWhitelist(ArrayList<String> whitelist) {
+            this.whitelist = whitelist;
+        }
 
         public boolean isShowPlayerConnections() {
             return showPlayerConnections;

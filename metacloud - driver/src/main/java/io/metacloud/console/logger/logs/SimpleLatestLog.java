@@ -1,9 +1,5 @@
 package io.metacloud.console.logger.logs;
 
-import io.metacloud.Driver;
-import io.metacloud.configuration.ConfigDriver;
-import io.metacloud.configuration.configs.group.GroupConfiguration;
-import javafx.util.Pair;
 import lombok.SneakyThrows;
 
 import java.io.*;
@@ -11,7 +7,6 @@ import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
-import java.util.function.Consumer;
 
 public class SimpleLatestLog {
 

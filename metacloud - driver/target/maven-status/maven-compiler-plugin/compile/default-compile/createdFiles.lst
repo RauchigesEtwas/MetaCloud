@@ -3,14 +3,17 @@ io\metacloud\webservice\bin\RestAPI.class
 io\metacloud\webservice\restconfigs\nodesetup\NodeSetupCommunication.class
 io\metacloud\StorageDriver.class
 io\metacloud\webservice\RestDriver.class
+io\metacloud\console\ConsolReading.class
 io\metacloud\modules\LoadedModule.class
 io\metacloud\webservice\DownloadDriver$1.class
 io\metacloud\network\packets\services\ServiceUnregisterPacket.class
 io\metacloud\configuration\IConfig.class
 io\metacloud\groups\GroupDriver.class
 io\metacloud\webservice\bin\IRestConfig.class
+io\metacloud\console\logger\LoggerOutputStream.class
 io\metacloud\webservice\DownloadDriver.class
 io\metacloud\configuration\configs\nodes\NodeProperties.class
+io\metacloud\console\data\ConsoleStorageLine.class
 io\metacloud\services\processes\utils\ServiceStorage.class
 io\metacloud\network\packets\nodes\ManagerShuttingDownPacket.class
 io\metacloud\network\packets\services\ServiceRegisterPacket.class
@@ -54,6 +57,7 @@ io\metacloud\services\processes\bin\CloudServiceType.class
 io\metacloud\console\logger\logs\SimpleLatestLog.class
 io\metacloud\webservice\restconfigs\nodesetup\NodeSetupConfig.class
 io\metacloud\configuration\configs\ServiceConfiguration$Communication.class
+io\metacloud\console\data\ConsoleCompleter.class
 io\metacloud\network\packets\nodes\NodeHaltServicePacket.class
 io\metacloud\network\packets\nodes\NodeUnregisterPacket.class
 io\metacloud\services\processes\CloudService.class

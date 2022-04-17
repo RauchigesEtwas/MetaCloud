@@ -30,19 +30,13 @@ public class CommandDriver {
 
     @SneakyThrows
     public void executeCommand(String line){
-        Driver.getInstance().getConsoleDriver().getLogger().getConsoleReader().resetPromptLine("", "", 0);
-        Driver.getInstance().getConsoleDriver().getLogger().getConsoleReader().setPrompt("");
 
         CloudCommand command = getCommand(line.split(" ")[0]);
         String[] args = Driver.getInstance().getStorageDriver().dropFirstString(line.split(" "));
         if(command != null){
-            if(Driver.getInstance().getConsoleDriver().isAlive()){
-                command.performCommand(command, Driver.getInstance().getConsoleDriver().getLogger(), args);
-                Driver.getInstance().getConsoleDriver().getLogger().getConsoleReader().resetPromptLine("", "", 0);
-                Driver.getInstance().getConsoleDriver().getLogger().getConsoleReader().setPrompt("");
-            }
+            command.performCommand(command, Driver.getInstance().getConsoleDriver().getLogger(), args);
         }else {
-            Driver.getInstance().getConsoleDriver().getLogger().log(MSGType.MESSAGETYPE_INFO, true, "the command was not found please type \"help\" to get help");
+            Driver.getInstance().getConsoleDriver().getLogger().log(MSGType.MESSAGETYPE_INFO, "the command was not found please type \"help\" to get help");
         }
     }
 

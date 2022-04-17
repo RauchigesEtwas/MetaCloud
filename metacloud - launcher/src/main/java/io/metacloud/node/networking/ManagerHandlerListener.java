@@ -27,7 +27,7 @@ public class ManagerHandlerListener extends PacketListener {
             NodeRegisterCallBackPacket packet = (NodeRegisterCallBackPacket) readPacket;
             if (packet.isConnectionAccept()){
 
-                Driver.getInstance().getConsoleDriver().getLogger().log(MSGType.MESSAGETYPE_NETWORK, false, "the node is now §asuccessfully §7connected to the manager!");
+                Driver.getInstance().getConsoleDriver().getLogger().log(MSGType.MESSAGETYPE_NETWORK,  "the node is now §asuccessfully §7connected to the manager!");
             }else {
                 System.exit(0);
             }
@@ -49,7 +49,7 @@ public class ManagerHandlerListener extends PacketListener {
         if (readPacket instanceof NodeHaltServicePacket){
             NodeHaltServicePacket packet = (NodeHaltServicePacket) readPacket;
             Driver.getInstance().getServiceDriver().haltService(packet.getService());
-            Driver.getInstance().getConsoleDriver().getLogger().log(MSGType.MESSAGETYPE_NETWORK, false, "new §btask§7, stop the service §b" + packet.getService());
+            Driver.getInstance().getConsoleDriver().getLogger().log(MSGType.MESSAGETYPE_NETWORK,  "new §btask§7, stop the service §b" + packet.getService());
 
         }
     }
@@ -80,14 +80,14 @@ public class ManagerHandlerListener extends PacketListener {
                 NodeLaunchServiceCallBackPacket.setSelecedPort(port);
                 NodeLaunchServiceCallBackPacket.setServiceName(packet.getGroup() + serviceConfiguration.getGeneral().getServerSplitter()+ packet.getServiceCount());
                 channel.sendPacket(NodeLaunchServiceCallBackPacket);
-                Driver.getInstance().getConsoleDriver().getLogger().log(MSGType.MESSAGETYPE_NETWORK, false, "new §btask§7, Start a new service of the group §b" + group.getName() +"§7 [selectedPort: §b"+port+"§7]");
+                Driver.getInstance().getConsoleDriver().getLogger().log(MSGType.MESSAGETYPE_NETWORK,  "new §btask§7, Start a new service of the group §b" + group.getName() +"§7 [selectedPort: §b"+port+"§7]");
             }else {
                 Integer port = Driver.getInstance().getServiceDriver().getFreePort(false);
                 NodeLaunchServiceCallBackPacket NodeLaunchServiceCallBackPacket = new NodeLaunchServiceCallBackPacket();
                 NodeLaunchServiceCallBackPacket.setSelecedPort(port);
                 NodeLaunchServiceCallBackPacket.setServiceName(packet.getGroup() + serviceConfiguration.getGeneral().getServerSplitter()+ packet.getServiceCount());
                 channel.sendPacket(NodeLaunchServiceCallBackPacket);
-                Driver.getInstance().getConsoleDriver().getLogger().log(MSGType.MESSAGETYPE_NETWORK, false, "new §btask§7, Start a new service of the group §b" + group.getName() +"§7 [selectedPort: §b"+port+"§7]");
+                Driver.getInstance().getConsoleDriver().getLogger().log(MSGType.MESSAGETYPE_NETWORK,  "new §btask§7, Start a new service of the group §b" + group.getName() +"§7 [selectedPort: §b"+port+"§7]");
                 storage.setSelectedPort(port);
             }
             storage.setServiceName(packet.getGroup() + serviceConfiguration.getGeneral().getServerSplitter()+ packet.getServiceCount());

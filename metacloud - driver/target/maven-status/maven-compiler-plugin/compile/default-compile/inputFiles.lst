@@ -6,11 +6,13 @@ E:\MetaCloud\MetaCloudService\metacloud - driver\src\main\java\io\metacloud\grou
 E:\MetaCloud\MetaCloudService\metacloud - driver\src\main\java\io\metacloud\configuration\IConfig.java
 E:\MetaCloud\MetaCloudService\metacloud - driver\src\main\java\io\metacloud\configuration\configs\group\GroupProperties.java
 E:\MetaCloud\MetaCloudService\metacloud - driver\src\main\java\io\metacloud\configuration\configs\group\GroupType.java
+E:\MetaCloud\MetaCloudService\metacloud - driver\src\main\java\io\metacloud\console\logger\LoggerOutputStream.java
 E:\MetaCloud\MetaCloudService\metacloud - driver\src\main\java\io\metacloud\webservice\RestDriver.java
 E:\MetaCloud\MetaCloudService\metacloud - driver\src\main\java\io\metacloud\configuration\configs\ServiceConfiguration.java
 E:\MetaCloud\MetaCloudService\metacloud - driver\src\main\java\io\metacloud\network\packets\nodes\NodeUnregisterPacket.java
 E:\MetaCloud\MetaCloudService\metacloud - driver\src\main\java\io\metacloud\command\CloudCommand.java
 E:\MetaCloud\MetaCloudService\metacloud - driver\src\main\java\io\metacloud\webservice\restconfigs\nodesetup\NodeSetupConfig.java
+E:\MetaCloud\MetaCloudService\metacloud - driver\src\main\java\io\metacloud\console\data\ConsoleCompleter.java
 E:\MetaCloud\MetaCloudService\metacloud - driver\src\main\java\io\metacloud\console\logger\Logger.java
 E:\MetaCloud\MetaCloudService\metacloud - driver\src\main\java\io\metacloud\modules\ModuleDriver.java
 E:\MetaCloud\MetaCloudService\metacloud - driver\src\main\java\io\metacloud\webservice\bin\IRestConfig.java
@@ -30,6 +32,7 @@ E:\MetaCloud\MetaCloudService\metacloud - driver\src\main\java\io\metacloud\webs
 E:\MetaCloud\MetaCloudService\metacloud - driver\src\main\java\io\metacloud\modules\interfaces\IModule.java
 E:\MetaCloud\MetaCloudService\metacloud - driver\src\main\java\io\metacloud\services\processes\CloudService.java
 E:\MetaCloud\MetaCloudService\metacloud - driver\src\main\java\io\metacloud\configuration\configs\nodes\GeneralNodeConfiguration.java
+E:\MetaCloud\MetaCloudService\metacloud - driver\src\main\java\io\metacloud\console\data\ConsoleStorageLine.java
 E:\MetaCloud\MetaCloudService\metacloud - driver\src\main\java\io\metacloud\network\client\NetworkClientDriver.java
 E:\MetaCloud\MetaCloudService\metacloud - driver\src\main\java\io\metacloud\command\CommandDriver.java
 E:\MetaCloud\MetaCloudService\metacloud - driver\src\main\java\io\metacloud\services\processes\bin\CloudServiceState.java
@@ -53,3 +56,4 @@ E:\MetaCloud\MetaCloudService\metacloud - driver\src\main\java\io\metacloud\Driv
 E:\MetaCloud\MetaCloudService\metacloud - driver\src\main\java\io\metacloud\configuration\configs\service\ServiceNetworkProperty.java
 E:\MetaCloud\MetaCloudService\metacloud - driver\src\main\java\io\metacloud\network\packets\nodes\NodeRegisterCallBackPacket.java
 E:\MetaCloud\MetaCloudService\metacloud - driver\src\main\java\io\metacloud\modules\LoadedModule.java
+E:\MetaCloud\MetaCloudService\metacloud - driver\src\main\java\io\metacloud\console\ConsolReading.java

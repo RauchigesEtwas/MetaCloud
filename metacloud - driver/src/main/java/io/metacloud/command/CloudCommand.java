@@ -1,5 +1,6 @@
 package io.metacloud.command;
 
+import io.metacloud.console.data.ConsoleStorageLine;
 import io.metacloud.console.logger.Logger;
 import lombok.var;
 import java.lang.annotation.Retention;
@@ -22,7 +23,7 @@ public abstract class CloudCommand{
 
 
     public abstract boolean performCommand(CloudCommand command, Logger logger, String[] args);
-
+    public abstract ArrayList<String> tabComplete(ConsoleStorageLine consoleInput, String[] args);
 
     public String getCommand() {
         return command;

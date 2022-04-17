@@ -3,8 +3,11 @@ package io.metacloud.manager.commands;
 import io.metacloud.Driver;
 import io.metacloud.command.CloudCommand;
 import io.metacloud.command.CommandInfo;
+import io.metacloud.console.data.ConsoleStorageLine;
 import io.metacloud.console.logger.Logger;
 import io.metacloud.console.logger.enums.MSGType;
+
+import java.util.ArrayList;
 
 
 @CommandInfo(command = "help", description = "here you get all commands", aliases = {"ask", "?", "commands"})
@@ -28,13 +31,18 @@ public class HelpCommand extends CloudCommand {
                     }
                 }
             }
-            logger.log(MSGType.MESSAGETYPE_COMMAND, true, "> §b" + command1.getCommand() + " §7- Aliases: [§b" +aliases+"§7] ~ §f" + command1.getDescription());
+            logger.log(MSGType.MESSAGETYPE_COMMAND, "> §b" + command1.getCommand() + " §7- Aliases: [§b" +aliases+"§7] ~ §f" + command1.getDescription());
         });
 
     });
         execuet.setPriority(Thread.MIN_PRIORITY);
         execuet.run();
         return false;
+    }
+
+    @Override
+    public ArrayList<String> tabComplete(ConsoleStorageLine consoleInput, String[] args) {
+        return null;
     }
 
 }

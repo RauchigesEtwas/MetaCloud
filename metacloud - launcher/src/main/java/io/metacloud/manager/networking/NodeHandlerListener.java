@@ -34,7 +34,7 @@ public class NodeHandlerListener extends PacketListener {
         if (readpacket instanceof NodeRegisterPacket){
             NodeRegisterPacket packet = (NodeRegisterPacket) readpacket;
 
-            Driver.getInstance().getConsoleDriver().getLogger().log(MSGType.MESSAGETYPE_NETWORK, false, "a new node called §b"+packet.getNodeName()+"§7 wants to connect");
+            Driver.getInstance().getConsoleDriver().getLogger().log(MSGType.MESSAGETYPE_NETWORK, "a new node called §b"+packet.getNodeName()+"§7 wants to connect");
 
 
             ServiceConfiguration service = (ServiceConfiguration) new ConfigDriver("./service.json").read(ServiceConfiguration.class);
@@ -49,7 +49,7 @@ public class NodeHandlerListener extends PacketListener {
                  });
                  if (this.exists){
                      NodesRestConfig config = new NodesRestConfig();
-                     Driver.getInstance().getConsoleDriver().getLogger().log(MSGType.MESSAGETYPE_NETWORK, false, "The node would be §aconnected§7, all data would be §aloaded§7 to the §bRestAPI.");
+                     Driver.getInstance().getConsoleDriver().getLogger().log(MSGType.MESSAGETYPE_NETWORK, "The node would be §aconnected§7, all data would be §aloaded§7 to the §bRestAPI.");
                      config.setName(packet.getNodeName());
                      config.setServices(new ArrayList<>());
                      Driver.getInstance().getConnectionDriver().addNodeChannel(packet.getNodeName(), readchannel);
@@ -67,7 +67,7 @@ public class NodeHandlerListener extends PacketListener {
 
 
                      }else {
-                     Driver.getInstance().getConsoleDriver().getLogger().log(MSGType.MESSAGETYPE_NETWORK_FAIL, false, "the node does not exist and the connection was rejected.");
+                     Driver.getInstance().getConsoleDriver().getLogger().log(MSGType.MESSAGETYPE_NETWORK_FAIL, "the node does not exist and the connection was rejected.");
                      NodeRegisterCallBackPacket callBackPacket = new NodeRegisterCallBackPacket();
                      callBackPacket.setConnectionAccept(false);
 
@@ -75,7 +75,7 @@ public class NodeHandlerListener extends PacketListener {
 
                      }
                   }else {
-                 Driver.getInstance().getConsoleDriver().getLogger().log(MSGType.MESSAGETYPE_NETWORK_FAIL, false, "the node is already connected to the cloud.");
+                 Driver.getInstance().getConsoleDriver().getLogger().log(MSGType.MESSAGETYPE_NETWORK_FAIL, "the node is already connected to the cloud.");
                  NodeRegisterCallBackPacket callBackPacket = new NodeRegisterCallBackPacket();
                  callBackPacket.setConnectionAccept(false);
 
@@ -83,7 +83,7 @@ public class NodeHandlerListener extends PacketListener {
 
              }
             }else{
-                Driver.getInstance().getConsoleDriver().getLogger().log(MSGType.MESSAGETYPE_NETWORK_FAIL, false, "the authkey is not correct, the connection was rejected");
+                Driver.getInstance().getConsoleDriver().getLogger().log(MSGType.MESSAGETYPE_NETWORK_FAIL, "the authkey is not correct, the connection was rejected");
                 NodeRegisterCallBackPacket callBackPacket = new NodeRegisterCallBackPacket();
                 callBackPacket.setConnectionAccept(false);
                 Driver.getInstance().getConnectionDriver().getNodeChannel(packet.getNodeName()).sendPacket(callBackPacket);
@@ -92,7 +92,7 @@ public class NodeHandlerListener extends PacketListener {
 
         }else if (readpacket instanceof NodeUnregisterPacket){
             NodeUnregisterPacket packet = (NodeUnregisterPacket) readpacket;
-            Driver.getInstance().getConsoleDriver().getLogger().log(MSGType.MESSAGETYPE_NETWORK, false, "the node named §b"+packet.getNodeName()+"§7 was shut down");
+            Driver.getInstance().getConsoleDriver().getLogger().log(MSGType.MESSAGETYPE_NETWORK, "the node named §b"+packet.getNodeName()+"§7 was shut down");
             ServiceConfiguration service = (ServiceConfiguration) new ConfigDriver("./service.json").read(ServiceConfiguration.class);
             Driver.getInstance().getConnectionDriver().removeNodeChannel(packet.getNodeName());
             Driver.getInstance().getRestDriver().getRestServer(service.getCommunication().getRestApiPort()).removeContent("running-node-"+ packet.getNodeName());
@@ -107,7 +107,7 @@ public class NodeHandlerListener extends PacketListener {
         Channel channel = event.getChannel();
         if (packet instanceof NodeLaunchServiceCallBackPacket){
             NodeLaunchServiceCallBackPacket NodeLaunchServiceCallBackPacket = (NodeLaunchServiceCallBackPacket) packet;
-            Driver.getInstance().getConsoleDriver().getLogger().log(MSGType.MESSAGETYPE_NETWORK, false, "the service §b"+NodeLaunchServiceCallBackPacket.getServiceName()+"§7 was successfully §astarted§7 [selectedPort: §b"+NodeLaunchServiceCallBackPacket.getSelecedPort()+"§7]");
+            Driver.getInstance().getConsoleDriver().getLogger().log(MSGType.MESSAGETYPE_NETWORK, "the service §b"+NodeLaunchServiceCallBackPacket.getServiceName()+"§7 was successfully §astarted§7 [selectedPort: §b"+NodeLaunchServiceCallBackPacket.getSelecedPort()+"§7]");
             ServiceConfiguration service = (ServiceConfiguration) new ConfigDriver("./service.json").read(ServiceConfiguration.class);
             ServiceRest rest = (ServiceRest) Driver.getInstance().getRestDriver().getRestAPI().convertToRestConfig("http://" + service.getCommunication().getManagerHostAddress() + ":" + service.getCommunication().getRestApiPort()+
                     "/" + service.getCommunication().getRestApiAuthKey()+ "/livegroup-" + NodeLaunchServiceCallBackPacket.getServiceName().split(service.getGeneral().getServerSplitter())[0], ServiceRest.class);

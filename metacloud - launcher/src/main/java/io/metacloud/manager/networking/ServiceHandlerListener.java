@@ -32,7 +32,7 @@ public class ServiceHandlerListener extends PacketListener {
                     serviceRest.getServices().get(i).setServiceState(CloudServiceState.LOBBY);
                     long time =   serviceRest.getServices().get(i).getStartTime();
                     long finalTime =  (System.currentTimeMillis() - time);
-                    Driver.getInstance().getConsoleDriver().getLogger().log(MSGType.MESSAGETYPE_NETWORK, false, "the service §b"+packet.getServiceName()+"§7 is successfully §aconnected §7[§b"+finalTime+" ms§7]");
+                    Driver.getInstance().getConsoleDriver().getLogger().log(MSGType.MESSAGETYPE_NETWORK,  "the service §b"+packet.getServiceName()+"§7 is successfully §aconnected §7[§b"+finalTime+" ms§7]");
 
                 }
             }

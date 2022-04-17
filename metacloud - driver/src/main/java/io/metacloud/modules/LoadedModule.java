@@ -53,7 +53,7 @@ public class LoadedModule {
                         Method method = classtoLoad.getDeclaredMethod("onEnable");
                         Object instance = classtoLoad.newInstance();
                         Object resuls = method.invoke(instance);
-                        Driver.getInstance().getConsoleDriver().getLogger().log(MSGType.MESSAGETYPE_MODULES, false, "module §b" + properties.getProperty("name") + "§7 was loaded with §aSuccess §7[Author(s): §b" + properties.getProperty("author") + "§7, Version: §b" + properties.getProperty("version") + "§7]");
+                        Driver.getInstance().getConsoleDriver().getLogger().log(MSGType.MESSAGETYPE_MODULES,  "module §b" + properties.getProperty("name") + "§7 was loaded with §aSuccess §7[Author(s): §b" + properties.getProperty("author") + "§7, Version: §b" + properties.getProperty("version") + "§7]");
 
                         return properties;
                     } catch (Exception ignored) {
@@ -61,7 +61,7 @@ public class LoadedModule {
 
                 } else {
 
-                    Driver.getInstance().getConsoleDriver().getLogger().log(MSGType.MESSAGETYPE_MODULES, false, "No §bmodule.properties §7found");
+                    Driver.getInstance().getConsoleDriver().getLogger().log(MSGType.MESSAGETYPE_MODULES,  "No §bmodule.properties §7found");
 
                 }
 
@@ -99,7 +99,7 @@ public class LoadedModule {
 
                 }else {
 
-                    Driver.getInstance().getConsoleDriver().getLogger().log(MSGType.MESSAGETYPE_MODULES, false, "No §bmodule.properties §7found");
+                    Driver.getInstance().getConsoleDriver().getLogger().log(MSGType.MESSAGETYPE_MODULES,  "No §bmodule.properties §7found");
 
                 }
 
@@ -132,12 +132,12 @@ public class LoadedModule {
                         Method method = classtoLoad.getDeclaredMethod("onReload");
                         Object instance = classtoLoad.newInstance();
                         Object resuls = method.invoke(instance);
-                        Driver.getInstance().getConsoleDriver().getLogger().log(MSGType.MESSAGETYPE_MODULES, false,  "module §b"+properties.getProperty("name")+" §7was reloaded");
+                        Driver.getInstance().getConsoleDriver().getLogger().log(MSGType.MESSAGETYPE_MODULES,   "module §b"+properties.getProperty("name")+" §7was reloaded");
 
                     }catch (Exception ignored){}
 
                 }else {
-                    Driver.getInstance().getConsoleDriver().getLogger().log(MSGType.MESSAGETYPE_MODULES, false,  "No §bmodule.properties §7found (Jar-Name: §b"+this.moduleName+"§7)");
+                    Driver.getInstance().getConsoleDriver().getLogger().log(MSGType.MESSAGETYPE_MODULES,   "No §bmodule.properties §7found (Jar-Name: §b"+this.moduleName+"§7)");
                 }
 
             }catch (Exception ignored){}

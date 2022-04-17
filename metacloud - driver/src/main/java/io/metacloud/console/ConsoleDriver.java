@@ -1,73 +1,30 @@
 package io.metacloud.console;
 
-import io.metacloud.Driver;
 import io.metacloud.command.CommandDriver;
+import io.metacloud.console.data.ConsoleCompleter;
+import io.metacloud.console.data.ConsoleStorageLine;
 import io.metacloud.console.logger.Logger;
-import io.metacloud.console.logger.enums.MSGType;
-import io.metacloud.console.setup.CloudMainSetup;
-import jline.console.completer.Completer;
-import lombok.SneakyThrows;
+import org.jline.reader.LineReader;
+import org.jline.reader.LineReaderBuilder;
+import org.jline.terminal.Terminal;
+import org.jline.terminal.TerminalBuilder;
+import org.jline.utils.InfoCmp;
 
 import java.io.IOException;
-import java.io.Serializable;
-import java.util.ArrayList;
+import java.nio.charset.StandardCharsets;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Queue;
+import java.util.function.Consumer;
 
-public final class ConsoleDriver extends  Thread implements Serializable {
+public final class ConsoleDriver {
+    private final Logger logger;
+    private Thread consoleReadingThread;
+    private final Terminal terminal;
+    private final CommandDriver commandDriver;
+    private final LineReader lineReader;
+    private final Queue<ConsoleStorageLine> inputs;
 
-
-    private CommandDriver commandDriver;
-    private Logger logger;
-
-    @SneakyThrows
-    public ConsoleDriver(){
-        this.logger = new Logger();
-        this.commandDriver = new CommandDriver();
-        setDaemon(true);
-        setPriority(Thread.MAX_PRIORITY);
-        start();
-
-    }
-
-    @SneakyThrows
-    @Override
-    public void run() {
-        String line;
-        label29: while ( isAlive()){
-            try {
-                while (true) {
-                    if ((line = this.getLogger().getConsoleReader().readLine(((Driver.getInstance() == null) ? "" : ((getLogger().getColoredString("§bMetaCloud§f@"+Driver.getInstance().getStorageDriver().getVersion()+" §7» §7") == null) ? "" : getLogger().getColoredString("§bMetaCloud§f@"+Driver.getInstance().getStorageDriver().getVersion()+" §7» §7"))))) != null){
-                        getLogger().getConsoleReader().setPrompt("");
-                        getLogger().getConsoleReader().resetPromptLine("", "", 0);
-                        if (Driver.getInstance().getStorageDriver().isCloudSetup()) {
-                            getLogger().getConsoleReader().setPrompt("");
-                            if (Driver.getInstance().getStorageDriver().getSetupType().equalsIgnoreCase("MAIN_SETUP")) {
-                                new CloudMainSetup(getLogger().consoleReader, line);
-                            }
-                            continue;
-                        }
-                        if (!line.trim().isEmpty()) {
-                            getLogger().getConsoleReader().setPrompt("");
-                            this.getCommandDriver().executeCommand(line);
-                            continue;
-                        }
-                        continue label29;
-                    }
-                    continue label29;
-                }
-            }catch (IOException exception){
-
-            }
-        }
-    }
-
-    public void clearScreen(){
-        try {
-            this.getLogger().getConsoleReader().clearScreen();
-        } catch (IOException exception) {
-            this.getLogger().log(MSGType.MESSAGETYPE_ERROR,false, exception.getMessage());
-        }
-    }
 
     public CommandDriver getCommandDriver() {
         return commandDriver;
@@ -75,5 +32,73 @@ public final class ConsoleDriver extends  Thread implements Serializable {
 
     public Logger getLogger() {
         return logger;
+    }
+
+    public ConsoleDriver() throws IOException {
+        this.logger = new Logger();
+        this.commandDriver = new CommandDriver();
+        this.terminal = TerminalBuilder.builder()
+                .system(true)
+                .streams(System.in, System.out)
+                .encoding(StandardCharsets.UTF_8)
+                .dumb(true)
+                .build();
+
+        this.lineReader = LineReaderBuilder.builder()
+                .terminal(this.terminal)
+                .option(LineReader.Option.DISABLE_EVENT_EXPANSION, true)
+                .option(LineReader.Option.AUTO_REMOVE_SLASH, false)
+                .option(LineReader.Option.INSERT_TAB, false)
+                .completer(new ConsoleCompleter())
+                .build();
+
+
+        this.inputs = new LinkedList<>();
+    }
+
+
+    public void start() {
+        this.consoleReadingThread = new ConsolReading(this.logger, this);
+        this.consoleReadingThread.setUncaughtExceptionHandler((t, e) -> e.printStackTrace());
+        this.consoleReadingThread.start();
+    }
+
+    public void clearConsole() {
+        this.terminal.puts(InfoCmp.Capability.clear_screen);
+        this.terminal.flush();
+        this.redraw();
+    }
+
+    public void redraw() {
+        if (this.lineReader.isReading()) {
+            this.lineReader.callWidget(LineReader.REDRAW_LINE);
+            this.lineReader.callWidget(LineReader.REDISPLAY);
+        }
+    }
+
+    public void shutdown() throws IOException {
+        this.terminal.close();
+    }
+
+    public void shutdownReading() {
+        this.consoleReadingThread.interrupt();
+    }
+
+
+
+    public Terminal getTerminal() {
+        return this.terminal;
+    }
+
+    public LineReader getLineReader() {
+        return this.lineReader;
+    }
+
+    public void addInput(final Consumer<String> input, final List<String> tabCompletions) {
+        this.inputs.add(new ConsoleStorageLine(input, tabCompletions));
+    }
+
+    public Queue<ConsoleStorageLine> getInputs() {
+        return this.inputs;
     }
 }

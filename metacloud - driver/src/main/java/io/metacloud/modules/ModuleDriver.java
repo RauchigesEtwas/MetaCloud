@@ -18,7 +18,7 @@ public class ModuleDriver {
     public void enableAllModules(){
         ArrayList<String> modules = getModulesFiles();
         if (modules.isEmpty()){
-            Driver.getInstance().getConsoleDriver().getLogger().log(MSGType.MESSAGETYPE_MODULES, false, "no §bModule§7 was §bfound");
+            Driver.getInstance().getConsoleDriver().getLogger().log(MSGType.MESSAGETYPE_MODULES, "no §bModule§7 was §bfound");
         }
 
         Thread execuet = new Thread(() -> {
