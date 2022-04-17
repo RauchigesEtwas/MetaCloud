@@ -1,9 +1,12 @@
 package io.metacloud;
 
+import com.google.common.io.BaseEncoding;
 import io.metacloud.command.CloudCommand;
 import io.metacloud.configuration.configs.group.GroupConfiguration;
+import lombok.SneakyThrows;
 
 import java.io.File;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -260,5 +263,21 @@ public class StorageDriver {
                 "connection_throttle_limit: 3\n" +
                 "log_pings: true\n";
     }
+
+
+
+    @SneakyThrows
+    public  String utf8ToUBase64(String utf8string){
+        String base64String = BaseEncoding.base64().encode(utf8string.getBytes("UTF-8"));
+        return base64String;
+    }
+
+    public  String base64ToUTF8(String base64Sting){
+        byte[] contentInBytes = BaseEncoding.base64().decode(base64Sting);
+        return new String(contentInBytes, StandardCharsets.UTF_8);
+    }
+
+
+
 
 }
