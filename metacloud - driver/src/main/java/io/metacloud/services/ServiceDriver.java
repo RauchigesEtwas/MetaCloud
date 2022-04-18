@@ -4,6 +4,7 @@ import io.metacloud.Driver;
 import io.metacloud.configuration.ConfigDriver;
 import io.metacloud.configuration.configs.ServiceConfiguration;
 import io.metacloud.configuration.configs.nodes.GeneralNodeConfiguration;
+import io.metacloud.console.logger.enums.MSGType;
 import io.metacloud.services.processes.CloudService;
 import io.metacloud.services.processes.utils.ServiceStorage;
 
@@ -26,6 +27,7 @@ public class ServiceDriver {
 
     public void launchService(ServiceStorage storage){
         CloudService service = new CloudService().bindStorage(storage);
+        Driver.getInstance().getConsoleDriver().getLogger().log(MSGType.MESSAGETYPE_INFO, "the service §b"+service.getStorage().getServiceName()+"§7 is now being §bprepared...");
         service.run();
         runningProcesses.add(service);
     }
@@ -108,6 +110,7 @@ public class ServiceDriver {
 
     public void haltService(String serviceName){
         CloudService service = getService(serviceName);
+        Driver.getInstance().getConsoleDriver().getLogger().log(MSGType.MESSAGETYPE_INFO, "the service name is now executed...");
         service.stop();
         this.usedPorts.remove(service.getStorage().getSelectedPort());
         this.runningProcesses.remove(service);

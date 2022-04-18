@@ -7,6 +7,7 @@ import io.metacloud.configuration.configs.ServiceConfiguration;
 import io.metacloud.configuration.configs.group.GroupType;
 import io.metacloud.configuration.configs.service.CloudServiceConfiguration;
 import io.metacloud.configuration.configs.service.ServiceNetworkProperty;
+import io.metacloud.console.logger.enums.MSGType;
 import io.metacloud.services.processes.utils.ServiceStorage;
 import io.metacloud.webservice.DownloadDriver;
 import lombok.SneakyThrows;
@@ -77,7 +78,7 @@ public class CloudService {
 
 
         //COPY MODULES
-
+        Driver.getInstance().getConsoleDriver().getLogger().log(MSGType.MESSAGETYPE_INFO, "the service "+storage.getServiceName()+" is now started (§b"+storage.getGroupConfiguration().getProperties().getNode()+"§7~§b"+storage.getGroupConfiguration().getProperties().getVersion()+"§7~§b"+storage.getSelectedPort()+"§7)");
 
         if (this.getStorage().getGroupConfiguration().getMode() == GroupType.PROXY) {
 
@@ -116,6 +117,7 @@ public class CloudService {
             this.serviceThread.setPriority(Thread.MIN_PRIORITY);
             this.serviceThread.setDaemon(false);
             this.serviceThread.start();
+
 
         }
     }
