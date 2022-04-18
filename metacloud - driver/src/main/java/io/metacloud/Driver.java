@@ -4,6 +4,7 @@ import io.metacloud.console.ConsoleDriver;
 import io.metacloud.groups.GroupDriver;
 import io.metacloud.modules.ModuleDriver;
 import io.metacloud.network.ConnectionDriver;
+import io.metacloud.queue.QueueDriver;
 import io.metacloud.services.ServiceDriver;
 import io.metacloud.webservice.RestDriver;
 import lombok.Getter;
@@ -19,6 +20,7 @@ public class Driver {
     private GroupDriver groupDriver;
     private ServiceDriver serviceDriver;
     private ModuleDriver moduleDriver;
+    private QueueDriver queueDriver;
 
     public Driver(){
         instance = this;
@@ -28,8 +30,12 @@ public class Driver {
         restDriver = new RestDriver();
         storageDriver = new StorageDriver();
         connectionDriver = new ConnectionDriver();
+        queueDriver = new QueueDriver();
     }
 
+    public QueueDriver getQueueDriver() {
+        return queueDriver;
+    }
 
     public ModuleDriver getModuleDriver() {
         return moduleDriver;

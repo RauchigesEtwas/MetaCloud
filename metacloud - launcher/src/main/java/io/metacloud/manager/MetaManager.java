@@ -14,6 +14,8 @@ import io.metacloud.manager.networking.NodeHandlerListener;
 import io.metacloud.manager.networking.ServiceHandlerListener;
 import io.metacloud.network.packets.nodes.ManagerShuttingDownPacket;
 import io.metacloud.network.server.NetworkServerDriver;
+import io.metacloud.queue.bin.QueueContainer;
+import io.metacloud.queue.bin.QueueStatement;
 import io.metacloud.webservice.bin.RestServer;
 import io.metacloud.webservice.restconfigs.livenodes.NodesRestConfig;
 
@@ -48,7 +50,9 @@ public class MetaManager {
         config.setServices(new ArrayList<>());
         Driver.getInstance().getRestDriver().getRestServer(service.getCommunication().getRestApiPort()).addContent("running-node-InternalNode", config);
         Driver.getInstance().getGroupDriver().getGroupsFromNode("InternalNode").forEach(group -> {
-            Driver.getInstance().getGroupDriver().launchService(group.getName(), group.getMinOnlineServers());
+            for (int i = 0; i != group.getMinOnlineServers(); i++){
+                Driver.getInstance().getQueueDriver().addTaskToQueue(new QueueContainer(QueueStatement.LAUNCHING, group.getName()));
+            }
         });
         while (true){}
 

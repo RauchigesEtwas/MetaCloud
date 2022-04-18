@@ -14,6 +14,8 @@ import io.metacloud.handlers.listener.NetworkExceptionEvent;
 import io.metacloud.handlers.listener.PacketReceivedEvent;
 import io.metacloud.network.packets.nodes.*;
 import io.metacloud.protocol.Packet;
+import io.metacloud.queue.bin.QueueContainer;
+import io.metacloud.queue.bin.QueueStatement;
 import io.metacloud.webservice.restconfigs.livenodes.NodesRestConfig;
 import io.metacloud.webservice.restconfigs.services.LiveService;
 import io.metacloud.webservice.restconfigs.services.ServiceRest;
@@ -62,7 +64,9 @@ public class NodeHandlerListener extends PacketListener {
 
 
                      Driver.getInstance().getGroupDriver().getGroupsFromNode(packet.getNodeName()).forEach(group -> {
-                         Driver.getInstance().getGroupDriver().launchService(group.getName(), group.getMinOnlineServers());
+                         for (int i = 0; i != group.getMinOnlineServers(); i++){
+                             Driver.getInstance().getQueueDriver().addTaskToQueue(new QueueContainer(QueueStatement.LAUNCHING, group.getName()));
+                         }
                      });
 
 

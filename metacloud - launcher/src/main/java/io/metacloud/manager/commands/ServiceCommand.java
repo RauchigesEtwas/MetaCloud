@@ -11,6 +11,8 @@ import io.metacloud.console.data.ConsoleStorageLine;
 import io.metacloud.console.logger.Logger;
 import io.metacloud.console.logger.enums.MSGType;
 import io.metacloud.network.packets.services.ServiceSendCommandPacket;
+import io.metacloud.queue.bin.QueueContainer;
+import io.metacloud.queue.bin.QueueStatement;
 import io.metacloud.services.processes.bin.CloudServiceState;
 import io.metacloud.webservice.restconfigs.services.ServiceRest;
 
@@ -34,7 +36,9 @@ public class ServiceCommand extends CloudCommand {
                 int count = Integer.parseInt(args[2]);
                 if (Driver.getInstance().getGroupDriver().getGroup(group) != null){
                     logger.log(MSGType.MESSAGETYPE_COMMAND,  "the action is now executed...");
-                    Driver.getInstance().getGroupDriver().launchService(group, count);
+                    for (int i = 0; i != count; i++){
+                        Driver.getInstance().getQueueDriver().addTaskToQueue(new QueueContainer(QueueStatement.LAUNCHING, group));
+                    }
                 }else {
                     logger.log(MSGType.MESSAGETYPE_COMMAND,  "The specified group §bcould not be found§7 in the Cloud ");
                 }
