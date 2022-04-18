@@ -44,13 +44,12 @@ public class QueueDriver {
                 }
 
                 }
-            }, 1000, 1000*10);
+            }, 1000, 1000*5);
 
         });
         this.thread.start();
         this.thread.setName("METACLOUD_QUEUE");
         this.thread.setPriority(Thread.MIN_PRIORITY);
-        this.thread.setDaemon(false);
     }
 
 
