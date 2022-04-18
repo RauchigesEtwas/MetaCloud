@@ -9,6 +9,8 @@ import io.metacloud.configuration.configs.group.GroupType;
 import io.metacloud.console.logger.enums.MSGType;
 import io.metacloud.network.packets.nodes.NodeHaltServicePacket;
 import io.metacloud.network.packets.nodes.NodeLaunchServicePacket;
+import io.metacloud.queue.bin.QueueContainer;
+import io.metacloud.queue.bin.QueueStatement;
 import io.metacloud.services.processes.bin.CloudServiceState;
 import io.metacloud.services.processes.bin.CloudServiceType;
 import io.metacloud.services.processes.utils.ServiceStorage;
@@ -86,70 +88,68 @@ public class GroupDriver {
     public void shutdownService(String service){
 
             ServiceConfiguration serviceConfig = (ServiceConfiguration) new ConfigDriver("./service.json").read(ServiceConfiguration.class);
-            GroupConfiguration group = getGroup(service.split(serviceConfig.getGeneral().getServerSplitter())[0]);
+            GroupConfiguration group = getGroupByService(service);
 
-            ServiceRest rest = (ServiceRest) Driver.getInstance().getRestDriver().getRestAPI().convertToRestConfig("http://" + serviceConfig.getCommunication().getManagerHostAddress() + ":" + serviceConfig.getCommunication().getRestApiPort()+
-                    "/" + serviceConfig.getCommunication().getRestApiAuthKey()+ "/livegroup-" + group.getName(), ServiceRest.class);
-
-
-            if (group.getProperties().getNode().equalsIgnoreCase("InternalNode")){
-                rest.getServices().forEach(liveService -> {
-                    if (liveService.getServiceName().equalsIgnoreCase(service)){
-                        Driver.getInstance().getConsoleDriver().getLogger().log(MSGType.MESSAGETYPE_NETWORK,  "the service §b"+service+"§7 is stopped on the §b" + group.getProperties().getNode());
-                        Driver.getInstance().getServiceDriver().haltService(service);
-                        selecdedService = liveService;
-                    }
-                });
-                rest.getServices().remove(selecdedService);
-                ArrayList<Integer> updatedIDs = new ArrayList<>();
-
-                rest.getUsedIDs().forEach(integer -> {
-                    if (integer != Integer.valueOf(service.split(serviceConfig.getGeneral().getServerSplitter())[1])){
-                        updatedIDs.add(integer);
-                    }
-                });
-                rest.getUsedIDs().clear();
-
-                updatedIDs.forEach(integer -> {
-                    rest.getUsedIDs().add(integer);
-                });
-                deployOnRest(group.getName(), rest);
-            }else{
-                rest.getServices().forEach(liveService -> {
-                    if (liveService.getServiceName().equalsIgnoreCase(service)){
-
-                        Driver.getInstance().getConsoleDriver().getLogger().log(MSGType.MESSAGETYPE_NETWORK,  "the service §b"+service+"§7 is stopped on the §b" + group.getProperties().getNode());
-                        Channel channel = Driver.getInstance().getConnectionDriver().getNodeChannel(group.getProperties().getNode());
-                        NodeHaltServicePacket packet = new NodeHaltServicePacket();
-                        packet.setService(service);
-                        channel.sendPacket(packet);
-                        selecdedService = liveService;
-                    }
-                });
-
-                ArrayList<Integer> updatedIDs = new ArrayList<>();
-
-                rest.getUsedIDs().forEach(integer -> {
-                    if (integer != Integer.valueOf(service.split(serviceConfig.getGeneral().getServerSplitter())[1])){
-                        updatedIDs.add(integer);
-                    }
-                });
-                rest.getUsedIDs().clear();
-
-                updatedIDs.forEach(integer -> {
-                    rest.getUsedIDs().add(integer);
-                });
-                rest.getServices().remove(selecdedService);
-                deployOnRest(group.getName(), rest);
-            }
+        ServiceRest rest = (ServiceRest) Driver.getInstance().getRestDriver().getRestAPI().convertToRestConfig("http://" + serviceConfig.getCommunication().getManagerHostAddress() + ":" + serviceConfig.getCommunication().getRestApiPort()+
+                "/" + serviceConfig.getCommunication().getRestApiAuthKey()+ "/livegroup-" + group.getName(), ServiceRest.class);
 
 
+        if (group.getProperties().getNode().equalsIgnoreCase("InternalNode")) {
+            rest.getServices().forEach(liveService -> {
+                if (liveService.getServiceName().equalsIgnoreCase(service)) {
+                    Driver.getInstance().getConsoleDriver().getLogger().log(MSGType.MESSAGETYPE_NETWORK, "the service §b" + service + "§7 is stopped on the §b" + group.getProperties().getNode());
+                    Driver.getInstance().getQueueDriver().addTaskToQueue(new QueueContainer(QueueStatement.STOPPING, service));
+                    selecdedService = liveService;
+                }
+            });
+            rest.getServices().remove(selecdedService);
+            ArrayList<Integer> updatedIDs = new ArrayList<>();
 
+            rest.getUsedIDs().forEach(integer -> {
+                if (integer != Integer.valueOf(service.split(serviceConfig.getGeneral().getServerSplitter())[1])) {
+                    updatedIDs.add(integer);
+                }
+            });
+            rest.getUsedIDs().clear();
+
+            updatedIDs.forEach(integer -> {
+                rest.getUsedIDs().add(integer);
+            });
+            deployOnRest(group.getName(), rest);
+
+
+        }else {
+            rest.getServices().forEach(liveService -> {
+                if (liveService.getServiceName().equalsIgnoreCase(service)){
+
+                    Driver.getInstance().getConsoleDriver().getLogger().log(MSGType.MESSAGETYPE_NETWORK,  "the service §b"+service+"§7 is stopped on the §b" + group.getProperties().getNode());
+                    Channel channel = Driver.getInstance().getConnectionDriver().getNodeChannel(group.getProperties().getNode());
+                    NodeHaltServicePacket packet = new NodeHaltServicePacket();
+                    packet.setService(service);
+                    channel.sendPacket(packet);
+                    selecdedService = liveService;
+                }
+            });
+
+            ArrayList<Integer> updatedIDs = new ArrayList<>();
+
+            rest.getUsedIDs().forEach(integer -> {
+                if (integer != Integer.valueOf(service.split(serviceConfig.getGeneral().getServerSplitter())[1])){
+                    updatedIDs.add(integer);
+                }
+            });
+            rest.getUsedIDs().clear();
+
+            updatedIDs.forEach(integer -> {
+                rest.getUsedIDs().add(integer);
+            });
+            rest.getServices().remove(selecdedService);
+            deployOnRest(group.getName(), rest);
+        }
     }
 
 
     public void launchService(String groupName, Integer count){
-
           ServiceConfiguration service = (ServiceConfiguration) new ConfigDriver("./service.json").read(ServiceConfiguration.class);
           GroupConfiguration group = getGroup(groupName);
           if (group != null){
@@ -157,7 +157,6 @@ public class GroupDriver {
               if (node.equalsIgnoreCase("InternalNode")){
                   for (int i = 0; i != count; i++) {
                       int id = getNextFreeID(groupName);
-                      Driver.getInstance().getConsoleDriver().getLogger().log(MSGType.MESSAGETYPE_NETWORK,  "the service §b"+groupName+service.getGeneral().getServerSplitter()+id+"§7 is now §aprepared §7[node: §b"+node+"§7, §7version:§b "+group.getProperties().getVersion()+"§7]");
                       ServiceRest serviceRest = (ServiceRest) Driver.getInstance().getRestDriver().getRestAPI().convertToRestConfig("http://" + service.getCommunication().getManagerHostAddress() + ":" + service.getCommunication().getRestApiPort()+
                               "/" + service.getCommunication().getRestApiAuthKey()+ "/livegroup-" + groupName, ServiceRest.class);
                       LiveService liveService = new LiveService();
@@ -175,35 +174,26 @@ public class GroupDriver {
                       serviceRest.getServices().add(liveService);
                       serviceRest.getUsedIDs().add(id);
                       deployOnRest(group.getName(), serviceRest);
-                      ServiceStorage storage = new ServiceStorage();
-                      storage.setServiceName(groupName + service.getGeneral().getServerSplitter() + id);
-                      storage.setGroupConfiguration(group);
-                      storage.setNetworkingPort(service.getCommunication().getNetworkingPort());
-                      storage.setRestAPIPort(service.getCommunication().getRestApiPort());
 
-                      storage.setManagerAddress(service.getCommunication().getManagerHostAddress());
-                      storage.setAuthNetworkingKey(service.getCommunication().getNodeAuthKey());
-                      storage.setAuthRestAPIKey(service.getCommunication().getRestApiAuthKey());
+                        Driver.getInstance().getConsoleDriver().getLogger().log(MSGType.MESSAGETYPE_INFO, "the service §b"+groupName+service.getGeneral().getServerSplitter()+id+"§7 has been §badded§7 to the queue.");
                       if (group.getMode() == GroupType.PROXY){
-                          storage.setSelectedPort(Driver.getInstance().getServiceDriver().getFreePort(true));
+                          Driver.getInstance().getQueueDriver().addTaskToQueue(new QueueContainer(QueueStatement.LAUNCHING, groupName+service.getGeneral().getServerSplitter()+id, Driver.getInstance().getServiceDriver().getFreePort(true), group, service.getCommunication().getNetworkingPort(), service.getCommunication().getRestApiPort(), service.getCommunication().getManagerHostAddress(), service.getCommunication().getNodeAuthKey(), service.getCommunication().getRestApiAuthKey()));
                       }else {
-                          storage.setSelectedPort(Driver.getInstance().getServiceDriver().getFreePort(false));
-                      }
+                          Driver.getInstance().getQueueDriver().addTaskToQueue(new QueueContainer(QueueStatement.LAUNCHING, groupName+service.getGeneral().getServerSplitter()+id, Driver.getInstance().getServiceDriver().getFreePort(false), group, service.getCommunication().getNetworkingPort(), service.getCommunication().getRestApiPort(), service.getCommunication().getManagerHostAddress(), service.getCommunication().getNodeAuthKey(), service.getCommunication().getRestApiAuthKey()));
 
-                      Driver.getInstance().getServiceDriver().launchService(storage);
+                      }
                   }
-              }else {
+              }else{
                   if (Driver.getInstance().getConnectionDriver().getNodeChannel(node) != null){
                       Channel channel = Driver.getInstance().getConnectionDriver().getNodeChannel(node);
-
                       for (int i = 0; i != count; i++) {
+                          int id = getNextFreeID(groupName);
+                          Driver.getInstance().getConsoleDriver().getLogger().log(MSGType.MESSAGETYPE_INFO, "the service §b"+groupName+service.getGeneral().getServerSplitter()+id+"§7 has been §badded§7 to the queue.");
+
                           ServiceRest serviceRest = (ServiceRest) Driver.getInstance().getRestDriver().getRestAPI().convertToRestConfig("http://" + service.getCommunication().getManagerHostAddress() + ":" + service.getCommunication().getRestApiPort()+
                                   "/" + service.getCommunication().getRestApiAuthKey()+ "/livegroup-" + groupName, ServiceRest.class);
-
-
                           NodeLaunchServicePacket launchServicePacket = new NodeLaunchServicePacket();
                           launchServicePacket.setGroup(group.getName());
-                          int id = getNextFreeID(groupName);
                           LiveService liveService = new LiveService();
                           liveService.setNode(node);
                           liveService.setStartTime(System.currentTimeMillis());
@@ -227,6 +217,34 @@ public class GroupDriver {
           }
 
     }
+
+    public void shutdownNode(String node){
+        ArrayList<GroupConfiguration> groups = getGroupsFromNode(node);
+        ServiceConfiguration service = (ServiceConfiguration) new ConfigDriver("./service.json").read(ServiceConfiguration.class);
+        groups.forEach(groupConfiguration -> {
+            ServiceRest serviceRest = (ServiceRest) Driver.getInstance().getRestDriver().getRestAPI().convertToRestConfig("http://" + service.getCommunication().getManagerHostAddress() + ":" + service.getCommunication().getRestApiPort()+
+                    "/" + service.getCommunication().getRestApiAuthKey()+ "/livegroup-" + groupConfiguration.getName(), ServiceRest.class);
+
+            serviceRest.getUsedIDs().clear();
+            serviceRest.getServices().clear();
+            Driver.getInstance().getRestDriver().getRestServer(service.getCommunication().getRestApiPort()).updateContent("livegroup-" + groupConfiguration.getName(), serviceRest);
+        });
+
+    }
+
+
+    public GroupConfiguration getGroupByService(String service){
+        ArrayList<GroupConfiguration> configurations = getGroups();
+        for (int i = 0; i !=configurations.size() ; i++) {
+            GroupConfiguration configuration =  configurations.get(i);
+            if (service.startsWith(configuration.getName())){
+                i = configurations.size();
+                return configuration;
+            }
+        }
+        return null;
+    }
+
 
     private Integer getNextFreeID(String groupname){
         int id = 0;

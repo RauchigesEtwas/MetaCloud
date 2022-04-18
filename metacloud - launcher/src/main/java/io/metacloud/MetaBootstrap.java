@@ -66,11 +66,11 @@ public class MetaBootstrap {
 
 
         if (new File("./service.json").exists()){
-            Driver.getInstance().getConsoleDriver().getLogger().log(MSGType.MESSAGETYPE_INFO,  "the manager was prepared§7 and will be start");
+            Driver.getInstance().getConsoleDriver().getLogger().log(MSGType.MESSAGETYPE_INFO,  "an instance of the §bManager§7 is executed");
 
             new MetaManager(args);
         }else {
-            Driver.getInstance().getConsoleDriver().getLogger().log(MSGType.MESSAGETYPE_INFO,  "the node was prepared§7 and will be start");
+            Driver.getInstance().getConsoleDriver().getLogger().log(MSGType.MESSAGETYPE_INFO,  "an instance of the §bNode§7 is executed");
             new MetaNode(args);
         }
 

@@ -108,11 +108,9 @@ public class ServiceDriver {
 
     public void haltService(String serviceName){
         CloudService service = getService(serviceName);
-        if (service != null){
-            service.stop();
-            this.usedPorts.remove(service.getStorage().getSelectedPort());
-            this.runningProcesses.remove(service);
-        }
+        service.stop();
+        this.usedPorts.remove(service.getStorage().getSelectedPort());
+        this.runningProcesses.remove(service);
     }
 
 }

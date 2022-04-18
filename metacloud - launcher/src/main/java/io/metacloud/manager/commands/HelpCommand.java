@@ -31,7 +31,7 @@ public class HelpCommand extends CloudCommand {
                     }
                 }
             }
-            logger.log(MSGType.MESSAGETYPE_COMMAND, "> §b" + command1.getCommand() + " §7- Aliases: [§b" +aliases+"§7] ~ §f" + command1.getDescription());
+            logger.log(MSGType.MESSAGETYPE_COMMAND, "> §b" + command1.getCommand() + " §7- Aliases: §b" +aliases+"§7 ~ §f" + command1.getDescription());
         });
 
     });

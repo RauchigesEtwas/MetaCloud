@@ -3,6 +3,7 @@ package io.metacloud.queue;
 import io.metacloud.Driver;
 import io.metacloud.queue.bin.QueueContainer;
 import io.metacloud.queue.bin.QueueStatement;
+import io.metacloud.services.processes.utils.ServiceStorage;
 
 import java.util.LinkedList;
 import java.util.Queue;
@@ -33,11 +34,22 @@ public class QueueDriver {
                 public void run() {
                 if (!queue.isEmpty()){
                     QueueContainer container = queue.poll();
+
                     if (container.getQueueStatement() == QueueStatement.LAUNCHING){
-                        Driver.getInstance().getGroupDriver().launchService(container.getContent(), 1);
-                    }
-                    if (container.getQueueStatement() == QueueStatement.STOPPING){
-                        Driver.getInstance().getGroupDriver().shutdownService(container.getContent());
+
+                        ServiceStorage storage = new ServiceStorage();
+                        storage.setServiceName(container.getServiceName());
+                        storage.setGroupConfiguration(container.getGroupConfiguration());
+                        storage.setNetworkingPort(container.getNetworkingPort());
+                        storage.setRestAPIPort(container.getRestPort());
+                        storage.setManagerAddress(container.getManagerAddress());
+                        storage.setAuthNetworkingKey(container.getNetworkAuthKey());
+                        storage.setAuthRestAPIKey(container.getRestAuthKey());
+                        storage.setSelectedPort(container.getPort());
+
+                        Driver.getInstance().getServiceDriver().launchService(storage);
+                    }     if (container.getQueueStatement() == QueueStatement.STOPPING){
+                        Driver.getInstance().getServiceDriver().haltService(container.getServiceName());
                     }
 
 

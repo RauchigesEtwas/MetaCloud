@@ -14,6 +14,8 @@ import io.metacloud.handlers.listener.PacketReceivedEvent;
 import io.metacloud.network.packets.nodes.*;
 import io.metacloud.node.MetaNode;
 import io.metacloud.protocol.Packet;
+import io.metacloud.queue.bin.QueueContainer;
+import io.metacloud.queue.bin.QueueStatement;
 import io.metacloud.services.processes.utils.ServiceStorage;
 
 public class ManagerHandlerListener extends PacketListener {
@@ -48,9 +50,8 @@ public class ManagerHandlerListener extends PacketListener {
         Packet readPacket = event.getPacket();
         if (readPacket instanceof NodeHaltServicePacket){
             NodeHaltServicePacket packet = (NodeHaltServicePacket) readPacket;
-            Driver.getInstance().getServiceDriver().haltService(packet.getService());
-            Driver.getInstance().getConsoleDriver().getLogger().log(MSGType.MESSAGETYPE_NETWORK,  "new §btask§7, stop the service §b" + packet.getService());
-
+            Driver.getInstance().getQueueDriver().addTaskToQueue(new QueueContainer(QueueStatement.STOPPING, packet.getService()));
+            Driver.getInstance().getConsoleDriver().getLogger().log(MSGType.MESSAGETYPE_NETWORK,  "Launch Service §b" + packet.getService() + "§7 is an new Task and was §badded§7 to the Queue");
         }
     }
 
@@ -66,35 +67,29 @@ public class ManagerHandlerListener extends PacketListener {
 
             ServiceConfiguration serviceConfiguration = (ServiceConfiguration) Driver.getInstance().getRestDriver().getRestAPI().convertToConfig("http://" + configuration.getManagerHostAddress()+ ":" + configuration.getRestAPICommunicationPort() + "/"
                     + configuration.getRestAPIAuthKey() + "/service", ServiceConfiguration.class);
-            ServiceStorage storage = new ServiceStorage();
-            storage.setNetworkingPort(configuration.getNetworkCommunicationPort());
-            storage.setRestAPIPort(configuration.getRestAPICommunicationPort());
-            storage.setAuthNetworkingKey(configuration.getNetworkAuthKey());
-            storage.setAuthRestAPIKey(configuration.getRestAPIAuthKey());
-            storage.setManagerAddress(configuration.getManagerHostAddress());
-
+            Driver.getInstance().getConsoleDriver().getLogger().log(MSGType.MESSAGETYPE_NETWORK,  "Launch Service §b" + packet.getGroup() + serviceConfiguration.getGeneral().getServerSplitter() + packet.getServiceCount()+ "§7 is an new Task and was §badded§7 to the Queue");
             if (group.getMode() == GroupType.PROXY){
-                Integer port = Driver.getInstance().getServiceDriver().getFreePort(true);
-                storage.setSelectedPort(port);
-                NodeLaunchServiceCallBackPacket NodeLaunchServiceCallBackPacket = new NodeLaunchServiceCallBackPacket();
-                NodeLaunchServiceCallBackPacket.setSelecedPort(port);
-                NodeLaunchServiceCallBackPacket.setServiceName(packet.getGroup() + serviceConfiguration.getGeneral().getServerSplitter()+ packet.getServiceCount());
-                channel.sendPacket(NodeLaunchServiceCallBackPacket);
-                Driver.getInstance().getConsoleDriver().getLogger().log(MSGType.MESSAGETYPE_NETWORK,  "new §btask§7, Start a new service of the group §b" + group.getName() +"§7 [selectedPort: §b"+port+"§7]");
+                Driver.getInstance().getQueueDriver().addTaskToQueue(new QueueContainer(QueueStatement.LAUNCHING,
+                        packet.getGroup() + serviceConfiguration.getGeneral().getServerSplitter() + packet.getServiceCount(),
+                        Driver.getInstance().getServiceDriver().getFreePort(true),
+                        group,
+                        serviceConfiguration.getCommunication().getNetworkingPort(),
+                        serviceConfiguration.getCommunication().getRestApiPort(),
+                        configuration.getManagerHostAddress(),
+                        serviceConfiguration.getCommunication().getNodeAuthKey(),
+                        serviceConfiguration.getCommunication().getRestApiAuthKey()));
             }else {
-                Integer port = Driver.getInstance().getServiceDriver().getFreePort(false);
-                NodeLaunchServiceCallBackPacket NodeLaunchServiceCallBackPacket = new NodeLaunchServiceCallBackPacket();
-                NodeLaunchServiceCallBackPacket.setSelecedPort(port);
-                NodeLaunchServiceCallBackPacket.setServiceName(packet.getGroup() + serviceConfiguration.getGeneral().getServerSplitter()+ packet.getServiceCount());
-                channel.sendPacket(NodeLaunchServiceCallBackPacket);
-                Driver.getInstance().getConsoleDriver().getLogger().log(MSGType.MESSAGETYPE_NETWORK,  "new §btask§7, Start a new service of the group §b" + group.getName() +"§7 [selectedPort: §b"+port+"§7]");
-                storage.setSelectedPort(port);
+                Driver.getInstance().getQueueDriver().addTaskToQueue(new QueueContainer(QueueStatement.LAUNCHING,
+                        packet.getGroup() + serviceConfiguration.getGeneral().getServerSplitter() + packet.getServiceCount(),
+                        Driver.getInstance().getServiceDriver().getFreePort(false),
+                        group,
+                        serviceConfiguration.getCommunication().getNetworkingPort(),
+                        serviceConfiguration.getCommunication().getRestApiPort(),
+                        configuration.getManagerHostAddress(),
+                        serviceConfiguration.getCommunication().getNodeAuthKey(),
+                        serviceConfiguration.getCommunication().getRestApiAuthKey()));
             }
-            storage.setServiceName(packet.getGroup() + serviceConfiguration.getGeneral().getServerSplitter()+ packet.getServiceCount());
-            storage.setGroupConfiguration(group);
 
-
-            Driver.getInstance().getServiceDriver().launchService(storage);
 
         }
     }

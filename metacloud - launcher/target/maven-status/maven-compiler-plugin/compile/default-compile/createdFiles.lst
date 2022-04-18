@@ -12,7 +12,6 @@ io\metacloud\node\commands\EndCommand.class
 io\metacloud\manager\commands\EndCommand.class
 io\metacloud\node\commands\EndCommand$1.class
 io\metacloud\manager\commands\NodeCommand.class
-io\metacloud\manager\MetaManager$1.class
 io\metacloud\manager\networking\NodeHandlerListener.class
 io\metacloud\node\commands\ClearCommand.class
 io\metacloud\manager\commands\ClearCommand.class
