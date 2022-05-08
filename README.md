@@ -17,10 +17,9 @@ This is the **MetaCloud** project, it is a dynamic Minecraft cloud management sy
 - **Powerfull REST-API** with realtime resuls
 - **Module-System** with lot of features like: **SignSystem** *with custom layout*, **PermissionSystem** *thats handle all Players and theren permissions*....
 - **Dynamic** & **Static** starting **Server Services**
-- Supports some **Proxy-Application** like: *Waterfall*, *Bungeecord* or *Velocity*...
+- Supports some **Proxy-Application** like: *Waterfall* or *Bungeecord*...
 - Supports some **Server-Application** like: *Spigot*, *PaperSpigot* or *TacoSpigot*...
 - **Dashboard** to handle the whole cloud
-- **SQL**, **NoSQL** and **File** support
 - and much more..
 
 ## Setup the CloudSystem (Not ready yet)
@@ -35,23 +34,22 @@ This is the **MetaCloud** project, it is a dynamic Minecraft cloud management sy
 [✔] FINISHED | [✁] EXPERMENTAL | [✎] IN WORKING | [☓] NOT STARTET
 
 - [☓] Multi-Proxy
-- [✎] Multi-Root
+- [✔] Multi-Root
 - [✔] Nio-Networking base
 - [✔] Restapi with realtime resuls
-- [☓] Module-System
+- [✔] Module-System
 - [☓] SyncProxy Module
 - [☓] CloudSigns Module
 - [☓] LoadBalancer Module
 - [☓] Permission Module
 - [☓] Dashboard Module
 - [☓] NPC Module
-- [☓] Handle some Spigot-Versions and Bungeecord-Versions
+- [✔] Handle some Spigot-Versions and Bungeecord-Versions
 - [☓] CloudAPI
-- [☓] SQL & NoSQL support
-- [✎] Dynamic starting Server Services
-- [✎] Static starting Server Services
-- [✎] Auto-Starting servers
-- [☓] Lobby balancing
+- [✔] Dynamic starting Server Services
+- [✔] Static starting Server Services
+- [✔] Auto-Starting servers
+- [✔] Lobby balancing
 - [✔] Cloud Setup
 - [✔] CommandSystem and Console Output
 
