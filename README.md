@@ -33,7 +33,7 @@ This is the **MetaCloud** project, it is a dynamic Minecraft cloud management sy
 ## Process State
 [✔] FINISHED | [✁] EXPERMENTAL | [✎] IN WORKING | [☓] NOT STARTET
 
-- [☓] Multi-Proxy
+- [✔] Multi-Proxy
 - [✔] Multi-Root
 - [✔] Nio-Networking base
 - [✔] Restapi with realtime resuls
