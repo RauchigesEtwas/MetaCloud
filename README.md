@@ -38,14 +38,14 @@ This is the **MetaCloud** project, it is a dynamic Minecraft cloud management sy
 - [✔] Nio-Networking base
 - [✔] Restapi with realtime resuls
 - [✔] Module-System
-- [☓] SyncProxy Module
+- [✔] SyncProxy Module
 - [☓] CloudSigns Module
 - [☓] LoadBalancer Module
 - [☓] Permission Module
 - [☓] Dashboard Module
 - [☓] NPC Module
 - [✔] Handle some Spigot-Versions and Bungeecord-Versions
-- [☓] CloudAPI
+- [✁] CloudAPI
 - [✔] Dynamic starting Server Services
 - [✔] Static starting Server Services
 - [✔] Auto-Starting servers
