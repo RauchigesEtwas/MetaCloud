@@ -39,9 +39,9 @@ This is the **MetaCloud** project, it is a dynamic Minecraft cloud management sy
 - [✔] Restapi with realtime resuls
 - [✔] Module-System
 - [✔] SyncProxy Module
-- [☓] CloudSigns Module
-- [☓] LoadBalancer Module
-- [☓] Permission Module
+- [✁] CloudSigns Module
+- [✔] LoadBalancer Module
+- [✎] Permission Module
 - [☓] Dashboard Module
 - [☓] NPC Module
 - [✔] Handle some Spigot-Versions and Bungeecord-Versions
