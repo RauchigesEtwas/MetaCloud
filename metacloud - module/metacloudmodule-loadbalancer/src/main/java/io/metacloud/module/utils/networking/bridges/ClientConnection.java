@@ -1,12 +1,15 @@
-package de.rauchigesetwas.loadbalancer.utils.networking.bridges;
+package io.metacloud.module.utils.networking.bridges;
 
 import com.google.common.collect.Queues;
-import de.rauchigesetwas.loadbalancer.CloudBalancer;
-import de.rauchigesetwas.loadbalancer.utils.LoadBalancer;
-import de.rauchigesetwas.loadbalancer.utils.data.HandshakeData;
-import de.rauchigesetwas.loadbalancer.utils.subgates.SubGate;
-import de.rauchigesetwas.loadbalancer.utils.util.ConnectionState;
-import de.rauchigesetwas.loadbalancer.utils.util.PacketUtils;
+import io.metacloud.configuration.ConfigDriver;
+import io.metacloud.module.LoadBalancerModule;
+import io.metacloud.module.config.Configuration;
+import io.metacloud.module.config.ConnectionType;
+import io.metacloud.module.utils.LoadBalancer;
+import io.metacloud.module.utils.storage.HandShakeData;
+import io.metacloud.module.utils.subgates.SubGate;
+import io.metacloud.module.utils.util.ConnectionState;
+import io.metacloud.module.utils.util.PacketUtils;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
@@ -26,16 +29,13 @@ import java.net.InetSocketAddress;
 import java.nio.channels.ClosedChannelException;
 import java.util.Queue;
 
-/**
- * The type Client connection.
- */
 public class ClientConnection extends SimpleChannelInboundHandler<ByteBuf> {
 
     private Queue<byte[]> queuedPackets = Queues.newArrayDeque();
     private ConnectionState state = ConnectionState.DEFAULT;
 
     private ServerConnection serverConnection;
-    private HandshakeData handshake;
+    private HandShakeData handshake;
     private String servername;
     private Channel channel;
     private String username;
@@ -76,11 +76,12 @@ public class ClientConnection extends SimpleChannelInboundHandler<ByteBuf> {
             this.queuedPackets = null;
         }
         if (this.serverConnection != null && this.serverConnection.isChannelOpen()) {
+
+
             this.serverConnection.closeChannel();
-            if(!hasbeenblocked){
-                System.out.println("INFO | " + getName() + " Left the Network [DISCONNECT]");
-            }
         }
+
+        LoadBalancerModule.getInstance().getProxyStorage().get(this.servername).setConnectedPlayers(LoadBalancerModule.getInstance().getProxyStorage().get(this.servername).getConnectedPlayers() - 1);
 
 
         LoadBalancer.ONLINE_PLAYERS.remove(this);
@@ -134,15 +135,23 @@ public class ClientConnection extends SimpleChannelInboundHandler<ByteBuf> {
 
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, ByteBuf in) throws Exception {
+
+        if (LoadBalancerModule.getInstance().getProxyStorage().isEmpty()){
+            this.closeChannel();
+            return;
+        }
+
+
         switch (this.state) {
             case DEFAULT: {
+
 
                 this.addToQueue(in);
                 int packetId = PacketUtils.readVarInt(in);
                 if (packetId != 0) {
-                    throw new IOException("Invalid packet id received: " + packetId + ", connecting state");
+                    return;
                 }
-                this.handshake = new HandshakeData();
+                this.handshake = new HandShakeData();
 
                 this.handshake.read(in);
                 this.state = ConnectionState.HANDSHAKE_RECEIVED;
@@ -153,7 +162,7 @@ public class ClientConnection extends SimpleChannelInboundHandler<ByteBuf> {
                 this.addToQueue(in);
                 int packetId = PacketUtils.readVarInt(in);
                 if (packetId != 0) {
-                    throw new IOException("Invalid packet id received: " + packetId + ", handshake received state");
+                    return;
                 }
                 if (this.handshake.getNextState() == 2) {
                     this.username = PacketUtils.readString(in);
@@ -177,7 +186,6 @@ public class ClientConnection extends SimpleChannelInboundHandler<ByteBuf> {
 
 
 
-
     /**
      * On server connected.
      */
@@ -187,7 +195,7 @@ public class ClientConnection extends SimpleChannelInboundHandler<ByteBuf> {
             return;
         }
         if (this.state != ConnectionState.CONNECTING) {
-            throw new RuntimeException("Invalid state: " + this.state);
+            return;
         }
         this.channel.pipeline().remove("splitter");
 
@@ -210,8 +218,6 @@ public class ClientConnection extends SimpleChannelInboundHandler<ByteBuf> {
             this.queuedPackets.clear();
             this.queuedPackets = null;
         }
-
-        CloudBalancer.antiBot.registerConnection(this.getAddress());
         this.state = ConnectionState.CONNECTED;
         this.channel.config().setAutoRead(true);
     }
@@ -230,18 +236,21 @@ public class ClientConnection extends SimpleChannelInboundHandler<ByteBuf> {
      */
     public void connectToServer() {
 
-
-        if(CloudBalancer.subs.size() == 0){
+        Configuration config = (Configuration) new ConfigDriver("./modules/loadbalancer/config.json").read(Configuration.class);
+        if (LoadBalancerModule.getInstance().getProxyStorage().isEmpty()){
             this.closeChannel();
             return;
-        }else{
-
-            SubGate sub = CloudBalancer.getRandomSub();
-            servername = sub.proxyedtaskname;
-
-            this.connectToServer( new InetSocketAddress(sub.ip, sub.port));
         }
 
+        if (config.getConnectionType() == ConnectionType.RANDOM){
+            SubGate subGate = LoadBalancerModule.getInstance().getRandomSub();
+
+
+
+            this.servername = subGate.proxyedtaskname;
+            LoadBalancerModule.getInstance().getProxyStorage().get(subGate.proxyedtaskname).setConnectedPlayers(LoadBalancerModule.getInstance().getProxyStorage().get(subGate.proxyedtaskname).getConnectedPlayers() + 1);
+            connectToServer(new InetSocketAddress(subGate.ip, subGate.port));
+        }
     }
 
     /**
@@ -250,6 +259,11 @@ public class ClientConnection extends SimpleChannelInboundHandler<ByteBuf> {
      * @param server the server
      */
     public void connectToServer(InetSocketAddress server) {
+
+        if (LoadBalancerModule.getInstance().getProxyStorage().isEmpty()){
+            this.closeChannel();
+            return;
+        }
         this.state = ConnectionState.CONNECTING;
         this.channel.config().setAutoRead(false);
         this.serverConnection = new ServerConnection(this);
@@ -275,7 +289,7 @@ public class ClientConnection extends SimpleChannelInboundHandler<ByteBuf> {
      *
      * @return the handshake
      */
-    public HandshakeData getHandshake() {
+    public HandShakeData getHandshake() {
         return this.handshake;
     }
 }

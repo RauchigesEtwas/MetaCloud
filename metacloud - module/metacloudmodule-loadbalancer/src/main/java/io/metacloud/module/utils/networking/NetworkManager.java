@@ -1,9 +1,9 @@
-package de.rauchigesetwas.loadbalancer.utils.networking;
+package io.metacloud.module.utils.networking;
 
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
-import de.rauchigesetwas.loadbalancer.utils.LoadBalancer;
-import de.rauchigesetwas.loadbalancer.utils.networking.bridges.ClientConnection;
-import de.rauchigesetwas.loadbalancer.utils.networking.handler.LengthDeserializer;
+import io.metacloud.module.utils.LoadBalancer;
+import io.metacloud.module.utils.networking.bridges.ClientConnection;
+import io.metacloud.module.utils.networking.handler.LengthDeserializer;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.buffer.PooledByteBufAllocator;
 import io.netty.channel.*;

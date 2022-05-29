@@ -7,6 +7,8 @@ import io.metacloud.channels.ChannelPipeline;
 import io.metacloud.handlers.PacketListenerHandler;
 import lombok.SneakyThrows;
 
+import java.io.IOException;
+
 public class NetworkServerDriver {
 
     private int port;
@@ -21,12 +23,16 @@ public class NetworkServerDriver {
     @SneakyThrows
     public void run(){
         NetworkingBootStrap.packetListenerHandler = new PacketListenerHandler();
-        NetworkingBootStrap.server = new NetworkServer();
-        NetworkingBootStrap.server.init(channel -> {})
-                .option(Options.BUFFER_SIZE, 2024)
-                .option(Options.TIMEOUT, -1)
-                .option(Options.PERFORMANCE_BOOST, true)
-                .bind(this.port);
+            try {
+                NetworkingBootStrap.server = new NetworkServer();
+                NetworkingBootStrap.server.init(channel -> {})
+                        .option(Options.BUFFER_SIZE, 2024)
+                        .option(Options.TIMEOUT, -1)
+                        .option(Options.PERFORMANCE_BOOST, true)
+                        .bind(this.port);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
     }
 
     public void end(){

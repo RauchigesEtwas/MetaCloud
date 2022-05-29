@@ -16,7 +16,9 @@ public final class ConsolReading extends Thread{
     public ConsolReading(Logger logger, ConsoleDriver consoleDriver) {
         this.consolePrompt = logger.getColoredString("§bMetaCloud§f@"+ Driver.getInstance().getStorageDriver().getVersion()+" §7» §7");
         this.consoleDriver = consoleDriver;
-        this.lineReader = this.consoleDriver.getLineReader();;
+        this.lineReader = this.consoleDriver.getLineReader();
+        this.setPriority(Thread.MAX_PRIORITY);
+        this.setName("METACLOUD_CONSOLE");
     }
 
 

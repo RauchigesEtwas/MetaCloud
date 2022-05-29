@@ -7,18 +7,23 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="metacloudmodule - syncproxy" />
         <module name="metacloud-launcher" />
+        <module name="metacloud-api" />
         <module name="metacloud-plugin" />
-        <module name="metacloud - networking" />
-        <module name="metacloud - api" />
+        <module name="metacloudmodule-signs" />
         <module name="metacloud - driver" />
+        <module name="metacloudmodule-permission" />
+        <module name="metacloudmodule-syncproxy" />
+        <module name="metacloud - networking" />
+        <module name="metacloudmodule-loadbalancer" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
-      <module name="MetaCloud - Launcher" target="8" />
+      <module name="metacloud - api" target="8" />
       <module name="metacloud - launcher" target="1.8" />
+      <module name="MetaCloud - Launcher" target="8" />
       <module name="metacloud - plugin" target="8" />
+      <module name="metacloudmodule - syncproxy" target="8" />
     </bytecodeTargetLevel>
   </component>
 </project>

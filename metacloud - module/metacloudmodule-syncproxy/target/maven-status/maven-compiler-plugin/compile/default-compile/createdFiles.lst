@@ -1,0 +1,9 @@
+io\metacloud\servers\SyncProxyService$1.class
+io\metacloud\servers\listener\TablistListener.class
+io\metacloud\global\Motd.class
+io\metacloud\servers\listener\TablistListener$1.class
+io\metacloud\servers\listener\MotdListener.class
+io\metacloud\servers\SyncProxyService.class
+io\metacloud\global\ModuleConfig.class
+io\metacloud\modules\SyncProxyModule.class
+io\metacloud\global\Tablist.class

@@ -7,8 +7,8 @@ import io.metacloud.configuration.ConfigDriver;
 import io.metacloud.configuration.configs.nodes.GeneralNodeConfiguration;
 import io.metacloud.console.logger.enums.MSGType;
 import io.metacloud.network.client.NetworkClientDriver;
-import io.metacloud.network.packets.nodes.NodeRegisterPacket;
-import io.metacloud.network.packets.nodes.NodeUnregisterPacket;
+import io.metacloud.network.packets.nodes.in.NodeRegisterPacket;
+import io.metacloud.network.packets.nodes.in.NodeUnregisterPacket;
 import io.metacloud.node.commands.ClearCommand;
 import io.metacloud.node.commands.EndCommand;
 import io.metacloud.node.commands.HelpCommand;
@@ -23,15 +23,13 @@ public class MetaNode {
     public MetaNode(String[] args){
         Driver.getInstance().getStorageDriver().setShutdownFromManager(false);
         prepareNetworkingClient();
-        shutdownHook();
         prepareCommands();
         long time =  Driver.getInstance().getStorageDriver().getStartTime();
         long finalTime =  (System.currentTimeMillis() - time);
         Driver.getInstance().getConsoleDriver().getLogger().log(MSGType.MESSAGETYPE_INFO,  "the cloud is §bnow ready§7 to use [It takes §b"+finalTime+" ms§r]");
         while (true){}
     }
-
-
+    
     public void prepareCommands(){
         CommandDriver driver =  Driver.getInstance().getConsoleDriver().getCommandDriver();
         driver.registerCommand(new HelpCommand());
@@ -57,21 +55,20 @@ public class MetaNode {
         execuet.run();
     }
 
-    private void shutdownHook(){
-        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-            Driver.getInstance().getServiceDriver().getRunningProcesses().forEach(cloudService -> {
-                cloudService.stop();
-            });
+    public static void shutdown(){
+        Driver.getInstance().getServiceDriver().getRunningProcesses().forEach(cloudService -> {
+            cloudService.stop();
+        });
 
-            if (!Driver.getInstance().getStorageDriver().getShutdownFromManager()){
-                NodeUnregisterPacket packet = new NodeUnregisterPacket();
-                GeneralNodeConfiguration configuration = (GeneralNodeConfiguration) new ConfigDriver("./nodeservice.json").read(GeneralNodeConfiguration.class);
-                packet.setNodeName(configuration.getNodeName());
-                NetworkingBootStrap.client.sendPacket(packet);
-            }
+        if (!Driver.getInstance().getStorageDriver().getShutdownFromManager()){
+            NodeUnregisterPacket packet = new NodeUnregisterPacket();
+            GeneralNodeConfiguration configuration = (GeneralNodeConfiguration) new ConfigDriver("./nodeservice.json").read(GeneralNodeConfiguration.class);
+            packet.setNodeName(configuration.getNodeName());
+            NetworkingBootStrap.client.sendPacket(packet);
+        }
 
-
-        }));
+        Driver.getInstance().getConsoleDriver().getLogger().log(MSGType.MESSAGETYPE_INFO, "Thanks for using MetaCloud ;->");
+        System.exit(0);
     }
 
 

@@ -100,7 +100,7 @@ public class StorageDriver {
                 "           The §bnext generation §7of Minecraft §bcloud systems§7\n" +
                 "     \n" +
                 "     <§b!§7> Thank you for using §bMetaCloudService§7 for your §bNetwork§r\n" +
-                "     <!> Our §bSupport§7 can you find -§b https://discord.gg/4kKEcaP9WC\n";
+                "     <§b!§7> Our §bSupport§7 can you find -§b https://discord.gg/4kKEcaP9WC\n";
     }
     public CloudCommand fromFirstArgument(String commandLine) {
         String[] split = commandLine.split(" ");
@@ -169,7 +169,7 @@ public class StorageDriver {
                 "  url: jdbc:sqlite:{DIR}{NAME}.db\n";
     }
 
-    public String getSpigotProperty(){
+    public String getSpigotProperty(String service){
         return "#Minecraft server properties\n" +
                 "#Mon Jan 25 10:33:48 CET 2021\n" +
                 "spawn-protection=0\n" +
@@ -208,14 +208,14 @@ public class StorageDriver {
                 "max-build-height=256\n" +
                 "level-seed=\n" +
                 "enable-rcon=false\n" +
-                "motd=\"§8| §bMetaCloud §8- §7Server Service\"\n";
+                "motd=§8| §bMetaCloud §8- §7"+service+"\n";
     }
 
-    public String getBungeeCordConfiguration(int port){
+    public String getBungeeCordConfiguration(int port, String  service, Integer players){
         return "server_connect_timeout: 5000\n" +
-                "remote_ping_cache: -1\n" +
+                "remote_ping_cache: "+players+"\n" +
                 "forge_support: true\n" +
-                "player_limit: -1\n" +
+                "player_limit: "+players+"\n" +
                 "permissions:\n" +
                 "  default:\n" +
                 "  - bungeecord.command.server\n" +
@@ -225,6 +225,8 @@ public class StorageDriver {
                 "  - bungeecord.command.end\n" +
                 "  - bungeecord.command.ip\n" +
                 "  - bungeecord.command.reload\n" +
+                "  - cloud.command.cloud\n" +
+                "  - cloud.notify.services\n" +
                 "timeout: 30000\n" +
                 "log_commands: false\n" +
                 "network_compression_threshold: 256\n" +
@@ -238,7 +240,7 @@ public class StorageDriver {
                 "    restricted: false\n" +
                 "listeners:\n" +
                 "- query_port: "+port+"\n" +
-                "  motd: '&bMetaCloud &7- ProxyServer'\n" +
+                "  motd: '&bMetaCloud &7- "+service+"'\n" +
                 "  tab_list: GLOBAL_PING\n" +
                 "  query_enabled: false\n" +
                 "  proxy_protocol: false\n" +

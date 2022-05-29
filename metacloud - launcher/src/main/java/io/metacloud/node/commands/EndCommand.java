@@ -6,6 +6,7 @@ import io.metacloud.command.CommandInfo;
 import io.metacloud.console.data.ConsoleStorageLine;
 import io.metacloud.console.logger.Logger;
 import io.metacloud.console.logger.enums.MSGType;
+import io.metacloud.node.MetaNode;
 
 import java.util.ArrayList;
 import java.util.Timer;
@@ -32,7 +33,7 @@ public class EndCommand extends CloudCommand {
             }, 1000*15);
 
         }else{
-            System.exit(0);
+            MetaNode.shutdown();
         }
 
 

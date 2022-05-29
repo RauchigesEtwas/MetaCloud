@@ -35,20 +35,21 @@ public final class ConsoleDriver {
     }
 
     public ConsoleDriver() throws IOException {
+
+        System.setProperty("library.jansi.version", "MetaCloud");
+
         this.logger = new Logger();
         this.commandDriver = new CommandDriver();
         this.terminal = TerminalBuilder.builder()
                 .system(true)
                 .streams(System.in, System.out)
                 .encoding(StandardCharsets.UTF_8)
-                .dumb(true)
                 .build();
 
         this.lineReader = LineReaderBuilder.builder()
                 .terminal(this.terminal)
                 .option(LineReader.Option.DISABLE_EVENT_EXPANSION, true)
-                .option(LineReader.Option.AUTO_REMOVE_SLASH, false)
-                .option(LineReader.Option.INSERT_TAB, false)
+                .variable(LineReader.BELL_STYLE, "off")
                 .completer(new ConsoleCompleter())
                 .build();
 
@@ -76,14 +77,20 @@ public final class ConsoleDriver {
         }
     }
 
-    public void shutdown() throws IOException {
-        this.terminal.close();
-    }
 
-    public void shutdownReading() {
-        this.consoleReadingThread.interrupt();
-    }
+    public void setCommandHistory(List<String> history) {
+        try {
+            this.lineReader.getHistory().purge();
+        } catch (IOException exception) {
+            exception.printStackTrace();
+        }
 
+        if (history != null) {
+            for (String s : history) {
+                this.lineReader.getHistory().add(s);
+            }
+        }
+    }
 
 
     public Terminal getTerminal() {

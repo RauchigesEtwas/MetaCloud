@@ -15,7 +15,7 @@ public class ServiceDriver {
 
 
     private ArrayList<CloudService> runningProcesses;
-    private ArrayList<Integer> usedPorts;
+    public ArrayList<Integer> usedPorts;
 
     public ServiceDriver() {
         this.usedPorts = new ArrayList<>();
@@ -26,10 +26,16 @@ public class ServiceDriver {
 
 
     public void launchService(ServiceStorage storage){
-        CloudService service = new CloudService().bindStorage(storage);
-        Driver.getInstance().getConsoleDriver().getLogger().log(MSGType.MESSAGETYPE_INFO, "the service §b"+service.getStorage().getServiceName()+"§7 is now being §bprepared...");
+        if (new File("./service.json").exists()){
+            Driver.getInstance().getConsoleDriver().getLogger().log(MSGType.MESSAGETYPE_INFO, "the service §b"+storage.getServiceName()+"§7 is now being §bprepared...");
+        }
+
+        CloudService service = new CloudService();
+        service.bindStorage(storage);
         service.run();
         runningProcesses.add(service);
+
+
     }
 
     public CloudService getService(String service){
@@ -110,10 +116,12 @@ public class ServiceDriver {
 
     public void haltService(String serviceName){
         CloudService service = getService(serviceName);
-        Driver.getInstance().getConsoleDriver().getLogger().log(MSGType.MESSAGETYPE_INFO, "the service name is now executed...");
-        service.stop();
-        this.usedPorts.remove(service.getStorage().getSelectedPort());
-        this.runningProcesses.remove(service);
+        if (service != null){
+            service.stop();
+
+            this.runningProcesses.remove(service);
+        }
+
     }
 
 }

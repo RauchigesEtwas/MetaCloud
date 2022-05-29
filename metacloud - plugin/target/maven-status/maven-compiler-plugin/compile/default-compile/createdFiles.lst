@@ -1,4 +1,12 @@
+io\metacloud\bungeecord\utilities\serverhelper\ServerDriver.class
+io\metacloud\spigot\listener\CloudPlayerHandlerListener.class
 io\metacloud\bungeecord\BungeeBridge.class
+io\metacloud\bungeecord\listener\CloudEventHandler.class
 io\metacloud\spigot\SpigotBridge.class
+io\metacloud\spigot\utilitis\DataDriver.class
+io\metacloud\bungeecord\utilities\HandlerDriver.class
+io\metacloud\bungeecord\utilities\DataDriver.class
+io\metacloud\bungeecord\commands\HubCommand.class
+io\metacloud\bungeecord\utilities\serverhelper\ServerConfig.class
 io\metacloud\spigot\networking\ManagerListener.class
 io\metacloud\bungeecord\networking\ManagerListener.class

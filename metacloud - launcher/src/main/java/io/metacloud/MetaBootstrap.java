@@ -15,6 +15,10 @@ public class MetaBootstrap {
 
     @SneakyThrows
     public static void main(String[] args) {
+
+
+        System.setProperty("file.encoding", "UTF-8");
+        System.setProperty("client.encoding.override", "UTF-8");
         new Driver();
         if (Driver.getInstance().getConsoleDriver() == null){
             Driver.getInstance().setConsoleDriver(new ConsoleDriver());
@@ -26,12 +30,9 @@ public class MetaBootstrap {
         Thread.sleep(250);
         Driver.getInstance().getConsoleDriver().getLogger().log(MSGType.MESSAGETYPE_EMPTY,  Driver.getInstance().getStorageDriver().getCloudLogo());
         Driver.getInstance().getConsoleDriver().getLogger().log(MSGType.MESSAGETYPE_INFO,  "everything is being prepared...");
-
+        Thread.sleep(250);
         if(!new File("./service.json").exists()){
             if(!new File("./nodeservice.json").exists()){
-                Driver.getInstance().getConsoleDriver().clearConsole();
-
-                Driver.getInstance().getConsoleDriver().getLogger().log(MSGType.MESSAGETYPE_EMPTY,  Driver.getInstance().getStorageDriver().getCloudLogo());
                 Driver.getInstance().getConsoleDriver().getLogger().log(MSGType.MESSAGETYPE_SETUP,  "it seems that the cloud is starting for the first time");
                 Driver.getInstance().getConsoleDriver().getLogger().log(MSGType.MESSAGETYPE_SETUP,  "please specify what you would like to setup?");
                 Driver.getInstance().getConsoleDriver().getLogger().log(MSGType.MESSAGETYPE_SETUP,  "types: §3Manager §7/ §3Node");
@@ -45,9 +46,6 @@ public class MetaBootstrap {
         if(!new File("./nodeservice.json").exists()){
 
             if(!new File("./service.json").exists()){
-                Driver.getInstance().getConsoleDriver().clearConsole();
-
-                Driver.getInstance().getConsoleDriver().getLogger().log(MSGType.MESSAGETYPE_EMPTY,  Driver.getInstance().getStorageDriver().getCloudLogo());
                 Driver.getInstance().getConsoleDriver().getLogger().log(MSGType.MESSAGETYPE_SETUP,  "it seems that the cloud is starting for the first time");
                 Driver.getInstance().getConsoleDriver().getLogger().log(MSGType.MESSAGETYPE_SETUP,  "please specify what you would like to setup?");
                 Driver.getInstance().getConsoleDriver().getLogger().log(MSGType.MESSAGETYPE_SETUP,  "types: §3Manager §7/ §3Node");

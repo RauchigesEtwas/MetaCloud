@@ -11,7 +11,9 @@ public class NetworkClientDriver {
     private int port;
     private String host;
 
-    public NetworkClientDriver() {}
+    public NetworkClientDriver() {
+        NetworkingBootStrap.packetListenerHandler = new PacketListenerHandler();
+    }
 
 
     public NetworkClientDriver bind(String host, int port){
@@ -22,16 +24,13 @@ public class NetworkClientDriver {
 
     public void run(){
         try {
-            NetworkingBootStrap.packetListenerHandler = new PacketListenerHandler();
             NetworkingBootStrap.client = new NetworkClient();
             NetworkingBootStrap.client.init(channel -> {})
                     .option(Options.BUFFER_SIZE, 2024)
                     .option(Options.PERFORMANCE_BOOST, true)
                     .option(Options.TIMEOUT, -1)
                     .bind(this.host, this.port).connect();
-        }catch (Exception e){
-
-        }
+        }catch (Exception e){}
     }
 
     public void end(){

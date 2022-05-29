@@ -5,18 +5,26 @@ import io.metacloud.console.logger.enums.CloudColor;
 import io.metacloud.console.logger.enums.MSGType;
 import io.metacloud.console.logger.logs.SimpleLatestLog;
 import lombok.SneakyThrows;
+import org.jline.reader.LineReader;
 import org.jline.utils.InfoCmp;
 
 import java.io.PrintStream;
 import java.text.SimpleDateFormat;
+import java.util.LinkedList;
+import java.util.Queue;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class Logger {
     private final SimpleDateFormat simpleDateFormat = new SimpleDateFormat( "dd.MM HH:mm:ss" );
+    private Queue<LoggerQueueInput> loggerQueue;
     public SimpleLatestLog logs;
 
     @SneakyThrows
     public Logger() {
         logs = new SimpleLatestLog();
+        loggerQueue = new LinkedList<>();
+        printLine();
         System.setOut(new PrintStream(new LoggerOutputStream(this, MSGType.MESSAGETYPE_INFO), true));
         System.setErr(new PrintStream(new LoggerOutputStream(this, MSGType.MESSAGETYPE_ERROR), true));
     }
@@ -25,64 +33,90 @@ public class Logger {
 
         switch (type){
             case MESSAGETYPE_INFO:
-                printLine("§3INFO", message);
+                this.loggerQueue.add(new LoggerQueueInput("§3INFO", message));
                 break;
             case MESSAGETYPE_WARN:
-                printLine("§eWARN", message);
+                this.loggerQueue.add(new LoggerQueueInput("§eWARN", message));
                 break;
             case MESSAGETYPE_ERROR:
-                printLine("§cERROR", message);
+                this.loggerQueue.add(new LoggerQueueInput("§cERROR", message));
                 break;
             case MESSAGETYPE_NETWORK:
-                printLine("§3NETWORK", message);
+                this.loggerQueue.add(new LoggerQueueInput("§3NETWORK", message));
                 break;
             case MESSAGETYPE_SETUP:
-                printLine("§3SETUP", message);
+                this.loggerQueue.add(new LoggerQueueInput("§3SETUP", message));
                 break;
             case MESSAGETYPE_SUCCESS:
-                printLine("§aSUCCESS", message);
+                this.loggerQueue.add(new LoggerQueueInput("§aSUCCESS", message));
                 break;
             case MESSAGETYPE_EMPTY:
-                printLine(null, message);
+                this.loggerQueue.add(new LoggerQueueInput(null, message));
                 break;
             case MESSAGETYPE_COMMAND:
-                printLine("§3COMMAND", message);
+                this.loggerQueue.add(new LoggerQueueInput("§3COMMAND", message));
+
                 break;
             case MESSAGETYPE_NETWORK_FAIL:
-                printLine("§cNETWORK", message);
+                this.loggerQueue.add(new LoggerQueueInput("§cNETWORK", message));
+
                 break;
             case MESSAGETYPE_MODULES:
-                printLine("§3MODULES", message);
+                this.loggerQueue.add(new LoggerQueueInput("§3MODULES", message));
+
                 break;
         }
 
     }
 
 
-    private void printLine(String prefix, String message) {
-        try {
 
-            if(prefix == null){
-                Driver.getInstance().getConsoleDriver().getTerminal().puts(InfoCmp.Capability.carriage_return);
-               Driver.getInstance().getConsoleDriver().getTerminal().writer().println(getColoredString(message + CloudColor.RESET.getAnsiCode()));
-               Driver.getInstance().getConsoleDriver().getTerminal().flush();
-                Driver.getInstance().getConsoleDriver().redraw();
-                this.logs.log(getColoredString(message + CloudColor.RESET.getAnsiCode()));
-                this.logs.saveLogs();
-            }else{
-                Driver.getInstance().getConsoleDriver().getTerminal().puts(InfoCmp.Capability.carriage_return);
-                Driver.getInstance().getConsoleDriver().getTerminal().writer().println( getColoredString("§7[§f" + simpleDateFormat.format(System.currentTimeMillis()) +"§7] "+ prefix + "§7: §r" + CloudColor.RESET.getAnsiCode() + message + CloudColor.RESET.getAnsiCode()));
-                Driver.getInstance().getConsoleDriver().getTerminal().flush();
-                Driver.getInstance().getConsoleDriver().redraw();
 
-                this.logs.log( getColoredString("§7[§f" + simpleDateFormat.format(System.currentTimeMillis()) +"§7] "+ prefix + "§7: §r" + CloudColor.RESET.getAnsiCode() + message + CloudColor.RESET.getAnsiCode()));
-                this.logs.saveLogs();
 
-            }
-        }catch (Exception e){
-            e.printStackTrace();
-        }
+    private void printLine() {
 
+        new Thread(() -> {
+
+            new Timer().schedule(new TimerTask() {
+                @Override
+                public void run() {
+                    if (!loggerQueue.isEmpty()){
+                        LoggerQueueInput input = loggerQueue.poll();
+                        try {
+
+                            if(input.getPrefix() == null){
+                                try {
+                                    Driver.getInstance().getConsoleDriver().getLineReader().callWidget(LineReader.CLEAR);
+                                    Driver.getInstance().getConsoleDriver().getLineReader().getTerminal().writer().println(getColoredString(input.getMessage()  + CloudColor.RESET.getAnsiCode()));
+                                    Driver.getInstance().getConsoleDriver().getLineReader().callWidget(LineReader.REDRAW_LINE);
+                                    Driver.getInstance().getConsoleDriver().getLineReader().callWidget(LineReader.REDISPLAY);
+                                    Driver.getInstance().getConsoleDriver().getLineReader().getTerminal().writer().flush();
+                                }catch (Exception ignored){}
+
+                                logs.log(getColoredString(input.getMessage() + CloudColor.RESET.getAnsiCode()));
+                                logs.saveLogs();
+                            }else{
+
+                                try {
+                                    Driver.getInstance().getConsoleDriver().getLineReader().callWidget(LineReader.CLEAR);
+                                    Driver.getInstance().getConsoleDriver().getLineReader().getTerminal().writer().println( getColoredString("§7[§f" + simpleDateFormat.format(System.currentTimeMillis()) +"§7] "+ input.getPrefix() + "§7: §r" + CloudColor.RESET.getAnsiCode() + input.getMessage()  + CloudColor.RESET.getAnsiCode()));
+                                    Driver.getInstance().getConsoleDriver().getLineReader().callWidget(LineReader.REDRAW_LINE);
+                                    Driver.getInstance().getConsoleDriver().getLineReader().callWidget(LineReader.REDISPLAY);
+                                    Driver.getInstance().getConsoleDriver().getLineReader().getTerminal().writer().flush();
+
+                                }catch (Exception ignored){}
+                                logs.log( getColoredString("§7[§f" + simpleDateFormat.format(System.currentTimeMillis()) +"§7] "+ input.getPrefix() + "§7: §r" + CloudColor.RESET.getAnsiCode() + input.getMessage()  + CloudColor.RESET.getAnsiCode()));
+                                logs.saveLogs();
+
+                            }
+                        }catch (Exception e){
+                            e.printStackTrace();
+                        }
+                    }
+                }
+            }, 1000, 1);
+
+        }).start();
     }
 
 

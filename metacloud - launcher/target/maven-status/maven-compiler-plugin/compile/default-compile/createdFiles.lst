@@ -1,10 +1,15 @@
+io\metacloud\manager\networking\PermissionHandlerListener.class
 io\metacloud\manager\commands\EndCommand$1.class
+io\metacloud\manager\commands\ServiceCommand$1.class
 io\metacloud\manager\commands\MetaCloudCommand.class
 io\metacloud\node\networking\ManagerHandlerListener.class
 io\metacloud\MetaBootstrap.class
 io\metacloud\manager\commands\GroupCommand.class
+io\metacloud\manager\commands\ServiceCommand$2.class
 io\metacloud\manager\commands\HelpCommand.class
 io\metacloud\node\commands\HelpCommand.class
+io\metacloud\manager\networking\ApiHandleListener.class
+io\metacloud\manager\commands\ReloadCommand.class
 io\metacloud\manager\commands\ServiceCommand.class
 io\metacloud\node\MetaNode.class
 io\metacloud\manager\MetaManager.class
@@ -12,6 +17,7 @@ io\metacloud\node\commands\EndCommand.class
 io\metacloud\manager\commands\EndCommand.class
 io\metacloud\node\commands\EndCommand$1.class
 io\metacloud\manager\commands\NodeCommand.class
+io\metacloud\manager\networking\SignHandlerListener.class
 io\metacloud\manager\networking\NodeHandlerListener.class
 io\metacloud\node\commands\ClearCommand.class
 io\metacloud\manager\commands\ClearCommand.class

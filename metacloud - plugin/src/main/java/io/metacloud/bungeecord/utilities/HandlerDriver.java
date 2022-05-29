@@ -1,4 +1,4 @@
-package io.metacloud.bungeecord.utils;
+package io.metacloud.bungeecord.utilities;
 
 import io.metacloud.Driver;
 import io.metacloud.bungeecord.BungeeBridge;

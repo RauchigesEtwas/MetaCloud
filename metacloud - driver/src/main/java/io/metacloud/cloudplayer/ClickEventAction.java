@@ -1,4 +1,4 @@
-package io.metacloud.apidriver.cloudplayer.bin;
+package io.metacloud.cloudplayer;
 
 public enum ClickEventAction {
 

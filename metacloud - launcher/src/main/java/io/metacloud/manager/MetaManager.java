@@ -2,27 +2,24 @@ package io.metacloud.manager;
 
 import io.metacloud.Driver;
 import io.metacloud.NetworkingBootStrap;
-import io.metacloud.channels.Channel;
 import io.metacloud.command.CommandDriver;
 import io.metacloud.configuration.ConfigDriver;
 import io.metacloud.configuration.configs.ServiceConfiguration;
-import io.metacloud.configuration.configs.group.GroupConfiguration;
 import io.metacloud.configuration.configs.nodes.NodeConfiguration;
 import io.metacloud.console.logger.enums.MSGType;
 import io.metacloud.manager.commands.*;
+import io.metacloud.manager.networking.ApiHandleListener;
 import io.metacloud.manager.networking.NodeHandlerListener;
 import io.metacloud.manager.networking.ServiceHandlerListener;
-import io.metacloud.network.packets.nodes.ManagerShuttingDownPacket;
+import io.metacloud.manager.networking.SignHandlerListener;
+import io.metacloud.network.packets.nodes.in.ManagerShuttingDownPacket;
 import io.metacloud.network.server.NetworkServerDriver;
-import io.metacloud.queue.bin.QueueContainer;
-import io.metacloud.queue.bin.QueueStatement;
 import io.metacloud.webservice.bin.RestServer;
 import io.metacloud.webservice.restconfigs.livenodes.NodesRestConfig;
+import io.metacloud.webservice.restconfigs.statistics.CloudStatisticsConfig;
 
 
 import java.util.ArrayList;
-import java.util.Map;
-import java.util.function.Consumer;
 
 public class MetaManager {
 
@@ -36,7 +33,7 @@ public class MetaManager {
         prepareModules();
         prepareCommands();
         prepareNetworkingServer();
-        shutdownHook();
+
 
 
 
@@ -62,8 +59,6 @@ public class MetaManager {
 
 
     private void prepareCommands(){
-        Thread execuet = new Thread(() -> {
-
         CommandDriver driver =  Driver.getInstance().getConsoleDriver().getCommandDriver();
         driver.registerCommand(new HelpCommand());
         driver.registerCommand(new GroupCommand());
@@ -72,10 +67,9 @@ public class MetaManager {
         driver.registerCommand(new MetaCloudCommand());
         driver.registerCommand(new NodeCommand());
         driver.registerCommand(new ServiceCommand());
+        driver.registerCommand(new ReloadCommand());
             Driver.getInstance().getConsoleDriver().getLogger().log(MSGType.MESSAGETYPE_INFO, "all commands were prepared and loaded (§b"+driver.getCommands().size()+" commands§7)");
-        });
-        execuet.setPriority(Thread.MIN_PRIORITY);
-        execuet.run();
+
 
     }
 
@@ -94,6 +88,8 @@ public class MetaManager {
         this.serverDriver.bind(service.getCommunication().getNetworkingPort()).run();
         NetworkingBootStrap.packetListenerHandler.registerListener(new NodeHandlerListener());
         NetworkingBootStrap.packetListenerHandler.registerListener(new ServiceHandlerListener());
+        NetworkingBootStrap.packetListenerHandler.registerListener(new ApiHandleListener());
+        NetworkingBootStrap.packetListenerHandler.registerListener(new SignHandlerListener());
     }
 
 
@@ -102,18 +98,40 @@ public class MetaManager {
         Driver.getInstance().getConsoleDriver().getLogger().log(MSGType.MESSAGETYPE_INFO, "the §bREST-Server§7 is being prepared..");
 
         ServiceConfiguration service = (ServiceConfiguration) new ConfigDriver("./service.json").read(ServiceConfiguration.class);
+
         RestServer restServer = new RestServer();
         restServer.bind(service.getCommunication().getRestApiPort())
                         .setAuthenticator(service.getCommunication().getRestApiAuthKey());
         Driver.getInstance().getRestDriver().registerRestServer(restServer);
+
+
+
         RestServer runningServer = Driver.getInstance().getRestDriver().getRestServer(service.getCommunication().getRestApiPort());
         Driver.getInstance().getConsoleDriver().getLogger().log(MSGType.MESSAGETYPE_INFO, "Upload the data to the §bREST-Server§7...");
+
+            service.getMessages().setPrefix(Driver.getInstance().getStorageDriver().utf8ToUBase64(service.getMessages().getPrefix()));
+            service.getMessages().setMaintenanceGroupMessage(Driver.getInstance().getStorageDriver().utf8ToUBase64(service.getMessages().getMaintenanceGroupMessage()));
+            service.getMessages().setMaintenanceKickMessage(Driver.getInstance().getStorageDriver().utf8ToUBase64(service.getMessages().getMaintenanceKickMessage()));
+            service.getMessages().setNoFallbackKickMessage(Driver.getInstance().getStorageDriver().utf8ToUBase64(service.getMessages().getNoFallbackKickMessage()));
+            service.getMessages().setFullNetworkKickMessage(Driver.getInstance().getStorageDriver().utf8ToUBase64(service.getMessages().getFullNetworkKickMessage()));
+            service.getMessages().setFullServiceKickMessage(Driver.getInstance().getStorageDriver().utf8ToUBase64(service.getMessages().getFullServiceKickMessage()));
+            service.getMessages().setOnlyProxyJoinKickMessage(Driver.getInstance().getStorageDriver().utf8ToUBase64(service.getMessages().getOnlyProxyJoinKickMessage()));
+            service.getMessages().setHubCommandNoFallbackFound(Driver.getInstance().getStorageDriver().utf8ToUBase64(service.getMessages().getHubCommandNoFallbackFound()));
+            service.getMessages().setHubCommandAlreadyOnFallBack(Driver.getInstance().getStorageDriver().utf8ToUBase64(service.getMessages().getHubCommandAlreadyOnFallBack()));
+            service.getMessages().setHubCommandSendToAnFallback(Driver.getInstance().getStorageDriver().utf8ToUBase64(service.getMessages().getHubCommandSendToAnFallback()));
+            service.getMessages().setServiceStartingNotification(Driver.getInstance().getStorageDriver().utf8ToUBase64(service.getMessages().getServiceStartingNotification()));
+            service.getMessages().setServiceConnectedToProxyNotification(Driver.getInstance().getStorageDriver().utf8ToUBase64(service.getMessages().getServiceConnectedToProxyNotification()));
+            service.getMessages().setServiceStoppingNotification(Driver.getInstance().getStorageDriver().utf8ToUBase64(service.getMessages().getServiceStoppingNotification()));
+
 
         runningServer.addContent("service", "./service.json", service);
 
         NodeConfiguration nodes = (NodeConfiguration) new ConfigDriver("./local/nodes.json").read(NodeConfiguration.class);
 
-
+            CloudStatisticsConfig config = new CloudStatisticsConfig();
+            config.setPlayers(new ArrayList<>());
+            config.setRunningServices(0);
+            runningServer.addContent("statistics",config);
         runningServer.addContent("nodes", "./local/nodes.json", nodes);
 
         Driver.getInstance().getGroupDriver().getGroups().forEach(configuration -> {Driver.getInstance().getGroupDriver().deployOnRest(configuration.getName(), null);});
@@ -125,18 +143,14 @@ public class MetaManager {
         execuet.run();
     }
 
-    private void shutdownHook(){
-        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-            Driver.getInstance().getConnectionDriver().getAllNodesChannel().forEach(channel -> channel.sendPacket(new ManagerShuttingDownPacket()));
+    public static void shutdown(){
+                Driver.getInstance().getConnectionDriver().getAllNodesChannel().forEach(channel -> channel.sendPacket(new ManagerShuttingDownPacket()));
 
-            Driver.getInstance().getServiceDriver().getRunningProcesses().forEach(cloudService -> {
-                Driver.getInstance().getConsoleDriver().getLogger().log(MSGType.MESSAGETYPE_INFO, "shutdown: §b" + cloudService.getStorage().getServiceName());
-                Driver.getInstance().getServiceDriver().haltService(cloudService.getStorage().getServiceName());
-            });
-
-
-
-        }));
+                Driver.getInstance().getServiceDriver().getRunningProcesses().forEach(cloudService -> {
+                    cloudService.stop();
+                });
+                Driver.getInstance().getConsoleDriver().getLogger().log(MSGType.MESSAGETYPE_INFO, "Thanks for using MetaCloud ;->");
+                System.exit(0);
     }
 
 }

@@ -1,4 +1,4 @@
-package io.metacloud.bungeecord.serverhelper;
+package io.metacloud.bungeecord.utilities.serverhelper;
 
 import io.metacloud.bungeecord.BungeeBridge;
 import net.md_5.bungee.api.ChatColor;

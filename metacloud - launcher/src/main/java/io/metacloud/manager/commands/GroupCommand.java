@@ -4,6 +4,7 @@ import io.metacloud.Driver;
 import io.metacloud.command.CloudCommand;
 import io.metacloud.command.CommandInfo;
 import io.metacloud.configuration.ConfigDriver;
+import io.metacloud.configuration.configs.ServiceConfiguration;
 import io.metacloud.configuration.configs.group.GroupConfiguration;
 import io.metacloud.configuration.configs.group.GroupProperties;
 import io.metacloud.configuration.configs.group.GroupType;
@@ -12,7 +13,12 @@ import io.metacloud.configuration.configs.nodes.NodeConfiguration;
 import io.metacloud.console.data.ConsoleStorageLine;
 import io.metacloud.console.logger.Logger;
 import io.metacloud.console.logger.enums.MSGType;
+import io.metacloud.network.packets.nodes.in.NodeSyncTemplatePacket;
+import io.metacloud.webservice.restconfigs.services.ServiceRest;
+import org.apache.commons.io.FileUtils;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Locale;
@@ -31,26 +37,24 @@ public class GroupCommand extends CloudCommand {
             sendHelp(logger);
 
         }else if (args[0].equalsIgnoreCase("create")){
-            if (args.length == 8){
+            if (args.length == 7){
 
                 String groupName = args[1];
                 String modeType = args[2];
-                String memory = args[3];
-                String dynamicMemory = args[4];
-                String staticService = args[5];
-                String version = args[6];
-                String node = args[7];
+                String dynamicMemory = args[3];
+                String staticService = args[4];
+                String version = args[5];
+                String node = args[6];
 
                 if (Driver.getInstance().getGroupDriver().getGroup(groupName) != null){
                     logger.log(MSGType.MESSAGETYPE_COMMAND,  "A group already §bexists §7under this name");
                     return false;
                 }
 
-                if(memory.matches("[0-9]+") && dynamicMemory.matches("[0-9]+")){
+                if(dynamicMemory.matches("[0-9]+")){
                     GroupConfiguration configuration = new GroupConfiguration();
                     if (modeType.equalsIgnoreCase("LOBBY")){
                         configuration.setName(groupName);
-                        configuration.setMemory(Integer.valueOf(memory));
                         configuration.setDynamicMemory(Integer.valueOf(dynamicMemory));
                         configuration.setMaintenance(true);
                         if (staticService.equalsIgnoreCase("true")){
@@ -72,6 +76,7 @@ public class GroupCommand extends CloudCommand {
                             configuration.setProperties(properties);
                             Driver.getInstance().getGroupDriver().create(configuration);
 
+                            Driver.getInstance().getGroupDriver().launchService(groupName, 1);
 
                             logger.log(MSGType.MESSAGETYPE_SUCCESS,  "The group has been §bsuccessfully§7 created, all servers will be §bstarted§7 shortly.");
                         }else{
@@ -82,7 +87,6 @@ public class GroupCommand extends CloudCommand {
 
                     }else if (modeType.equalsIgnoreCase("PROXY")){
                         configuration.setName(groupName);
-                        configuration.setMemory(Integer.valueOf(memory));
                         configuration.setDynamicMemory(Integer.valueOf(dynamicMemory));
                         configuration.setMaintenance(true);
                         if (staticService.equalsIgnoreCase("true")){
@@ -104,7 +108,7 @@ public class GroupCommand extends CloudCommand {
                             configuration.setProperties(properties);
                             Driver.getInstance().getGroupDriver().create(configuration);
 
-
+                            Driver.getInstance().getGroupDriver().launchService(groupName, 1);
                             logger.log(MSGType.MESSAGETYPE_SUCCESS,  "The group has been §bsuccessfully§7 created, all servers will be §bstarted§7 shortly.");
                         }else{
                             logger.log(MSGType.MESSAGETYPE_COMMAND,  "You have the following version that you can use");
@@ -113,7 +117,6 @@ public class GroupCommand extends CloudCommand {
                         }
                     }else{
                         configuration.setName(groupName);
-                        configuration.setMemory(Integer.valueOf(memory));
                         configuration.setDynamicMemory(Integer.valueOf(dynamicMemory));
                         configuration.setMaintenance(true);
                         if (staticService.equalsIgnoreCase("true")){
@@ -137,6 +140,7 @@ public class GroupCommand extends CloudCommand {
                             Driver.getInstance().getGroupDriver().create(configuration);
 
 
+                            Driver.getInstance().getGroupDriver().launchService(groupName, 1);
                             logger.log(MSGType.MESSAGETYPE_SUCCESS,  "The group has been §bsuccessfully§7 created, all servers will be §bstarted§7 shortly.");
 
 
@@ -182,8 +186,7 @@ public class GroupCommand extends CloudCommand {
                     GroupConfiguration configuration = Driver.getInstance().getGroupDriver().getGroup(group);
                     logger.log(MSGType.MESSAGETYPE_COMMAND,  "Group name: §b" + configuration.getName());
                     logger.log(MSGType.MESSAGETYPE_COMMAND,  "Group mode: §b" + configuration.getMode());
-                    logger.log(MSGType.MESSAGETYPE_COMMAND,  "Memory: §b" + configuration.getMemory());
-                    logger.log(MSGType.MESSAGETYPE_COMMAND,  "dynamicMemory: §b" + configuration.getDynamicMemory());
+                    logger.log(MSGType.MESSAGETYPE_COMMAND,  "dynamicMemory: §b" + configuration.getDynamicMemory() + "MB");
                     logger.log(MSGType.MESSAGETYPE_COMMAND,  "Maintenance: §b" + configuration.getMaintenance());
                     logger.log(MSGType.MESSAGETYPE_COMMAND,  "staticServices: §b" + configuration.getStaticServices());
                     logger.log(MSGType.MESSAGETYPE_COMMAND,  "permission: §b" + configuration.getPermission());
@@ -262,6 +265,46 @@ public class GroupCommand extends CloudCommand {
             }else {
                 sendHelp(logger);
             }
+        }else if (args[0].equalsIgnoreCase("synctemplate")) {
+            if (args.length == 2){
+                GroupConfiguration group = Driver.getInstance().getGroupDriver().getGroupByService(args[1]);
+                if (group == null){
+                    logger.log(MSGType.MESSAGETYPE_COMMAND,  "The specified service §bcould not be found§7 in the Cloud ");
+                    return false;
+                }else{
+                    if (group.getProperties().getNode().equalsIgnoreCase("InternalNode")){
+                        if (new File("./live/" + group.getName()+"/" + args[1]+ "/").exists()){
+                            logger.log(MSGType.MESSAGETYPE_COMMAND,  "the template was §bupdated§7, everything was copied from §b" + args[1]);
+                            try {
+                                FileUtils.deleteDirectory(new File(group.getProperties().getTemplate()));
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+
+                            new File(group.getProperties().getTemplate()).mkdirs();
+                            try {
+                                FileUtils.copyDirectory(new File("./live/" + group.getName()+"/" + args[1]+ "/"), new File("." + group.getProperties().getTemplate()));
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                        }else{
+                            logger.log(MSGType.MESSAGETYPE_COMMAND,  "The specified service §bcould not be found§7 in the Cloud ");
+                            return false;
+                        }
+                    }else{
+                        NodeSyncTemplatePacket packet = new NodeSyncTemplatePacket();
+                        logger.log(MSGType.MESSAGETYPE_COMMAND,  "the template was §bupdated§7, everything was copied from §b" + args[1]);
+
+                        packet.setServiceName(args[1]);
+                        packet.setGroupName(group.getName());
+                        packet.setTemplatePath(group.getProperties().getTemplate());
+                        Driver.getInstance().getConnectionDriver().getNodeChannel(group.getProperties().getNode()).sendPacket(packet);
+                    }
+                }
+
+            }else {
+                sendHelp(logger);
+            }
         }else {
             sendHelp(logger);
         }
@@ -271,11 +314,12 @@ public class GroupCommand extends CloudCommand {
 
     private void sendHelp(Logger logger){
 
-        logger.log(MSGType.MESSAGETYPE_COMMAND,  "> §bgroup create §7<§bname§7> §7<§bLOBBY/PROXY/GAME§7> §7<§bmemory§7> §7<§bdynamicMemory§7> §7<§bstatic§7> §7<§bversion§7> §7<§bnode§7>");
+        logger.log(MSGType.MESSAGETYPE_COMMAND,  "> §bgroup create §7<§bname§7> §7<§bLOBBY/PROXY/GAME§7> §7<§bmemory(in mb)§7> §7<§bstatic§7> §7<§bversion§7> §7<§bnode§7>");
         logger.log(MSGType.MESSAGETYPE_COMMAND,  "> §bgroup edit §7<§bname§7> §7<§bsetMaintenance/setStaticServices/setMaxOnlinePlayers/setMinOnlineServers§7> §7<§bvalue§7>");
         logger.log(MSGType.MESSAGETYPE_COMMAND,  "> §bgroup delete §7<§bname§7>");
         logger.log(MSGType.MESSAGETYPE_COMMAND,  "> §bgroup deploy §7<§bname§7>");
         logger.log(MSGType.MESSAGETYPE_COMMAND,  "> §bgroup info §7<§bname§7>");
+        logger.log(MSGType.MESSAGETYPE_COMMAND,  "> §bgroup synctemplate §7<§bservice§7>");
         logger.log(MSGType.MESSAGETYPE_COMMAND,  "> §bgroup list");
 
     }
@@ -289,6 +333,7 @@ public class GroupCommand extends CloudCommand {
             results.add("delete");
             results.add("deploy");
             results.add("info");
+            results.add("synctemplate");
             results.add("list");
             return results;
         }
@@ -299,22 +344,24 @@ public class GroupCommand extends CloudCommand {
                 results.add("LOBBY");
                 results.add("PROXY");
                 results.add("GAME");
-            }else if (args.length == 5){
+            }else if (args.length == 4){
                 results.add("true");
                 results.add("false");
-            }else if (args.length == 6){
+            }else if (args.length == 5){
                 for (GroupVersions version : GroupVersions.values()){
-                    if (args[5].equalsIgnoreCase("PROXY")){
-                        if (version == GroupVersions.BUNGEECORD_LATEST || version != GroupVersions.WATERFALL_LATEST){
+                    if (args[1].equalsIgnoreCase("PROXY")){
+                        if (version == GroupVersions.BUNGEECORD_LATEST || version == GroupVersions.WATERFALL_LATEST){
                             results.add(version.toString());
                         }
                     }else {
-                        if (version != GroupVersions.BUNGEECORD_LATEST || version != GroupVersions.WATERFALL_LATEST){
+                        if (version == GroupVersions.BUNGEECORD_LATEST || version == GroupVersions.WATERFALL_LATEST){
+
+                        }else{
                             results.add(version.toString());
                         }
                     }
                 }
-            }else if (args.length == 7){
+            }else if (args.length == 6){
                 NodeConfiguration configuration = (NodeConfiguration) new ConfigDriver("./local/nodes.json").read(NodeConfiguration.class);
                 configuration.getNodes().forEach(properties -> {
                     results.add(properties.getNodeName());
@@ -352,12 +399,25 @@ public class GroupCommand extends CloudCommand {
                 });
             }
         }else if (args[0].equalsIgnoreCase("list")){
+        }else if (args[0].equalsIgnoreCase("synctemplate")) {
+            ServiceConfiguration service = (ServiceConfiguration) new ConfigDriver("./service.json").read(ServiceConfiguration.class);
+            if (args.length == 1){
+                Driver.getInstance().getGroupDriver().getGroups().forEach(group -> {
+                    ServiceRest serviceRest = (ServiceRest) Driver.getInstance().getRestDriver().getRestAPI().convertToRestConfig("http://" + service.getCommunication().getManagerHostAddress() + ":" + service.getCommunication().getRestApiPort()+
+                            "/" + service.getCommunication().getRestApiAuthKey()+ "/livegroup-" + group.getName(), ServiceRest.class);
+                    serviceRest.getServices().forEach(liveService -> {
+                        results.add(liveService.getServiceName());
+                    });
+                });
+
+            }
         }else {
             results.add("create");
             results.add("edit");
             results.add("delete");
             results.add("deploy");
             results.add("info");
+            results.add("synctemplate");
             results.add("list");
         }
 

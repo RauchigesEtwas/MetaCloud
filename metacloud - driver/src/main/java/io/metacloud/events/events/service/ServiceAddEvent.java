@@ -1,4 +1,4 @@
-package io.metacloud.events.events;
+package io.metacloud.events.events.service;
 
 import io.metacloud.configuration.configs.group.GroupConfiguration;
 import io.metacloud.events.bin.IEventStack;

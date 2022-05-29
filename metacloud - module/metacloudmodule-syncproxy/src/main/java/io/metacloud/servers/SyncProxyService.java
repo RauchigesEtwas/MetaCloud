@@ -33,7 +33,6 @@ public class SyncProxyService extends Plugin {
         checker();
         ProxyServer.getInstance().getPluginManager().registerListener(this, new MotdListener());
         ProxyServer.getInstance().getPluginManager().registerListener(this, new TablistListener());
-        TablistListener.updates();
     }
 
     public static SyncProxyService getInstance() {

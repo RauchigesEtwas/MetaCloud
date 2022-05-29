@@ -1,4 +1,4 @@
-package io.metacloud.networking;
+package io.metacloud.network.packets.cloudsign;
 
 import io.metacloud.protocol.IBuffer;
 import io.metacloud.protocol.Packet;

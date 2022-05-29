@@ -1,10 +1,10 @@
-package de.rauchigesetwas.loadbalancer.utils.networking.handler;
+package io.metacloud.module.utils.networking.handler;
 /*
  * Created AT: 23.07.2021
  * Created by Robin B. (UniqueByte)
  */
 
-import de.rauchigesetwas.loadbalancer.utils.util.PacketUtils;
+import io.metacloud.module.utils.util.PacketUtils;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerContext;

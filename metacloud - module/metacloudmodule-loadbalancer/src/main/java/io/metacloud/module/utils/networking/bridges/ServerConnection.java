@@ -1,4 +1,4 @@
-package de.rauchigesetwas.loadbalancer.utils.networking.bridges;
+package io.metacloud.module.utils.networking.bridges;
 
 
 import io.netty.buffer.ByteBuf;

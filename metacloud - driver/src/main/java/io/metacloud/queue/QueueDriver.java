@@ -1,6 +1,8 @@
 package io.metacloud.queue;
 
 import io.metacloud.Driver;
+import io.metacloud.events.events.service.ServiceRemoveEvent;
+import io.metacloud.network.packets.services.in.ProxyServiceStartupNoificationPacket;
 import io.metacloud.queue.bin.QueueContainer;
 import io.metacloud.queue.bin.QueueStatement;
 import io.metacloud.services.processes.utils.ServiceStorage;
@@ -47,16 +49,24 @@ public class QueueDriver {
                         storage.setAuthRestAPIKey(container.getRestAuthKey());
                         storage.setSelectedPort(container.getPort());
 
+                        ProxyServiceStartupNoificationPacket packet = new ProxyServiceStartupNoificationPacket();
+                        packet.setService(container.getServiceName());
+                        Driver.getInstance().getConnectionDriver().getAllProxyChannel().forEach(channel -> {
+                            channel.sendPacket(packet);
+                        });
+
+
                         Driver.getInstance().getServiceDriver().launchService(storage);
                     }     if (container.getQueueStatement() == QueueStatement.STOPPING){
                         Driver.getInstance().getServiceDriver().haltService(container.getServiceName());
+                        Driver.getInstance().getEventDriver().executeEvent(new ServiceRemoveEvent(container.getServiceName(), container.getGroupConfiguration()));
                     }
 
 
                 }
 
                 }
-            }, 1000, 1000*5);
+            }, 1000, 500);
 
         });
         this.thread.start();

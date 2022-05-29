@@ -1,4 +1,4 @@
-package de.rauchigesetwas.loadbalancer.utils.util;
+package io.metacloud.module.utils.util;
 
 /**
  * The enum Connection state.

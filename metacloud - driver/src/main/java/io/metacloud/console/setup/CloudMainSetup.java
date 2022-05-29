@@ -71,6 +71,7 @@ public class CloudMainSetup {
 
                         new ConfigDriver("./nodeservice.json").save(configuration);
                         new File("./local/").mkdirs();
+                        new File("./local/global/plugins/").mkdirs();
                         new File("./local/storage/jars/").mkdirs();
                         new File("./local/storage/cache/").mkdirs();
                         new File("./local/templates/").mkdirs();
@@ -159,21 +160,23 @@ public class CloudMainSetup {
                     general.setDefaultProxyStartupPort(Integer.valueOf(Driver.getInstance().getStorageDriver().getSetupStorage().get("defaultProxyStartupPort").toString()));
                     general.setDefaultServerStartupPort(Integer.valueOf(Driver.getInstance().getStorageDriver().getSetupStorage().get("defaultServerStartupPort").toString()));
                     general.setShowPlayerConnections(true);
+                    general.setWhitelist(new ArrayList<>());
                     general.setProxyOnlineMode(true);
                     general.setServerSplitter("-");
                     configuration.setGeneral(general);
                     ServiceConfiguration.Messages messages = new ServiceConfiguration.Messages();
                     messages.setPrefix("§3MetaCloud §8| §7");
-                    messages.setMaintenanceGroupMessage("§8» §7The network is currently in §cmaintenance");
-                    messages.setMaintenanceKickMessage("§3MetaCloud §8| §7This group is in §cmaintenance");
-                    messages.setNoFallbackKickMessage("§8» §7No fallback can be §afound");
-                    messages.setFullNetworkKickMessage("§8» §7The network is full, please buy §6Premium");
-                    messages.setFullServiceKickMessage("§8» §7The service is §bfull");
-                    messages.setOnlyProxyJoinKickMessage("§8» §7Please join over the main address");
+
+                    messages.setMaintenanceKickMessage("§8» §7The §bNetwork§7 is currently in §bmaintenance");
+                    messages.setMaintenanceGroupMessage("§8» §7The §bService§7 is currently in §bmaintenance");
+                    messages.setNoFallbackKickMessage("§8» §7No §bfallback§7 can be §bfound");
+                    messages.setFullNetworkKickMessage("§8» §7The §bNetwork§7 is full, please buy §ePremium");
+                    messages.setFullServiceKickMessage("§8» §7The §bService§7 is currently §bfull");
+                    messages.setOnlyProxyJoinKickMessage("§8» §7Please join over §bplay.yourserver.io");
                     messages.setHubCommandNoFallbackFound("§3MetaCloud §8| §7No §bfallback§7 can be §bfound");
                     messages.setHubCommandAlreadyOnFallBack("§3MetaCloud §8| §7you are already on a §bFallback");
-                    messages.setHubCommandSendToAnFallback("§3MetaCloud §8| §7§ou have ben send to an §bfallback-server");
-                    messages.setServiceStartingNotification("§3MetaCloud §8| §7%SERVICE_NAME% is §estaring...");
+                    messages.setHubCommandSendToAnFallback("§3MetaCloud §8| §7ýou have ben send to an §bfallback-server");
+                    messages.setServiceStartingNotification("§3MetaCloud §8| §7%SERVICE_NAME% is §estarting...");
                     messages.setServiceConnectedToProxyNotification("§3MetaCloud §8| §7%SERVICE_NAME% is §bconnected");
                     messages.setServiceStoppingNotification("§3MetaCloud §8| §7%SERVICE_NAME% is §cstopping...");
 
@@ -186,6 +189,7 @@ public class CloudMainSetup {
                     new File("./local/storage/jars/").mkdirs();
                     new File("./local/storage/cache/").mkdirs();
                     new File("./local/groups/").mkdirs();
+                    new File("./local/global/plugins/").mkdirs();
                     new File("./local/templates/").mkdirs();
                     new File("./modules/").mkdirs();
 

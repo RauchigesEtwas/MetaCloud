@@ -1,4 +1,4 @@
-package io.metacloud.events.events;
+package io.metacloud.events.events.signs;
 
 import io.metacloud.events.bin.IEventStack;
 

@@ -9,6 +9,7 @@ import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
+import net.md_5.bungee.api.event.PostLoginEvent;
 import net.md_5.bungee.api.event.ServerConnectedEvent;
 import net.md_5.bungee.api.event.ServerSwitchEvent;
 import net.md_5.bungee.api.plugin.Listener;
@@ -16,30 +17,37 @@ import net.md_5.bungee.event.EventHandler;
 
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 
 public class TablistListener implements Listener {
 
     @EventHandler
     public void handelServerConnection(ServerConnectedEvent event){
-        sendTab(event.getPlayer());
+        ProxyServer.getInstance().getPlayers().forEach(player -> {
+            sendTab(player);
+        });
+
     }
+
     @EventHandler
-    public void handelServerConnection(ServerSwitchEvent event){
-        sendTab(event.getPlayer());
-    }
-
-
-    public static void updates(){
-        new Timer().schedule(new TimerTask() {
+    public void login(PostLoginEvent event){
+        ProxyServer.getInstance().getScheduler().schedule(SyncProxyService.getInstance(), new Runnable() {
             @Override
             public void run() {
-                ProxyServer.getInstance().getPlayers().forEach(player -> {
-                    sendTab(player);
-                });
+                sendTab(event.getPlayer());
             }
-        }, 1000, 5*1000);
+        }, 1, 2, TimeUnit.SECONDS);
     }
+
+    @EventHandler
+    public void handelServerConnection(ServerSwitchEvent event){
+        ProxyServer.getInstance().getPlayers().forEach(player -> {
+            sendTab(player);
+        });
+    }
+
+
 
     private static void sendTab(ProxiedPlayer player){
         CloudStatisticsConfig cloudPlayerConfig = (CloudStatisticsConfig) Driver.getInstance().getRestDriver().getRestAPI().convertToRestConfig("http://" + SyncProxyService.getInstance().configuration.getNetworkProperty().getManagerAddress() + ":" +  SyncProxyService.getInstance().configuration.getNetworkProperty().getRestAPIPort()+

@@ -7,7 +7,6 @@ public class GroupConfiguration implements IConfig {
 
     private String name;
     private GroupType mode;
-    private Integer memory;
     private Integer dynamicMemory;
     private Boolean maintenance;
     private Boolean staticServices;
@@ -34,14 +33,6 @@ public class GroupConfiguration implements IConfig {
 
     public void setMode(GroupType mode) {
         this.mode = mode;
-    }
-
-    public Integer getMemory() {
-        return memory;
-    }
-
-    public void setMemory(Integer memory) {
-        this.memory = memory;
     }
 
     public Integer getDynamicMemory() {

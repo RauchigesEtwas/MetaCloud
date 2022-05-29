@@ -3,23 +3,23 @@ package io.metacloud.services.processes;
 
 import io.metacloud.Driver;
 import io.metacloud.configuration.ConfigDriver;
-import io.metacloud.configuration.configs.ServiceConfiguration;
 import io.metacloud.configuration.configs.group.GroupType;
 import io.metacloud.configuration.configs.service.CloudServiceConfiguration;
 import io.metacloud.configuration.configs.service.ServiceNetworkProperty;
 import io.metacloud.console.logger.enums.MSGType;
+import io.metacloud.events.events.service.ServiceAddEvent;
 import io.metacloud.services.processes.utils.ServiceStorage;
 import io.metacloud.webservice.DownloadDriver;
 import lombok.SneakyThrows;
 import org.apache.commons.io.FileUtils;
 
-import java.io.*;
-import java.nio.charset.StandardCharsets;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 
 public class CloudService {
 
 
-    private Thread serviceThread;
     private Process service;
     private ServiceStorage storage;
 
@@ -48,6 +48,8 @@ public class CloudService {
             new File("./live/").mkdirs();
         }
 
+        Driver.getInstance().getEventDriver().executeEvent(new ServiceAddEvent(storage.getServiceName(), storage.getSelectedPort(), storage.getGroupConfiguration()));
+
         new File("./live/" + getStorage().getGroupConfiguration().getName() + "/" + getStorage().getServiceName()+"/plugins/").mkdirs();
 
         if (!this.getStorage().getGroupConfiguration().getStaticServices()){
@@ -60,11 +62,14 @@ public class CloudService {
             }
         }
 
+        FileUtils.copyDirectory(new File("./local/global/"),new File("./live/" + getStorage().getGroupConfiguration().getName() + "/" + getStorage().getServiceName() + "/"));
         FileUtils.copyFile(new File("./local/server-icon.png"), new File("./live/" + getStorage().getGroupConfiguration().getName() + "/" + getStorage().getServiceName() + "/server-icon.png"));
         FileUtils.copyFile(new File("./local/storage/jars/metacloud-plugin.jar"), new File("./live/" + getStorage().getGroupConfiguration().getName() + "/" + getStorage().getServiceName() + "/plugins/metacloud-plugin.jar"));
+        FileUtils.copyFile(new File("./local/storage/jars/metacloud-api.jar"), new File("./live/" + getStorage().getGroupConfiguration().getName() + "/" + getStorage().getServiceName() + "/plugins/metacloud-api.jar"));
 
         CloudServiceConfiguration configuration = new CloudServiceConfiguration();
         configuration.setServicename(storage.getServiceName());
+        configuration.setGroupname(storage.getGroupConfiguration().getName());
         ServiceNetworkProperty property = new ServiceNetworkProperty();
         property.setAuthRestAPIKey(storage.getAuthRestAPIKey());
         property.setAuthNetworkingKey(storage.getAuthNetworkingKey());
@@ -76,30 +81,66 @@ public class CloudService {
 
         new ConfigDriver("./live/" + getStorage().getGroupConfiguration().getName() + "/" + getStorage().getServiceName() + "/cloudservice.json").save(configuration);
 
+        Driver.getInstance().getModuleDriver().getAllProperties().forEach((s, properties) -> {
 
-        //COPY MODULES
-        Driver.getInstance().getConsoleDriver().getLogger().log(MSGType.MESSAGETYPE_INFO, "the service "+storage.getServiceName()+" is now started (§b"+storage.getGroupConfiguration().getProperties().getNode()+"§7~§b"+storage.getGroupConfiguration().getProperties().getVersion()+"§7~§b"+storage.getSelectedPort()+"§7)");
+            if (properties.getProperty("usetype").equalsIgnoreCase("BOTH")){
+                try {
+                    FileUtils.copyFile(new File("./modules/"+s+".jar"), new File("./live/" + getStorage().getGroupConfiguration().getName() + "/" + getStorage().getServiceName() + "/plugins/"+ s +".jar"));
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+            }else if (properties.getProperty("usetype").equalsIgnoreCase("SERVER")){
+                if (storage.getGroupConfiguration().getMode() != GroupType.PROXY){
+                    try {
+                        FileUtils.copyFile(new File("./modules/"+s+".jar"), new File("./live/" + getStorage().getGroupConfiguration().getName() + "/" + getStorage().getServiceName() + "/plugins/"+ s +".jar"));
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }else if (properties.getProperty("usetype").equalsIgnoreCase("PROXY")){
+                if (storage.getGroupConfiguration().getMode() == GroupType.PROXY){
+                    try {
+                        FileUtils.copyFile(new File("./modules/"+s+".jar"), new File("./live/" + getStorage().getGroupConfiguration().getName() + "/" + getStorage().getServiceName() + "/plugins/"+ s +".jar"));
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }else if (properties.getProperty("usetype").equalsIgnoreCase("LOBBY")){
+                if (storage.getGroupConfiguration().getMode() == GroupType.LOBBY){
+                    try {
+                        FileUtils.copyFile(new File("./modules/"+s+".jar"), new File("./live/" + getStorage().getGroupConfiguration().getName() + "/" + getStorage().getServiceName() + "/plugins/"+ s +".jar"));
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        });
+
+        if (new File("./service.json").exists()){
+            Driver.getInstance().getConsoleDriver().getLogger().log(MSGType.MESSAGETYPE_INFO, "the service §b"+storage.getServiceName()+"§7 is now started (§b"+storage.getGroupConfiguration().getProperties().getNode()+"§7~§b"+storage.getGroupConfiguration().getProperties().getVersion()+"§7~§b"+storage.getSelectedPort()+"§7)");
+        }else {
+            Driver.getInstance().getConsoleDriver().getLogger().log(MSGType.MESSAGETYPE_INFO, "the task was §bsuccessfully§7 performed");
+        }
 
         if (this.getStorage().getGroupConfiguration().getMode() == GroupType.PROXY) {
 
                 File configFile = new File(System.getProperty("user.dir") + "/live/" + getStorage().getGroupConfiguration().getName() + "/" + getStorage().getServiceName() + "/", "config.yml");
                 final FileWriter fileWriter = new FileWriter(configFile);
-                fileWriter.write(Driver.getInstance().getStorageDriver().getBungeeCordConfiguration(this.storage.getSelectedPort()));
+                fileWriter.write(Driver.getInstance().getStorageDriver().getBungeeCordConfiguration(this.storage.getSelectedPort(), storage.getServiceName(), storage.getGroupConfiguration().getMaxOnlinePlayers()));
                 fileWriter.flush();
                 fileWriter.close();
-            this.serviceThread = new Thread(() -> {
-                try {
-                    service = Runtime.getRuntime().exec("java -Xms"+ this.storage.getGroupConfiguration().getMemory()+"M -Xmx" + storage.getGroupConfiguration().getDynamicMemory() + "M -jar server.jar", null, new File(System.getProperty("user.dir") + "/live/" + getStorage().getGroupConfiguration().getName() + "/" + getStorage().getServiceName() ));
-                } catch (IOException ignored) {}
-            });
-            this.serviceThread.setPriority(Thread.MIN_PRIORITY);
-            this.serviceThread.setDaemon(false);
-            this.serviceThread.start();
+            try {
+                service = Runtime.getRuntime().exec("java -Xmx" + storage.getGroupConfiguration().getDynamicMemory() + "M -jar server.jar", null, new File(System.getProperty("user.dir") + "/live/" + getStorage().getGroupConfiguration().getName() + "/" + getStorage().getServiceName() ));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
 
         }else {
             File configFile = new File(System.getProperty("user.dir") + "/live/" + getStorage().getGroupConfiguration().getName() + "/" + getStorage().getServiceName() + "/", "server.properties");
             final FileWriter fileWriter = new FileWriter(configFile);
-            fileWriter.write(Driver.getInstance().getStorageDriver().getSpigotProperty());
+            fileWriter.write(Driver.getInstance().getStorageDriver().getSpigotProperty(storage.getServiceName()));
             fileWriter.flush();
             fileWriter.close();
 
@@ -108,50 +149,57 @@ public class CloudService {
             fileWriter2.write(Driver.getInstance().getStorageDriver().getSpigotConfiguration());
             fileWriter2.flush();
             fileWriter2.close();
-
-            this.serviceThread = new Thread(() -> {
-                try {
-                    service = Runtime.getRuntime().exec("java -Xms"+ this.storage.getGroupConfiguration().getMemory()+"M -Xmx" + storage.getGroupConfiguration().getDynamicMemory() + "M -Dcom.mojang.eula.agree=true -jar server.jar -org.spigotmc.netty.disabled=true --port " + this.storage.getSelectedPort() + " --max-players " + this.storage.getGroupConfiguration().getMaxOnlinePlayers(), null, new File(System.getProperty("user.dir") + "/live/" + getStorage().getGroupConfiguration().getName() + "/" + getStorage().getServiceName() ));
-                } catch (IOException ignored) {}
-            });
-            this.serviceThread.setPriority(Thread.MIN_PRIORITY);
-            this.serviceThread.setDaemon(false);
-            this.serviceThread.start();
-
-
+            try {
+                service = Runtime.getRuntime().exec("java -Xmx" + storage.getGroupConfiguration().getDynamicMemory() + "M -Dcom.mojang.eula.agree=true -jar server.jar -org.spigotmc.netty.disabled=true --port " + this.storage.getSelectedPort() + " --max-players " + this.storage.getGroupConfiguration().getMaxOnlinePlayers(), null, new File(System.getProperty("user.dir") + "/live/" + getStorage().getGroupConfiguration().getName() + "/" + getStorage().getServiceName() ));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 
-    @SneakyThrows
     public void stop(){
-        this.service.destroy();
-        this.serviceThread.stop();
 
-        Thread.sleep(200);
 
-        if (!storage.getGroupConfiguration().getStaticServices()){
-            FileUtils.deleteDirectory(new File("./live/" + getStorage().getGroupConfiguration().getName() + "/" + getStorage().getServiceName() + "/"));
-            File file = new File("./live/"+ getStorage().getGroupConfiguration().getName() + "/");
-            if (file.list().length == 0) {
-                file.delete();
-            }
+        if (new File("./service.json").exists()){
+            Driver.getInstance().getConsoleDriver().getLogger().log(MSGType.MESSAGETYPE_INFO, "the service §b"+storage.getServiceName()+"§7 is now stopping");
         }else {
-            new File("."+this.getStorage().getGroupConfiguration().getProperties().getTemplate()+"/" + storage.getServiceName() + "/").delete();
-            new File("."+this.getStorage().getGroupConfiguration().getProperties().getTemplate()+"/" + storage.getServiceName() + "/").mkdirs();
-            FileUtils.copyDirectory(new File("./live/" + getStorage().getGroupConfiguration().getName() + "/" + getStorage().getServiceName() + "/"), new File("."+this.getStorage().getGroupConfiguration().getProperties().getTemplate()+"/" + storage.getServiceName() + "/"));
-            Thread.sleep(200);
-            FileUtils.deleteDirectory(new File("./live/" + getStorage().getGroupConfiguration().getName() + "/" + getStorage().getServiceName() + "/"));
+            Driver.getInstance().getConsoleDriver().getLogger().log(MSGType.MESSAGETYPE_INFO, "the task was §bsuccessfully§7 performed");
+        }
+        this.service.destroy();
 
-            File file = new File("./live/"+ getStorage().getGroupConfiguration().getName() + "/");
+
+        try {
+            Thread.sleep(100);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        try {
+            if (!storage.getGroupConfiguration().getStaticServices()){
+                FileUtils.deleteDirectory(new File("./live/" + getStorage().getGroupConfiguration().getName() + "/" + getStorage().getServiceName() + "/"));
+                File file = new File("./live/"+ getStorage().getGroupConfiguration().getName() + "/");
+                if (file.list().length == 0) {
+                    file.delete();
+                }
+            }else {
+                new File("."+this.getStorage().getGroupConfiguration().getProperties().getTemplate()+"/" + storage.getServiceName() + "/").delete();
+                new File("."+this.getStorage().getGroupConfiguration().getProperties().getTemplate()+"/" + storage.getServiceName() + "/").mkdirs();
+                FileUtils.copyDirectory(new File("./live/" + getStorage().getGroupConfiguration().getName() + "/" + getStorage().getServiceName() + "/"), new File("."+this.getStorage().getGroupConfiguration().getProperties().getTemplate()+"/" + storage.getServiceName() + "/"));
+                Thread.sleep(200);
+                FileUtils.deleteDirectory(new File("./live/" + getStorage().getGroupConfiguration().getName() + "/" + getStorage().getServiceName() + "/"));
+
+                File file = new File("./live/"+ getStorage().getGroupConfiguration().getName() + "/");
+                if (file.list().length == 0) {
+                    file.delete();
+                }
+            }
+            File file = new File("./live/");
             if (file.list().length == 0) {
                 file.delete();
             }
+        }catch (IOException | InterruptedException e){
+            e.printStackTrace();
         }
-        File file = new File("./live/");
-        if (file.list().length == 0) {
-            file.delete();
-        }
-
 
     }
 

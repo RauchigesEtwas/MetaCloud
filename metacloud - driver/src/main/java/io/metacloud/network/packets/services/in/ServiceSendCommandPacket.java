@@ -1,4 +1,4 @@
-package io.metacloud.network.packets.services;
+package io.metacloud.network.packets.services.in;
 
 import io.metacloud.protocol.IBuffer;
 import io.metacloud.protocol.Packet;

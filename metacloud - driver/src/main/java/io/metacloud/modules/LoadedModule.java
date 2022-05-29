@@ -29,6 +29,39 @@ public class LoadedModule {
     }
 
 
+    public Properties readProperties(){
+        if (this.file == null) {
+            return null;
+        }
+
+        try {
+            URLClassLoader classLoader = new URLClassLoader(new URL[]{file.toURI().toURL()}, this.getClass().getClassLoader());
+            try (JarFile jarFile = new JarFile(file)) {
+                JarEntry jarEntry = jarFile.getJarEntry("module.properties");
+                if (jarEntry != null) {
+                    try (InputStreamReader reader = new InputStreamReader(jarFile.getInputStream(jarEntry), StandardCharsets.UTF_8)) {
+                        properties = new Properties();
+                        properties.load(reader);
+
+                        return properties;
+                    } catch (Exception ignored) {
+                    }
+
+                } else {
+
+                    Driver.getInstance().getConsoleDriver().getLogger().log(MSGType.MESSAGETYPE_MODULES,  "No §bmodule.properties §7found");
+
+                }
+
+            } catch (Exception ignored) {
+            }
+        } catch (Exception e) {
+
+        }
+        return null;
+    }
+
+
     public Properties getProperties() {
         return properties;
     }
@@ -48,15 +81,14 @@ public class LoadedModule {
                         properties = new Properties();
                         properties.load(reader);
 
-
                         Class classtoLoad = Class.forName(properties.getProperty("main"), true, classLoader);
                         Method method = classtoLoad.getDeclaredMethod("onEnable");
                         Object instance = classtoLoad.newInstance();
                         Object resuls = method.invoke(instance);
-                        Driver.getInstance().getConsoleDriver().getLogger().log(MSGType.MESSAGETYPE_MODULES,  "module §b" + properties.getProperty("name") + "§7 was loaded with §aSuccess §7[Author(s): §b" + properties.getProperty("author") + "§7, Version: §b" + properties.getProperty("version") + "§7]");
-
+                        Driver.getInstance().getConsoleDriver().getLogger().log(MSGType.MESSAGETYPE_MODULES,  "module §b" + properties.getProperty("name") + "§7 was loaded with §aSuccess §7(Author(s): §b" + properties.getProperty("author") + "§7, Version: §b" + properties.getProperty("version") + "§7)");
                         return properties;
                     } catch (Exception ignored) {
+                        ignored.printStackTrace();
                     }
 
                 } else {

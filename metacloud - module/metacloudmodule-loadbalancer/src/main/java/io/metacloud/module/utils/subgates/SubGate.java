@@ -1,4 +1,4 @@
-package de.rauchigesetwas.loadbalancer.utils.subgates;
+package io.metacloud.module.utils.subgates;
 /*
  * Created AT: 01.08.2021
  * Created by Robin B. (RauchigesEtwas)

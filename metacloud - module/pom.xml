@@ -12,7 +12,10 @@
     <artifactId>metacloud-module</artifactId>
     <packaging>pom</packaging>
     <modules>
-        <module>metacloudmodule -</module>
+        <module>metacloudmodule-syncproxy</module>
+        <module>metacloudmodule-loadbalancer</module>
+        <module>metacloudmodule-signs</module>
+        <module>metacloudmodule-permission</module>
     </modules>
     <dependencies>
         <dependency>

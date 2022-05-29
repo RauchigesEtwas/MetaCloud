@@ -28,6 +28,7 @@ public class NodeCommand extends CloudCommand {
         }else if (args[0].equalsIgnoreCase("create")){
             if (args.length == 3){
                 NodeConfiguration configuration = (NodeConfiguration) new ConfigDriver("./local/nodes.json").read(NodeConfiguration.class);
+                ServiceConfiguration service = (ServiceConfiguration) new ConfigDriver("./service.json").read(ServiceConfiguration.class);
                 String  name = args[1];
                 String  host = args[2];
                 this.exists = false;
@@ -38,13 +39,19 @@ public class NodeCommand extends CloudCommand {
                 });
                 if (!this.exists){
 
+                    service.getCommunication().getWhitelistAddresses().add(host);
+
+                    new ConfigDriver("./service.json").save(service);
+                    Driver.getInstance().getRestDriver().getRestServer(service.getCommunication().getRestApiPort()).updateContent("service", service);
+
+
                     NodeProperties properties = new NodeProperties();
                     properties.setNodeName(name);
                     properties.setNodeHost(host);
 
                     configuration.getNodes().add(properties);
                     new ConfigDriver("./local/nodes.json").save(configuration);
-                    ServiceConfiguration service = (ServiceConfiguration) new ConfigDriver("./service.json").read(ServiceConfiguration.class);
+
                     logger.log(MSGType.MESSAGETYPE_SUCCESS,  "the node has been added to the cloud ");
 
                     NodeSetupConfig setupConfig = new NodeSetupConfig();
@@ -101,7 +108,14 @@ public class NodeCommand extends CloudCommand {
         } else if (args[0].equalsIgnoreCase("list")){
             NodeConfiguration configuration = (NodeConfiguration) new ConfigDriver("./local/nodes.json").read(NodeConfiguration.class);
             configuration.getNodes().forEach(properties -> {
-                logger.log(MSGType.MESSAGETYPE_COMMAND,  " > §b" + properties.getNodeName() + "~" + properties.getNodeHost());
+                if (properties.getNodeName().equals("InternalNode")){
+                    logger.log(MSGType.MESSAGETYPE_COMMAND,  " > §b" + properties.getNodeName() + "~" + properties.getNodeHost() + "  §7(§aConnected§7)");
+                }else if (Driver.getInstance().getConnectionDriver().isNodeRegistered(properties.getNodeName())){
+                    logger.log(MSGType.MESSAGETYPE_COMMAND,  " > §b" + properties.getNodeName() + "~" + properties.getNodeHost() + "  §7(§aConnected§7)");
+                }else{
+                    logger.log(MSGType.MESSAGETYPE_COMMAND,  " > §b" + properties.getNodeName() + "~" + properties.getNodeHost() + "  §7(§cOffline§7)");
+                }
+
             });
         }else {
             sendHelp(logger);
@@ -127,7 +141,7 @@ public class NodeCommand extends CloudCommand {
             }
         }
 
-        return null;
+        return results;
     }
 
     private void sendHelp(Logger logger){

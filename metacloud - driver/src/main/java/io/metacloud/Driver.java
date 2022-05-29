@@ -1,6 +1,7 @@
 package io.metacloud;
 
 import io.metacloud.console.ConsoleDriver;
+import io.metacloud.events.EventDriver;
 import io.metacloud.groups.GroupDriver;
 import io.metacloud.modules.ModuleDriver;
 import io.metacloud.network.ConnectionDriver;
@@ -21,9 +22,11 @@ public class Driver {
     private ServiceDriver serviceDriver;
     private ModuleDriver moduleDriver;
     private QueueDriver queueDriver;
+    private EventDriver eventDriver;
 
     public Driver(){
         instance = this;
+        eventDriver = new EventDriver();
         moduleDriver = new ModuleDriver();
         serviceDriver = new ServiceDriver();
         groupDriver = new GroupDriver();
@@ -31,6 +34,11 @@ public class Driver {
         storageDriver = new StorageDriver();
         connectionDriver = new ConnectionDriver();
         queueDriver = new QueueDriver();
+    }
+
+
+    public EventDriver getEventDriver() {
+        return eventDriver;
     }
 
     public QueueDriver getQueueDriver() {

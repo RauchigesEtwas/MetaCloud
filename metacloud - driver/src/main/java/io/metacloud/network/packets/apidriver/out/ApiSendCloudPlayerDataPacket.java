@@ -46,83 +46,73 @@ public class ApiSendCloudPlayerDataPacket extends Packet {
         component = buffer.read("component", CloudTextComponent.class);
     }
 
-    public String getCloudPlayerName() {
-        return cloudPlayerName;
+
+    public ApiSendCloudPlayerDataPacket(String cloudPlayerName, String chosen, String message, String server) {
+        this.cloudPlayerName = cloudPlayerName;
+        this.chosen = chosen;
+        this.message = message;
+        this.server = server;
     }
 
-    public void setCloudPlayerName(String cloudPlayerName) {
+    public ApiSendCloudPlayerDataPacket(String cloudPlayerName, String chosen, String message) {
         this.cloudPlayerName = cloudPlayerName;
+        this.chosen = chosen;
+        this.message = message;
+    }
+
+    public ApiSendCloudPlayerDataPacket(String cloudPlayerName, String chosen, CloudTextComponent component) {
+        this.cloudPlayerName = cloudPlayerName;
+        this.chosen = chosen;
+        this.component = component;
+    }
+
+    public ApiSendCloudPlayerDataPacket(String cloudPlayerName, String chosen, String title, String subTitle, Integer fadeIn, Integer stay, Integer fadeOut) {
+        this.cloudPlayerName = cloudPlayerName;
+        this.chosen = chosen;
+        this.title = title;
+        this.subTitle = subTitle;
+        this.fadeIn = fadeIn;
+        this.stay = stay;
+        this.fadeOut = fadeOut;
+    }
+
+    public String getCloudPlayerName() {
+        return cloudPlayerName;
     }
 
     public String getChosen() {
         return chosen;
     }
 
-    public void setChosen(String chosen) {
-        this.chosen = chosen;
-    }
-
     public CloudTextComponent getComponent() {
         return component;
-    }
-
-    public void setComponent(CloudTextComponent component) {
-        this.component = component;
     }
 
     public String getMessage() {
         return message;
     }
 
-    public void setMessage(String message) {
-        this.message = message;
-    }
-
     public String getServer() {
         return server;
-    }
-
-    public void setServer(String server) {
-        this.server = server;
     }
 
     public String getTitle() {
         return title;
     }
 
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
     public String getSubTitle() {
         return subTitle;
-    }
-
-    public void setSubTitle(String subTitle) {
-        this.subTitle = subTitle;
     }
 
     public Integer getFadeIn() {
         return fadeIn;
     }
 
-    public void setFadeIn(Integer fadeIn) {
-        this.fadeIn = fadeIn;
-    }
-
     public Integer getStay() {
         return stay;
     }
 
-    public void setStay(Integer stay) {
-        this.stay = stay;
-    }
-
     public Integer getFadeOut() {
         return fadeOut;
-    }
-
-    public void setFadeOut(Integer fadeOut) {
-        this.fadeOut = fadeOut;
     }
 }
