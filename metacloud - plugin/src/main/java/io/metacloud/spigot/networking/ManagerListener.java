@@ -29,8 +29,6 @@ public class ManagerListener extends PacketListener {
             Bukkit.dispatchCommand(Bukkit.getConsoleSender(), packet.getCommand());
         }
 
-
-
         if (readPacket instanceof ApiSendCloudPlayerDataPacket){
             ApiSendCloudPlayerDataPacket packet = (ApiSendCloudPlayerDataPacket)readPacket;
             if (packet.getChosen().equalsIgnoreCase("SEND_TITLE")){

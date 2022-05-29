@@ -25,6 +25,10 @@ public abstract class CloudCommand{
     public abstract boolean performCommand(CloudCommand command, Logger logger, String[] args);
     public abstract ArrayList<String> tabComplete(ConsoleStorageLine consoleInput, String[] args);
 
+    public void sendHelp(Logger logger) {
+
+    }
+
     public String getCommand() {
         return command;
     }

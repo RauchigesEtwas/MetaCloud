@@ -55,21 +55,19 @@ public class ServiceHandlerListener extends PacketListener {
                 return;
             }
 
-
             ServiceRest serviceRest = (ServiceRest) Driver.getInstance().getRestDriver().getRestAPI().convertToRestConfig("http://" + service.getCommunication().getManagerHostAddress() + ":" + service.getCommunication().getRestApiPort()+
                     "/" + service.getCommunication().getRestApiAuthKey()+ "/livegroup-" + packet.getServiceName().split(service.getGeneral().getServerSplitter())[0], ServiceRest.class);
 
             Driver.getInstance().getConnectionDriver().addServiceChannel(packet.getServiceName(), event.getChannel());
             for (int i = 0; i != serviceRest.getServices().size() ; i++) {
                 LiveService liveService = serviceRest.getServices().get(i);
-                Driver.getInstance().getEventDriver().executeEvent(new ServiceConnectEvent(liveService.getServiceName(), liveService.getSelectedPort(), liveService.getGroupConfiguration(), service.getCommunication().getManagerHostAddress()));
                 if (serviceRest.getServices().get(i).getServiceName().equalsIgnoreCase(packet.getServiceName()) && serviceRest.getServices().get(i).getServiceState() == CloudServiceState.STARTING){
                     serviceRest.getServices().get(i).setServiceState(CloudServiceState.LOBBY);
                     long time =   serviceRest.getServices().get(i).getStartTime();
                     long finalTime =  (System.currentTimeMillis() - time);
 
                     Driver.getInstance().getConsoleDriver().getLogger().log(MSGType.MESSAGETYPE_NETWORK,  "the service §b"+packet.getServiceName()+"§7 is successfully §aconnected §7(§b"+finalTime+" ms§7)");
-
+                    Driver.getInstance().getEventDriver().executeEvent(new ServiceConnectEvent(liveService.getServiceName(), liveService.getSelectedPort(), liveService.getGroupConfiguration(), service.getCommunication().getManagerHostAddress()));
                     if (serviceRest.getServices().get(i).getGroupConfiguration().getMode() == GroupType.PROXY){
                         ProxyServiceUpdateServicesPacket updateServicesPacket = new ProxyServiceUpdateServicesPacket();
                         List<String > groups = new ArrayList<>();

@@ -236,7 +236,7 @@ public class ClientConnection extends SimpleChannelInboundHandler<ByteBuf> {
      */
     public void connectToServer() {
 
-        Configuration config = (Configuration) new ConfigDriver("./modules/loadbalancer/config.json").read(Configuration.class);
+        Configuration config = (Configuration) new ConfigDriver("./modules/metacloud-loadbalancer/config.json").read(Configuration.class);
         if (LoadBalancerModule.getInstance().getProxyStorage().isEmpty()){
             this.closeChannel();
             return;

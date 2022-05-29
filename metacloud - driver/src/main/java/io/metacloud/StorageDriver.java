@@ -20,7 +20,7 @@ public class StorageDriver {
     private String setupType;
     private Boolean shutdownFromManager;
     private Long startTime;
-    private String version = "HURRICAN-1.0.0";
+    private String version = "HURRICAN-0.0.1";
     private boolean Shutdown = false;
 
     public GroupConfiguration getGroupSetupStorage() {

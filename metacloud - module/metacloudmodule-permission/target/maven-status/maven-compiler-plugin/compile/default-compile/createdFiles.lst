@@ -1,8 +1,0 @@
-io\metacloud\permission\global\Settings.class
-io\metacloud\permission\module\PermissionModule.class
-io\metacloud\permission\global\configs\Configuration.class
-io\metacloud\permission\global\configs\Group.class
-io\metacloud\permission\spigot\PermissionSpigot.class
-io\metacloud\permission\global\PermissionPool.class
-io\metacloud\permission\bungee\PermissionProxy.class
-io\metacloud\permission\global\configs\CloudPlayers.class

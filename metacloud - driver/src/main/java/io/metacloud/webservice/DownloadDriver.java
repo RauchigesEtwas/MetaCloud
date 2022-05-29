@@ -68,6 +68,9 @@ public class DownloadDriver {
             case BUNGEECORD_LATEST:
                 this.url = "https://ci.md-5.net/job/BungeeCord/lastSuccessfulBuild/artifact/bootstrap/target/BungeeCord.jar";
                 break;
+            case TRAVERTINE_LATEST:
+                this.url = "https://api.papermc.io/v2/projects/travertine/versions/1.16/builds/145/downloads/travertine-1.16-145.jar";
+                break;
         }
         download();
 

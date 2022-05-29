@@ -12,6 +12,7 @@ import io.metacloud.network.packets.nodes.in.NodeUnregisterPacket;
 import io.metacloud.node.commands.ClearCommand;
 import io.metacloud.node.commands.EndCommand;
 import io.metacloud.node.commands.HelpCommand;
+import io.metacloud.node.commands.ScreenCommand;
 import io.metacloud.node.networking.ManagerHandlerListener;
 
 public class MetaNode {
@@ -29,12 +30,13 @@ public class MetaNode {
         Driver.getInstance().getConsoleDriver().getLogger().log(MSGType.MESSAGETYPE_INFO,  "the cloud is §bnow ready§7 to use [It takes §b"+finalTime+" ms§r]");
         while (true){}
     }
-    
+
     public void prepareCommands(){
         CommandDriver driver =  Driver.getInstance().getConsoleDriver().getCommandDriver();
         driver.registerCommand(new HelpCommand());
         driver.registerCommand(new EndCommand());
         driver.registerCommand(new ClearCommand());
+        driver.registerCommand(new ScreenCommand());
     }
 
     public void prepareNetworkingClient(){

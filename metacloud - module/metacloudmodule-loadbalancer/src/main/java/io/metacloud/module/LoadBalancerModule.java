@@ -37,19 +37,19 @@ public class LoadBalancerModule implements IModule {
             new ConfigDriver("./service.json").save(service);
         }
 
-        if (!new File("./modules/loadbalancer/config.json").exists()){
+        if (!new File("./modules/metacloud-loadbalancer/config.json").exists()){
 
-            new File("./modules/loadbalancer/").mkdirs();
+            new File("./modules/metacloud-loadbalancer/").mkdirs();
             Configuration configuration = new Configuration();
             configuration.setConnectionType(ConnectionType.RANDOM);
-            new ConfigDriver("./modules/loadbalancer/config.json").save(configuration);
+            configuration.setConnectionPort(25565);
+            new ConfigDriver("./modules/metacloud-loadbalancer/config.json").save(configuration);
         }
 
-
         Driver.getInstance().getEventDriver().registerListener(new CloudListener());
-        Configuration config = (Configuration) new ConfigDriver("./modules/loadbalancer/config.json").read(Configuration.class);
+        Configuration config = (Configuration) new ConfigDriver("./modules/metacloud-loadbalancer/config.json").read(Configuration.class);
 
-        this.loadBalancer = new LoadBalancer(service.getCommunication().getManagerHostAddress(), 25565);
+        this.loadBalancer = new LoadBalancer(service.getCommunication().getManagerHostAddress(), config.getConnectionPort());
 
     }
 

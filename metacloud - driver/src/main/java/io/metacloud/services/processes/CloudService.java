@@ -13,17 +13,22 @@ import io.metacloud.webservice.DownloadDriver;
 import lombok.SneakyThrows;
 import org.apache.commons.io.FileUtils;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
+import javax.sound.sampled.Line;
+import java.io.*;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class CloudService {
 
 
     private Process service;
     private ServiceStorage storage;
+    private boolean isToggle;
+    private Thread outputThread;
 
     public CloudService() {}
+
+
 
 
     public CloudService bindStorage(ServiceStorage storage){
@@ -202,6 +207,38 @@ public class CloudService {
         }
 
     }
+
+
+    @SneakyThrows
+    public void toggleScreen(){
+        if (isToggle){
+            isToggle = false;
+            outputThread.stop();
+        }else {
+            isToggle = true;
+            outputThread = new Thread(() -> {
+                String line = null;
+                BufferedReader input = new BufferedReader(new InputStreamReader(service.getInputStream()));
+                while (isToggle) {
+                    try {
+                        if (!((line = input.readLine()) != null)) break;
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    Driver.getInstance().getConsoleDriver().getLogger().log(MSGType.MESSAGETYPE_PRCESS, line);
+                }
+                try {
+                    input.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            });
+        outputThread.start();
+
+        }
+    }
+
+
 
 
     public ServiceStorage getStorage() {

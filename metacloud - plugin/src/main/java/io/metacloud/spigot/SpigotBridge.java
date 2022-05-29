@@ -29,8 +29,10 @@ public class SpigotBridge extends JavaPlugin {
         dataDriver = new DataDriver();
         configuration = (CloudServiceConfiguration) new ConfigDriver("./cloudservice.json").read(CloudServiceConfiguration.class);
         networkClientDriver = new NetworkClientDriver();
-        NetworkingBootStrap.packetListenerHandler.registerListener(new ManagerListener());
+
         networkClientDriver.bind(this.configuration.getNetworkProperty().getManagerAddress(), this.configuration.getNetworkProperty().getNetworkingPort()).run();
+
+        NetworkingBootStrap.packetListenerHandler.registerListener(new ManagerListener());
         ServiceRegisterPacket packet = new ServiceRegisterPacket();
         packet.setServiceName(configuration.getServicename());
         Bukkit.getPluginManager().registerEvents(new CloudPlayerHandlerListener(), this);

@@ -66,6 +66,8 @@ public class MetaManager {
         driver.registerCommand(new EndCommand());
         driver.registerCommand(new MetaCloudCommand());
         driver.registerCommand(new NodeCommand());
+        driver.registerCommand(new ModuleCommand());
+        driver.registerCommand(new ScreenCommand());
         driver.registerCommand(new ServiceCommand());
         driver.registerCommand(new ReloadCommand());
             Driver.getInstance().getConsoleDriver().getLogger().log(MSGType.MESSAGETYPE_INFO, "all commands were prepared and loaded (§b"+driver.getCommands().size()+" commands§7)");

@@ -63,7 +63,9 @@ public class Logger {
                 break;
             case MESSAGETYPE_MODULES:
                 this.loggerQueue.add(new LoggerQueueInput("§3MODULES", message));
-
+                break;
+            case MESSAGETYPE_PRCESS:
+                this.loggerQueue.add(new LoggerQueueInput("§3PROCESS", message));
                 break;
         }
 

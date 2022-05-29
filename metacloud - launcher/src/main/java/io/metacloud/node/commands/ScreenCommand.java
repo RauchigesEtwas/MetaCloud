@@ -1,4 +1,4 @@
-package io.metacloud.manager.commands;
+package io.metacloud.node.commands;
 
 import io.metacloud.Driver;
 import io.metacloud.command.CloudCommand;
@@ -6,10 +6,8 @@ import io.metacloud.command.CommandInfo;
 import io.metacloud.console.data.ConsoleStorageLine;
 import io.metacloud.console.logger.Logger;
 import io.metacloud.console.logger.enums.MSGType;
-import io.metacloud.services.processes.CloudService;
 
 import java.util.ArrayList;
-import java.util.function.Consumer;
 
 @CommandInfo(command = "screen", description = "see all screens")
 public class ScreenCommand extends CloudCommand {

@@ -312,9 +312,8 @@ public class ServiceCommand extends CloudCommand {
         return false;
     }
 
-
-    private void sendHelp(Logger logger){
-
+    @Override
+    public void sendHelp(Logger logger) {
         logger.log(MSGType.MESSAGETYPE_COMMAND,  "> §bservice launch §7<§bgroup§7> §7<§bcount§7>");
         logger.log(MSGType.MESSAGETYPE_COMMAND,  "> §bservice stop §7<§bservice§7>");
         logger.log(MSGType.MESSAGETYPE_COMMAND,  "> §bservice gstop §7<§bgroup§7>");
@@ -322,6 +321,7 @@ public class ServiceCommand extends CloudCommand {
         logger.log(MSGType.MESSAGETYPE_COMMAND,  "> §bservice info §7<§bservice§7>");
         logger.log(MSGType.MESSAGETYPE_COMMAND,  "> §bservice whitelist §7<§badd/remove/list§7> §7<§bplayername§7>");
         logger.log(MSGType.MESSAGETYPE_COMMAND,  "> §bservice list");
+
     }
 
     @Override

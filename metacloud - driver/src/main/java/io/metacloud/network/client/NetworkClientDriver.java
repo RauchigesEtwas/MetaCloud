@@ -12,7 +12,7 @@ public class NetworkClientDriver {
     private String host;
 
     public NetworkClientDriver() {
-        NetworkingBootStrap.packetListenerHandler = new PacketListenerHandler();
+
     }
 
 
@@ -23,6 +23,9 @@ public class NetworkClientDriver {
     }
 
     public void run(){
+
+        NetworkingBootStrap.packetListenerHandler = new PacketListenerHandler();
+
         try {
             NetworkingBootStrap.client = new NetworkClient();
             NetworkingBootStrap.client.init(channel -> {})

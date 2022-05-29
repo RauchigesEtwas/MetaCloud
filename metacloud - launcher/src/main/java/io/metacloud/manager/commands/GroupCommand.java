@@ -50,7 +50,6 @@ public class GroupCommand extends CloudCommand {
                     logger.log(MSGType.MESSAGETYPE_COMMAND,  "A group already §bexists §7under this name");
                     return false;
                 }
-
                 if(dynamicMemory.matches("[0-9]+")){
                     GroupConfiguration configuration = new GroupConfiguration();
                     if (modeType.equalsIgnoreCase("LOBBY")){
@@ -112,7 +111,7 @@ public class GroupCommand extends CloudCommand {
                             logger.log(MSGType.MESSAGETYPE_SUCCESS,  "The group has been §bsuccessfully§7 created, all servers will be §bstarted§7 shortly.");
                         }else{
                             logger.log(MSGType.MESSAGETYPE_COMMAND,  "You have the following version that you can use");
-                            logger.log(MSGType.MESSAGETYPE_COMMAND,  "version: §bBUNGEECORD_LATEST, WATERFALL_LATEST");
+                            logger.log(MSGType.MESSAGETYPE_COMMAND,  "version: §bBUNGEECORD_LATEST, WATERFALL_LATEST, TRAVERTINE_LATEST");
 
                         }
                     }else{
@@ -311,9 +310,8 @@ public class GroupCommand extends CloudCommand {
         return false;
     }
 
-
-    private void sendHelp(Logger logger){
-
+    @Override
+    public void sendHelp(Logger logger) {
         logger.log(MSGType.MESSAGETYPE_COMMAND,  "> §bgroup create §7<§bname§7> §7<§bLOBBY/PROXY/GAME§7> §7<§bmemory(in mb)§7> §7<§bstatic§7> §7<§bversion§7> §7<§bnode§7>");
         logger.log(MSGType.MESSAGETYPE_COMMAND,  "> §bgroup edit §7<§bname§7> §7<§bsetMaintenance/setStaticServices/setMaxOnlinePlayers/setMinOnlineServers§7> §7<§bvalue§7>");
         logger.log(MSGType.MESSAGETYPE_COMMAND,  "> §bgroup delete §7<§bname§7>");
@@ -323,6 +321,7 @@ public class GroupCommand extends CloudCommand {
         logger.log(MSGType.MESSAGETYPE_COMMAND,  "> §bgroup list");
 
     }
+
     @Override
     public ArrayList<String> tabComplete(ConsoleStorageLine consoleInput, String[] args) {
         ArrayList<String> results = new ArrayList<>();
@@ -349,12 +348,12 @@ public class GroupCommand extends CloudCommand {
                 results.add("false");
             }else if (args.length == 5){
                 for (GroupVersions version : GroupVersions.values()){
-                    if (args[1].equalsIgnoreCase("PROXY")){
-                        if (version == GroupVersions.BUNGEECORD_LATEST || version == GroupVersions.WATERFALL_LATEST){
+                    if (args[2].equalsIgnoreCase("PROXY")){
+                        if (version == GroupVersions.BUNGEECORD_LATEST || version == GroupVersions.WATERFALL_LATEST || version == GroupVersions.TRAVERTINE_LATEST){
                             results.add(version.toString());
                         }
                     }else {
-                        if (version == GroupVersions.BUNGEECORD_LATEST || version == GroupVersions.WATERFALL_LATEST){
+                        if (version == GroupVersions.BUNGEECORD_LATEST || version == GroupVersions.WATERFALL_LATEST || version == GroupVersions.TRAVERTINE_LATEST){
 
                         }else{
                             results.add(version.toString());

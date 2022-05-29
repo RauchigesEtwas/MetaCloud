@@ -144,10 +144,10 @@ public class NodeCommand extends CloudCommand {
         return results;
     }
 
-    private void sendHelp(Logger logger){
+    @Override
+    public void sendHelp(Logger logger) {
         logger.log(MSGType.MESSAGETYPE_COMMAND,  "> §bnode create §7<§bname§7> §7<§bhost§7>");
         logger.log(MSGType.MESSAGETYPE_COMMAND,  "> §bnode delete §7<§bname§7>");
         logger.log(MSGType.MESSAGETYPE_COMMAND,  "> §bnode list");
     }
-
 }

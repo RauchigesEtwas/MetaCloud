@@ -18,8 +18,8 @@ public class SyncProxyModule implements IModule {
     @Override
     public void onEnable() {
 
-        if (!new File("./modules/syncproxy/config.json").exists()){
-            new File("./modules/syncproxy/").mkdirs();
+        if (!new File("./modules/metacloud-syncproxy/config.json").exists()){
+            new File("./modules/metacloud-syncproxy/").mkdirs();
             ModuleConfig config = new ModuleConfig();
 
             ArrayList<Motd> maintenance = new ArrayList<>();
@@ -115,7 +115,7 @@ public class SyncProxyModule implements IModule {
             config.setDefaults(defaults);
             config.setTablist(tablist);
 
-            new ConfigDriver("./modules/syncproxy/config.json").save(config);
+            new ConfigDriver("./modules/metacloud-syncproxy/config.json").save(config);
             set();
         }else {
           set();
@@ -135,7 +135,7 @@ public class SyncProxyModule implements IModule {
 
 
     public void set(){
-        ModuleConfig config = (ModuleConfig) new ConfigDriver("./modules/syncproxy/config.json").read(ModuleConfig.class);
+        ModuleConfig config = (ModuleConfig) new ConfigDriver("./modules/metacloud-syncproxy/config.json").read(ModuleConfig.class);
         ServiceConfiguration service = (ServiceConfiguration) new ConfigDriver("./service.json").read(ServiceConfiguration.class);
 
 
@@ -192,13 +192,13 @@ public class SyncProxyModule implements IModule {
         moduleConfig.setDefaults(defaults);
         moduleConfig.setTablist(tablist);
 
-        Driver.getInstance().getRestDriver().getRestServer(service.getCommunication().getRestApiPort()).addContent("module-syncproxy", "./modules/syncproxy/config.json", moduleConfig);
+        Driver.getInstance().getRestDriver().getRestServer(service.getCommunication().getRestApiPort()).addContent("module-syncproxy", "./modules/metacloud-syncproxy/config.json", moduleConfig);
 
 
     }
 
     public void update(){
-        ModuleConfig config = (ModuleConfig) new ConfigDriver("./modules/syncproxy/config.json").read(ModuleConfig.class);
+        ModuleConfig config = (ModuleConfig) new ConfigDriver("./modules/metacloud-syncproxy/config.json").read(ModuleConfig.class);
         ServiceConfiguration service = (ServiceConfiguration) new ConfigDriver("./service.json").read(ServiceConfiguration.class);
 
 

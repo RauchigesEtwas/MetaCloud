@@ -6,6 +6,16 @@ public class Configuration implements IConfig {
 
 
         private ConnectionType connectionType;
+        private int connectionPort;
+
+
+    public int getConnectionPort() {
+        return connectionPort;
+    }
+
+    public void setConnectionPort(int connectionPort) {
+        this.connectionPort = connectionPort;
+    }
 
     public ConnectionType getConnectionType() {
         return connectionType;

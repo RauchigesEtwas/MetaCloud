@@ -19,7 +19,6 @@ public class CloudListener implements ICloudEvent {
         String host = event.getHost();
         Integer port = event.getUsedPort();
         GroupConfiguration group = event.getGroup();
-        System.out.println("test");
         if (group.getMode() == GroupType.PROXY){
             LoadBalancerModule.getInstance().getProxyStorage().put(service, new ProxyData(0, service, host, port, new SubGate(service, host, port)));
         }
