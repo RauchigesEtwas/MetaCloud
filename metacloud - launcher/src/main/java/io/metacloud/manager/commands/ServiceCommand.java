@@ -74,13 +74,17 @@ public class ServiceCommand extends CloudCommand {
                             channel1.sendPacket(removeServicePacket);
                         });
                     }
-                    new Timer().schedule(new TimerTask() {
-                        @Override
-                        public void run() {
 
-                            Driver.getInstance().getGroupDriver().launchService(group, 1);
-                        }
-                    }, 2*1000);
+
+                    if (serviceRest.getServices().size() < Driver.getInstance().getGroupDriver().getGroupByService(args[1]).getMinOnlineServers()){
+                        new Timer().schedule(new TimerTask() {
+                            @Override
+                            public void run() {
+
+                                Driver.getInstance().getGroupDriver().launchService(group, 1);
+                            }
+                        }, 2*1000);
+                    }
                 }else {
                     logger.log(MSGType.MESSAGETYPE_COMMAND,  "The specified service §bcould not be found§7 in the Cloud ");
                 }
@@ -169,7 +173,7 @@ public class ServiceCommand extends CloudCommand {
                          ServiceSendCommandPacket ServiceSendCommandPacket = new ServiceSendCommandPacket();
                          ServiceSendCommandPacket.setCommand(msg);
                          Channel channel = Driver.getInstance().getConnectionDriver().getServiceChannel(servicename);
-                          channel.sendPacket(ServiceSendCommandPacket);
+                         channel.sendPacket(ServiceSendCommandPacket);
                          logger.log(MSGType.MESSAGETYPE_COMMAND,  "the action is now executed...");
                     }else{
                         logger.log(MSGType.MESSAGETYPE_COMMAND,  "The specified service is not ready to do that ");

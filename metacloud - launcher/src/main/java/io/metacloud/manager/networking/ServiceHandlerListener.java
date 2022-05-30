@@ -103,6 +103,10 @@ public class ServiceHandlerListener extends PacketListener {
                 return;
             }
 
+            if(Driver.getInstance().getServiceDriver().getService(packet.getService()) == null){
+                readchannel.close();
+                return;
+            }
 
 
             Driver.getInstance().getConsoleDriver().getLogger().log(MSGType.MESSAGETYPE_NETWORK,  "the service §b"+packet.getService()+"§7 is successfully §aShutdown");
@@ -120,7 +124,7 @@ public class ServiceHandlerListener extends PacketListener {
                 });
             }
 
-            if (serviceRest.getServices().size()-1 > group.getMinOnlineServers()){
+            if (serviceRest.getServices().size() < group.getMinOnlineServers()){
                 Driver.getInstance().getGroupDriver().launchService(Driver.getInstance().getGroupDriver().getGroupByService(packet.getService()).getName(), 1);
             }
         }

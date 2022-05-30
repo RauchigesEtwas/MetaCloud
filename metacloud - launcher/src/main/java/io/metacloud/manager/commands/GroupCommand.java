@@ -65,7 +65,6 @@ public class GroupCommand extends CloudCommand {
                         configuration.setMode(GroupType.LOBBY);
                         configuration.setMaxOnlineServers(-1);
                         configuration.setMinOnlineServers(1);
-                        configuration.setMinOnlineServers(1);
                         GroupProperties properties = new GroupProperties();
                         properties.setTemplate("/local/templates/" + groupName + "/" );
                         properties.setNode(node);
@@ -76,7 +75,6 @@ public class GroupCommand extends CloudCommand {
                             Driver.getInstance().getGroupDriver().create(configuration);
 
                             Driver.getInstance().getGroupDriver().launchService(groupName, 1);
-
                             logger.log(MSGType.MESSAGETYPE_SUCCESS,  "The group has been §bsuccessfully§7 created, all servers will be §bstarted§7 shortly.");
                         }else{
                             logger.log(MSGType.MESSAGETYPE_COMMAND,  "You have the following version that you can use");
@@ -96,7 +94,6 @@ public class GroupCommand extends CloudCommand {
                         configuration.setMaxOnlinePlayers(50);
                         configuration.setMode(GroupType.PROXY);
                         configuration.setMaxOnlineServers(-1);
-                        configuration.setMinOnlineServers(1);
                         configuration.setMinOnlineServers(1);
                         GroupProperties properties = new GroupProperties();
                         properties.setTemplate("/local/templates/" + groupName + "/" );
@@ -126,7 +123,6 @@ public class GroupCommand extends CloudCommand {
                         configuration.setMaxOnlinePlayers(50);
                         configuration.setMode(GroupType.GAME);
                         configuration.setMaxOnlineServers(-1);
-                        configuration.setMinOnlineServers(1);
                         configuration.setMinOnlineServers(1);
                         GroupProperties properties = new GroupProperties();
                         properties.setTemplate("/local/templates/" + groupName + "/" );
